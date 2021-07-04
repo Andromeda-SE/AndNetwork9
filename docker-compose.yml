@@ -1,0 +1,68 @@
+version: '3'
+
+services:
+  andnetwork9discord:
+    container_name: AndNetwork9.Discord
+    image: ${DOCKER_REGISTRY-}andnetwork9discord
+    restart: "no"
+    env_file: .env
+    build:
+      context: .
+      dockerfile: AndNetwork9/Discord/Dockerfile
+    depends_on: 
+      - database
+      - broker
+
+  andnetwork9server:
+    container_name: AndNetwork9.Server
+    image: ${DOCKER_REGISTRY-}andnetwork9server
+    restart: "no"
+    env_file: .env
+    ports:
+      - "5260:80"
+    build:
+      context: .
+      dockerfile: AndNetwork9/Server/Dockerfile
+    depends_on: 
+      - database
+      - broker
+
+  andnetwork9storage:
+    container_name: AndNetwork9.Storage
+    image: ${DOCKER_REGISTRY-}andnetwork9storage
+    restart: "no"
+    env_file: .env
+    build:
+      context: .
+      dockerfile: AndNetwork9/Storage/Dockerfile
+    depends_on: 
+      - database
+      - broker
+    volumes:
+      - "~/AndNetwork9/repos:/var/lib/AndNetwork9/data"
+
+  andnetwork9elections:
+    container_name: AndNetwork9.Elections
+    image: ${DOCKER_REGISTRY-}andnetwork9elections
+    restart: "no"
+    env_file: .env
+    build:
+      context: .
+      dockerfile: AndNetwork9/Elections/Dockerfile
+    depends_on: 
+      - database
+      - broker
+
+  database:
+    container_name: AndNetwork9.Database
+    image: postgres:alpine
+    restart: "no"
+    env_file: .env
+    volumes:
+      - "~/AndNetwork9/db:/var/lib/postgresql/data"
+
+  broker:
+    container_name: AndNetwork9.Broker
+    image: rabbitmq:alpine
+    restart: "no"
+    env_file: .env

@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "AndNetwork9.Shared.Backend": {
+      "commandName": "Project"
+    },
+    "Docker": {
+      "commandName": "Docker"
+    }
+  }
+}

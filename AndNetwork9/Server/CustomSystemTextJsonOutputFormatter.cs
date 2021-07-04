@@ -1,0 +1,59 @@
+﻿using System;
+using System.IO;
+using System.Text;
+using System.Text.Json;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Formatters;
+
+#nullable enable
+namespace AndNetwork9.Server
+{
+    public class CustomSystemTextJsonOutputFormatter : TextOutputFormatter
+    {
+        public CustomSystemTextJsonOutputFormatter(JsonSerializerOptions jsonSerializerOptions)
+        {
+            SerializerOptions = jsonSerializerOptions;
+            SupportedEncodings.Add(Encoding.ASCII);
+            SupportedEncodings.Add(Encoding.UTF8);
+            SupportedEncodings.Add(Encoding.Unicode);
+            SupportedEncodings.Add(Encoding.UTF32);
+            SupportedMediaTypes.Add("application/json");
+            SupportedMediaTypes.Add("text/json");
+            SupportedMediaTypes.Add("application/*+xml");
+        }
+
+        public JsonSerializerOptions SerializerOptions { get; }
+
+        public sealed override async Task WriteResponseBodyAsync(OutputFormatterWriteContext context,
+            Encoding selectedEncoding)
+        {
+            if (context is null)
+                throw new ArgumentNullException(nameof(context));
+            if (selectedEncoding is null)
+                throw new ArgumentNullException(nameof(selectedEncoding));
+
+            HttpContext httpContext = context.HttpContext;
+            Type type = context.ObjectType?.FullName switch
+            {
+                "Castle.Proxies.MemberProxy" => context.ObjectType.BaseType ?? typeof(object),
+                null => typeof(object),
+                _ => context.ObjectType,
+            };
+            Stream responseStream = httpContext.Response.Body;
+            if (selectedEncoding.CodePage == Encoding.UTF8.CodePage)
+            {
+                await JsonSerializer.SerializeAsync(responseStream, context.Object, type, SerializerOptions);
+                await responseStream.FlushAsync();
+            }
+            else
+            {
+                await using Stream stream = Encoding.CreateTranscodingStream(httpContext.Response.Body,
+                    selectedEncoding,
+                    Encoding.UTF8, true);
+                await JsonSerializer.SerializeAsync(stream, context.Object, type, SerializerOptions);
+                await stream.FlushAsync();
+            }
+        }
+    }
+}

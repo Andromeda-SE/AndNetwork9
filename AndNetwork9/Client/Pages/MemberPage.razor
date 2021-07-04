@@ -1,0 +1,86 @@
+﻿@page "/Member/{SelectedKeyRaw?}"
+@attribute [Authorize]
+
+<BaseBodyWithAside Title="Игроки">
+    <Main>
+        @if (Members is null)
+        {
+            <div class="d-flex justify-content-center">
+                <div class="spinner-border" role="status">
+                    <span class="visually-hidden">Загрузка...</span>
+                </div>
+            </div>
+        }
+        else
+        {
+            <Table TItem="AndNetwork9.Shared.Member" Source="@Members" Columns="ColumnDefinitions" SelectionChanged="SelectionChanged"></Table>
+        }
+    </Main>
+    <Aside>
+        @if (SelectedMember is null)
+        {
+            <p class="small">Игрок не выбран</p>
+        }
+        else
+        {
+            <h5>@SelectedMember.Nickname</h5>
+            @if (SelectedMember.RealName is not null)
+            {
+                <b>Имя: </b>
+                @SelectedMember.RealName
+                <br/>
+            }
+            @if (SelectedMember.TimeZone is not null)
+            {
+                <b>Текущее время: </b>
+                @TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, SelectedMember.TimeZone)
+                <br/>
+            }
+            <b>Ранг: </b>
+            @SelectedMember.Rank.GetRankName()
+            <br/>
+            <b>Направление: </b>
+            @SelectedMember.Direction.GetName()
+            <br/>
+            <b>Steam: </b>
+            <a href="@SelectedMember.GetSteamLink()">Steam</a>
+            <br/>
+            @if (SelectedMember.VkId is not null)
+            {
+                <b>ВК: </b>
+                <a href="@SelectedMember.GetVkLink()">ВК</a>
+                <br/>
+            }
+            @if (SelectedMember.SquadNumber is not null)
+            {
+                <b>Отряд: </b>
+                <a class="@(SelectedMember.IsSquadCommander ? "fst-italic" : "")" href="squad/@(SelectedMember.SquadNumber?.ToString("D"))">@SelectedMember.Squad?.ToString()</a>
+                <br/>
+            }
+            <b>Награды: </b>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th scope="col">Тип</th>
+                    <th scope="col">Описание</th>
+                    <th scope="col">Дата</th>
+                </tr>
+                </thead>
+                <tbody>
+                @foreach (Award award in SelectedMemberAwards.OrderByDescending(x => x.Type))
+                {
+                    <tr>
+                        <td>@award.Type.GetAwardSymbol()</td>
+                        <td class="text-wrap">@award.Description</td>
+                        <td>@award.Date</td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+            <br/>
+        }
+    </Aside>
+    <Footer>
+
+    </Footer>
+</BaseBodyWithAside>

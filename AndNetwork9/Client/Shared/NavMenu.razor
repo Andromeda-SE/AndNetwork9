@@ -1,0 +1,52 @@
+﻿<nav class="navbar navbar-expand-lg navbar-light bg-warning mb-3">
+    <div class="container">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse d-lg-flex justify-content-between" id="navbarNav">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="/">Главная</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link disabled" href="/war">Война отрядов</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/task">Задачи</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/repo">Репозитории</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/member">Игроки</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/squad">Отряды</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/election">Выборы</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/voting">Голосования</a>
+                </li>
+            </ul>
+            <div class="navbar-nav nav-item dropdown">
+                <a class="nav-link dropdown-toggle" role="button" href="#" id="dropdownMenuButton1" data-bs-toggle="dropdown">@AuthStateProvider.CurrentMember?.Nickname</a>
+                <ul class="dropdown-menu dropdown-menu-dark">
+                    <li>
+                        <a class="dropdown-item" href="/">Профиль</a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" href="/">Сменить направление…</a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" href="/">Уйти в резерв…</a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" href="/">Выйти</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</nav>

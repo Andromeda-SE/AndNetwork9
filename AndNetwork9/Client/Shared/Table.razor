@@ -1,0 +1,29 @@
+﻿@typeparam TItem
+<table class="table table-hover">
+    <thead>
+    <tr>
+        @foreach (ColumnDefinition column in Columns)
+        {
+            <th scope="col" class="user-select-none" @onclick="() => SelectedColumn = Array.IndexOf(Columns, column)">@column.Name <i class="bi-alarm"/></th>
+        }
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (TItem item in View)
+    {
+        <tr @onclick="() => SelectedRow = item.Id" class="@(item.Id == SelectedRow ? "table-secondary" : string.Empty)">
+            @foreach (ColumnDefinition column in Columns)
+            {
+                @if (column.HeaderFunc(item))
+                {
+                    <th>@column.ContentFunc(item)</th>
+                }
+                else
+                {
+                    <td>@column.ContentFunc(item)</td>
+                }
+            }
+        </tr>
+    }
+    </tbody>
+</table>

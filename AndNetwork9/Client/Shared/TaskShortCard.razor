@@ -1,0 +1,40 @@
+﻿@using AndNetwork9.Client.Extensions
+@if (Task.Parent is not null)
+{
+    <a class="small" href="@Task.GetLink()">№@Task.Parent.Id: @Task.Parent.Title</a>
+}
+<h5>Задача №@Task.Id: @Task.Title</h5>
+
+<p>
+    <b>Статус: </b>@Task.Status.ToLocalString()
+</p>
+
+<p>
+    <b>Исполнитель: </b>
+    @if (Task.Assignee is null)
+    {
+        <i>(нет)</i>
+    }
+    else
+    {
+        <a href="@Task.Assignee.GetLink()">@Task.Assignee.ToString()</a>
+    }
+</p>
+<p>
+    <b>Создатель: </b>
+    @if (Task.Reporter is null)
+    {
+        <i>Совет клана</i>
+    }
+    else
+    {
+        <a href="@Task.Reporter.GetLink()">@Task.Reporter.ToString()</a>
+    }
+</p>
+
+
+@if (Task.Description is not null)
+{
+    <b>Описание</b>
+    <p>@Task.Description.FromMarkdown()</p>
+}
