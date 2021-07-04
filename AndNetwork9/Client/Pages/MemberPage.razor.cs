@@ -1,6 +1,7 @@
 ﻿using System.Net.Http;
 using System.Net.Http.Json;
 using AndNetwork9.Client.Shared;
+using AndNetwork9.Client.Utility;
 using AndNetwork9.Shared;
 using AndNetwork9.Shared.Extensions;
 using Microsoft.AspNetCore.Components;
@@ -32,11 +33,11 @@ namespace AndNetwork9.Client.Pages
         public Award[] SelectedMemberAwards { get; private set; }
         public ColumnDefinition[] ColumnDefinitions { get; } =
         {
-            new("Ранг", x => x.Rank, x => ClanRulesExtensions.GetRankIcon(x.Rank), _ => false),
-            new("Никнейм", x => x.Nickname, x => x.Nickname, _ => true),
-            new("Имя", x => x.RealName, x => x.RealName, _ => false),
-            new("Направление", x => x.Direction, x => ClanRulesExtensions.GetName(x.Direction), _ => false),
-            new("Отряд", x => x.SquadNumber, x => x.SquadNumber?.ToRoman() ?? "—", _ => false),
+            new("Ранг", x => x.Rank, x => ClanRulesExtensions.GetRankIcon(x.Rank), _ => false, SortType.Default),
+            new("Никнейм", x => x.Nickname, x => x.Nickname, _ => true, SortType.Default),
+            new("Имя", x => x.RealName, x => x.RealName, _ => false, SortType.Default),
+            new("Направление", x => x.Direction, x => ClanRulesExtensions.GetName(x.Direction), _ => false, SortType.Default),
+            new("Отряд", x => x.SquadNumber, x => x.SquadNumber?.ToRoman() ?? "—", _ => false, SortType.Default),
         };
 
         private async void SetNewMember(int? value)
