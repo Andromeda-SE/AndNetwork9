@@ -33,11 +33,11 @@ namespace AndNetwork9.Client.Pages
         public Award[] SelectedMemberAwards { get; private set; }
         public ColumnDefinition[] ColumnDefinitions { get; } =
         {
-            new("Ранг", x => x.Rank, x => ClanRulesExtensions.GetRankIcon(x.Rank), _ => false, SortType.Default),
-            new("Никнейм", x => x.Nickname, x => x.Nickname, _ => true, SortType.Default),
-            new("Имя", x => x.RealName, x => x.RealName, _ => false, SortType.Default),
-            new("Направление", x => x.Direction, x => ClanRulesExtensions.GetName(x.Direction), _ => false, SortType.Default),
-            new("Отряд", x => x.SquadNumber, x => x.SquadNumber?.ToRoman() ?? "—", _ => false, SortType.Default),
+            new("Ранг", x => x.Rank, x => ClanRulesExtensions.GetRankIcon(x.Rank), _ => false, (SortType.Default, true)),
+            new("Никнейм", x => x.Nickname, x => x.Nickname, _ => true, (SortType.Alphabet, false)),
+            new("Имя", x => x.RealName, x => x.RealName, _ => false, (SortType.Alphabet, false)),
+            new("Направление", x => x.Direction, x => ClanRulesExtensions.GetName(x.Direction), _ => false, (SortType.Default, true)),
+            new("Отряд", x => x.SquadNumber, x => x.SquadNumber is not null ? RomanExtensions.ToRoman(x.SquadNumber) : "—", _ => false, (SortType.Numeric, false)),
         };
 
         private async void SetNewMember(int? value)

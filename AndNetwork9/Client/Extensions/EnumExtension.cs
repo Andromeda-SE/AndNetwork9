@@ -5,15 +5,12 @@ namespace AndNetwork9.Client.Extensions
 {
     public static class EnumExtension
     {
-        public static string GetIconStyle(this SortType sortType, bool descending) => sortType switch
+        public static string GetIconStyle(this SortType sortType, bool reverse) => "bi-sort" + sortType switch
         {
-            SortType.Default => "sort-down",
-            SortType.DefaultReverse => "sort-up",
-            SortType.Alphabet => "sort-alpha-down",
-            SortType.AlphabetReverse => "sort-alpha-up",
-            SortType.Numeric => "sort-numeric-down",
-            SortType.NumericReverse => "sort-numeric-up",
+            SortType.Default => string.Empty,
+            SortType.Alphabet => "-alpha",
+            SortType.Numeric => "-numeric",
             _ => throw new ArgumentOutOfRangeException(nameof(sortType), sortType, null)
-        } + (descending ? "-alt" : string.Empty);
+        } + "-down" + (reverse ? "-alt" : string.Empty);
     }
 }

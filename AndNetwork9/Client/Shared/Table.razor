@@ -4,7 +4,9 @@
     <tr>
         @foreach (ColumnDefinition column in Columns)
         {
-            <th scope="col" class="user-select-none" @onclick="() => SelectedColumn = Array.IndexOf(Columns, column)">@column.Name <i class="bi-alarm"/></th>
+            <th scope="col" class="user-select-none" @onclick="() => SelectedColumn = Array.IndexOf(Columns, column)">
+                @column.Name <i class="@(SelectedColumn == Array.IndexOf(Columns, column) ? column.SortType.Type.GetIconStyle(column.SortType.Reverse ? !View.Descending : View.Descending) : string.Empty)"></i>
+            </th>
         }
     </tr>
     </thead>

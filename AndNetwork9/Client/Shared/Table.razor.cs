@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AndNetwork9.Client.Utility;
 using AndNetwork9.Shared.Interfaces;
@@ -12,7 +13,6 @@ namespace AndNetwork9.Client.Shared
         private int? _selectedColumn;
 
         private int? _selectedRow;
-
         public int SelectedColumn
         {
             get => _selectedColumn ?? -1;
@@ -29,6 +29,8 @@ namespace AndNetwork9.Client.Shared
         public ColumnDefinition[] Columns { get; set; }
         [Parameter]
         public Action<int?> SelectionChanged { get; set; }
+        [Parameter] 
+        public (int ColumnIndex, bool Descending) InitialSort { get; set; }
 
         public int? SelectedRow
         {
@@ -47,10 +49,12 @@ namespace AndNetwork9.Client.Shared
         {
             View = new(Source);
             if (SelectionChanged is not null) SelectionUpdated += SelectionChanged;
+            SelectedColumn = InitialSort.ColumnIndex; //Not a error: trig SelectedColumn setter
+            if (InitialSort.Descending) SelectedColumn = InitialSort.ColumnIndex; 
             return base.OnInitializedAsync();
         }
     }
 
     public record ColumnDefinition(string Name, Func<dynamic, IComparable> SortFunc, Func<dynamic, string> ContentFunc,
-        Func<dynamic, bool> HeaderFunc, SortType SortType);
+        Func<dynamic, bool> HeaderFunc, (SortType Type, bool Reverse) SortType);
 }

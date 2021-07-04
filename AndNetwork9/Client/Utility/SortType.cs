@@ -3,10 +3,7 @@
     public enum SortType
     {
         Default,
-        DefaultReverse,
         Alphabet,
-        AlphabetReverse,
         Numeric,
-        NumericReverse,
     }
 }
