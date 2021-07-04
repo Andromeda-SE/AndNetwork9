@@ -9,12 +9,14 @@ namespace AndNetwork9.Server.Extensions
     {
         public static IEnumerable GetShort(this IEnumerable<Member> members)
         {
-            return members.Select(x => new { x.Id, x.Nickname, x.RealName, x.Rank, x.Direction, x.SquadNumber, x.IsSquadCommander });
+            return members.Select(x => new
+                { x.Id, x.Nickname, x.RealName, x.Rank, x.Direction, x.SquadNumber, x.IsSquadCommander });
         }
 
         public static IQueryable GetShort(this IQueryable<Member> members)
         {
-            return members.Select(x => new { x.Id, x.Nickname, x.RealName, x.Rank, x.Direction, x.SquadNumber, x.IsSquadCommander });
+            return members.Select(x => new
+                { x.Id, x.Nickname, x.RealName, x.Rank, x.Direction, x.SquadNumber, x.IsSquadCommander });
         }
     }
 }

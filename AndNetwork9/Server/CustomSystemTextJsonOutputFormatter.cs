@@ -5,7 +5,6 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Formatters;
-using Microsoft.EntityFrameworkCore.Internal;
 
 #nullable enable
 namespace AndNetwork9.Server
@@ -38,10 +37,7 @@ namespace AndNetwork9.Server
             string? fullName = context.ObjectType?.FullName;
             if (context is null || context.ObjectType is null) throw new ArgumentNullException(nameof(context));
             Type type = context.ObjectType;
-            if (fullName is not null && fullName.StartsWith("Castle.Proxies."))
-            {
-                type = type.BaseType!;
-            }
+            if (fullName is not null && fullName.StartsWith("Castle.Proxies.")) type = type.BaseType!;
             Stream responseStream = httpContext.Response.Body;
             if (selectedEncoding.CodePage == Encoding.UTF8.CodePage)
             {
