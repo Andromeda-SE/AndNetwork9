@@ -54,7 +54,7 @@
             @if (SelectedMember.SquadNumber is not null)
             {
                 <b>Отряд: </b>
-                <a class="@(SelectedMember.IsSquadCommander ? "fst-italic" : "")" href="squad/@(SelectedMember.SquadNumber?.ToString("D"))">@SelectedMember.Squad?.ToString()</a>
+                <a class="@(SelectedMember.IsSquadCommander ? "fw-bolder" : "")" href="squad/@(SelectedMember.SquadNumber?.ToString("D"))">@SelectedMember.Squad?.ToString()</a>
                 <br/>
             }
             <b>Награды: </b>
@@ -67,7 +67,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                @foreach (Award award in SelectedMemberAwards.OrderByDescending(x => x.Type))
+                @foreach (Award award in SelectedMember.Awards.OrderByDescending(x => x.Type))
                 {
                     <tr>
                         <td>@award.Type.GetAwardSymbol()</td>

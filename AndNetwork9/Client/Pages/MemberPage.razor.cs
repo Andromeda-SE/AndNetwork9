@@ -1,5 +1,6 @@
 ﻿using System.Net.Http;
 using System.Net.Http.Json;
+using System.Security.Cryptography.X509Certificates;
 using AndNetwork9.Client.Shared;
 using AndNetwork9.Client.Utility;
 using AndNetwork9.Shared;
@@ -30,20 +31,43 @@ namespace AndNetwork9.Client.Pages
         [Inject]
         public NavigationManager NavigationManager { get; set; }
         public Member SelectedMember { get; private set; }
-        public Award[] SelectedMemberAwards { get; private set; }
         public ColumnDefinition[] ColumnDefinitions { get; } =
         {
-            new("Ранг", x => x.Rank, x => ClanRulesExtensions.GetRankIcon(x.Rank), _ => false, (SortType.Default, true)),
-            new("Никнейм", x => x.Nickname, x => x.Nickname, _ => true, (SortType.Alphabet, false)),
-            new("Имя", x => x.RealName, x => x.RealName, _ => false, (SortType.Alphabet, false)),
-            new("Направление", x => x.Direction, x => ClanRulesExtensions.GetName(x.Direction), _ => false, (SortType.Default, true)),
-            new("Отряд", x => x.SquadNumber, x => x.SquadNumber is not null ? RomanExtensions.ToRoman(x.SquadNumber) : "—", _ => false, (SortType.Numeric, false)),
+            new("Ранг", 
+                x => x.Rank, 
+                x => ClanRulesExtensions.GetRankIcon(x.Rank),
+                _ => false,
+                (SortType.Default, true)),
+            new("Никнейм", 
+                x => x.Nickname, 
+                x => x.Nickname,
+                _ => true, 
+                (SortType.Alphabet, false)),
+            new("Имя",
+                x => x.RealName, 
+                x => x.RealName, 
+                _ => false, 
+                (SortType.Alphabet, false)),
+            new("Направление", 
+                x => x.Direction,
+                x => ClanRulesExtensions.GetName(x.Direction),
+                _ => false, (SortType.Default, true)),
+            new("Отряд", 
+                x => x.SquadNumber,
+                x => x.SquadNumber is not null ? RomanExtensions.ToRoman(x.SquadNumber) : "—", 
+                x => x.SquadNumber is not null && x.IsSquadCommander, 
+                (SortType.Numeric, false)),
         };
 
         private async void SetNewMember(int? value)
         {
             SelectedMember = value is null ? null : await Client.GetFromJsonAsync<Member>($"api/Member/{value}");
-            SelectedMemberAwards = value is null ? null : await Client.GetFromJsonAsync<Award[]>($"api/Award/{value}");
+            if (SelectedMember is not null)
+            {
+                SelectedMember.Awards = await Client.GetFromJsonAsync<Award[]>($"api/Award/{value}");
+                SelectedMember.Squad = SelectedMember.SquadNumber is null ? null : await Client.GetFromJsonAsync<Squad>($"api/squad/{SelectedMember.SquadNumber}");
+            }
+            
             StateHasChanged();
         }
 
