@@ -57,7 +57,7 @@
                 <a class="@(SelectedMember.IsSquadCommander ? "fw-bolder" : "")" href="squad/@(SelectedMember.SquadNumber?.ToString("D"))">@SelectedMember.Squad?.ToString()</a>
                 <br/>
             }
-            <b>Награды: </b>
+            <b>Награды: </b> <small>Счет: @SelectedMember.Awards.Sum(x => (int)x.Type)</small>
             <table class="table">
                 <thead>
                 <tr>
