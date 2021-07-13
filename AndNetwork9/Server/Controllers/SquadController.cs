@@ -27,17 +27,10 @@ namespace AndNetwork9.Server.Controllers
 
         [HttpGet("all")]
         [MinRankAuthorize]
-        public ActionResult<Squad> GetAll()
+        public ActionResult<Squad[]> GetAll()
         {
-            return Ok(_data.Squads);
-        }
-
-        [HttpGet("current")]
-        [MinRankAuthorize]
-        public ActionResult<Squad> GetCurrent()
-        {
-            return Ok(_data.Squads
-                .Where(x => x.DisbandDate == null || x.DisbandDate.Value > DateOnly.FromDateTime(DateTime.Today)));
+            DateOnly today = DateOnly.FromDateTime(DateTime.Today);
+            return Ok(_data.Squads.Where(x => x.DisbandDate == null || x.DisbandDate > today).ToArray());
         }
 
         [HttpGet]

@@ -23,6 +23,11 @@ namespace AndNetwork9.Client.Extensions
             return $"/task/{member.Id:D}";
         }
 
+        public static string GetLink(this Squad squad)
+        {
+            return $"/squad/{squad.Number:D}";
+        }
+
         public static string ToLocalString(this TaskStatus status)
         {
             return status switch
