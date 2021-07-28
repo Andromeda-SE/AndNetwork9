@@ -1,9 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Net;
 using AndNetwork9.Shared.Backend;
 using AndNetwork9.Shared.Backend.Rabbit;
 using AndNetwork9.Shared.Backend.Senders.Storage;
 using AndNetwork9.Shared.Storage;
+using LibGit2Sharp;
 using RabbitMQ.Client;
 
 namespace AndNetwork9.Storage.Listeners
@@ -22,22 +24,22 @@ namespace AndNetwork9.Storage.Listeners
 
         public override async void Run(RepoNodeWithData request)
         {
-            RepoNode? node = await _data.RepoNodes.FindAsync(new
-            {
+            RepoNode? node = await _data.RepoNodes.FindAsync(
                 request.RepoId,
                 request.Version,
                 request.Modification,
-                request.Prototype,
-            });
+                request.Prototype
+            );
 
             if (node is not null) throw new FailedCallException(HttpStatusCode.Conflict);
             Repo? repo = await _data.Repos.FindAsync(request.RepoId);
             if (repo is null) throw new KeyNotFoundException();
-
-            await _data.RepoNodes.AddAsync(request);
+            request.Repo = repo;
             await _repoManager.LoadFile(request.Data, request);
+                await _data.RepoNodes.AddAsync(request);
 
-            await _data.SaveChangesAsync();
+
+                await _data.SaveChangesAsync();
         }
     }
 }

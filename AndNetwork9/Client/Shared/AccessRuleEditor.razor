@@ -1,0 +1,101 @@
+﻿@if (_initialized)
+{
+    <div class="modal fade show" tabindex="-1" id="@Id">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Изменение правил доступа</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3 row">
+                        <label class="col-form-label">Направления</label>
+                        <div class="">
+                            @foreach (KeyValuePair<Direction, bool> direction in DirectionAccess)
+                            {
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" @bind="DirectionAccess[direction.Key]">
+                                    <label class="form-check-label">
+                                        @direction.Key.GetName()
+                                    </label>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                    <div class="mb-3 row">
+                        <label class="col-form-label">Минимальный ранг</label>
+                        <div class="">
+                            <select class="form-control form-select" @bind="MinRank">
+                                @foreach (Rank rank in Enum.GetValues<Rank>().Where(x => x > Rank.None && x <= AuthStateProvider.CurrentMember.Rank))
+                                {
+                                    <option value="@rank">@rank.GetRankName()</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <div class="mb-3 row">
+                        <label class="col-form-label">Отряд</label>
+                        <div class="">
+                            <select class="form-control form-select" @bind="SelectedSquadId">
+                                @* ReSharper disable once RedundantCast *@
+                                <option value="@(default(int?))">(нет)</option>
+                                @foreach (Squad squad in Squads)
+                                {
+                                    <option value="@squad.Number">@squad.ToString()</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <div class="mb-3 row">
+                        <label class="col-form-label">Игроки</label>
+                        <div class="d-grid table-responsive">
+                            <table class="table table-sm">
+                                <tbody>
+                                @foreach (Member member in SelectedMembers)
+                                {
+                                    <tr>
+                                        <td>
+                                            <a target="_blank" href="@member.GetLink()">@member.ToString()</a>
+                                        </td>
+                                        <td class="align-middle">
+                                            <button type="button" class="btn btn-danger btn-sm" @onclick="e => SelectedMembers.Remove(member)">
+                                                <i class="bi bi-dash-lg"/>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                }
+
+                                </tbody>
+                                <tfoot>
+                                <tr>
+                                    <td>
+                                    <select class="form-control form-select form-control-sm" @bind="SelectedMemberId">
+                                        <option value="@((int?)null)"></option>
+                                        @foreach (Member member in Members.Except(SelectedMembers).OrderByDescending(x => x))
+                                        {
+                                            <option value="@member.Id">@member.ToString()</option>
+                                        }
+                                    </select>
+                                    </td>
+                                    <td class="align-top">
+                                    <button type="button" disabled="@(SelectedMember is null)" class="btn btn-success btn-sm mt-1" @onclick="AddMember">
+                                        <i class="bi bi-plus-lg"/>
+                                    </button>
+                                    </td>
+                                </tr>
+                                </tfoot>
+
+                            </table>
+
+
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" @onclick="Cancel">Отмена</button>
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal" @onclick="Save">Сохранить</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}

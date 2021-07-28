@@ -1,9 +1,5 @@
 ﻿using System.Net.Http;
-using System.Net.Http.Json;
 using AndNetwork9.Client.Shared;
-using AndNetwork9.Client.Utility;
-using AndNetwork9.Shared;
-using AndNetwork9.Shared.Extensions;
 using AndNetwork9.Shared.Interfaces;
 using Microsoft.AspNetCore.Components;
 

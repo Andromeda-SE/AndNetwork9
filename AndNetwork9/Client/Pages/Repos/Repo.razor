@@ -1,0 +1,88 @@
+﻿@page "/repo/{EntityId:int}"
+
+<RepoNodeEditor Repo="Entity" RepoUpdated="_ => NodeLoaded()"/>
+
+<AccessRuleEditor Id="ReadRule" Model="Entity.ReadRule" RuleUpdated="UpdateReadRule"></AccessRuleEditor>
+<AccessRuleEditor Id="WriteRule" Model="Entity.WriteRule" RuleUpdated="UpdateWriteRule"></AccessRuleEditor>
+
+@if (Entity is null)
+{
+    <div class="d-flex justify-content-center">
+        <div class="spinner-border" role="status">
+            <span class="visually-hidden">Загрузка...</span>
+        </div>
+    </div>
+}
+else
+{
+    <BaseBodyWithAside Title="@Entity.Name">
+        <Main>
+            @if (Entity.WriteRule.HasAccess(AuthStateProvider.CurrentMember) && Entity.Description.AuthorId == AuthStateProvider.CurrentMember.Id)
+            {
+                <MarkdownEditor
+                    GetterFunc="() => EditedText"
+                    SetterFunc="x => EditedText = x"
+                    ResetFunc="() => EditedText = Entity.Description.Text"
+                    SaveFunc="async _ => await UpdateDescription()">
+                </MarkdownEditor>
+            }
+            else
+            {
+                @Description
+            }
+        </Main>
+        <Aside>
+            <b>Тип: </b>
+            @Entity.Type.GetString()
+            <br/>
+            @if (Entity.Creator is not null)
+            {
+                <b>Автор: </b>
+                <a href="@Entity.Creator.GetLink()">@Entity.Creator.ToString()</a>
+                <br/>
+            }
+            <b>Версий: </b>
+            @Entity.Nodes.Count
+            <br/>
+            <div class="d-grid gap-2">
+                @if (Entity.Nodes.Any(x => x.Prototype == 0))
+                {
+                    <a target="_blank" class="btn btn-success" type="button" href="@Entity.Nodes.Where(x => x.Prototype == 0).MaxBy(x => x).GetLink()">Скачать последнюю стабильную версию</a>
+                }
+                @if (Entity.Nodes.Any(x => x.Prototype != 0))
+                {
+                    <a target="_blank" class="btn btn-primary" type="button" href="@Entity.Nodes.Where(x => x.Prototype != 0).MaxBy(x => x).GetLink()">Скачать последний прототип</a>
+                }
+            </div>
+            <br/>
+            <b>Выбрать версию для скачивания: </b>
+            <div class="d-grid gap-2">
+                <select @bind="SelectedNodeIndex" class="form-select">
+                    @foreach (RepoNode node in Entity.Nodes.OrderByDescending(x => x))
+                    {
+                        <option value="@Entity.Nodes.IndexOf(node)">@node.Tag: @node.Description</option>
+                    }
+                </select>
+                @if (SelectedNode is not null)
+                {
+                    <a target="_blank" class="btn btn-secondary" type="button" href="@SelectedNode.GetLink()">Скачать версию @SelectedNode.Tag</a>
+                }
+                @if (Entity.WriteRule.HasAccess(AuthStateProvider.CurrentMember))
+                {
+                    <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#loader">Загрузить новую версию</button>
+                }
+                @if (Entity.CreatorId == AuthStateProvider.CurrentMember.Id)
+                {
+                    <div class="d-grid gap-2 mt-3">
+                        <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#ReadRule">Изменить права чтения</button>
+                        <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#WriteRule">Изменить права записи</button>
+                    </div>
+                }
+            </div>
+
+        </Aside>
+        <Footer>
+
+        </Footer>
+    </BaseBodyWithAside>
+}

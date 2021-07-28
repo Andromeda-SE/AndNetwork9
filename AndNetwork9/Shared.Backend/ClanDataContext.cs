@@ -147,6 +147,7 @@ namespace AndNetwork9.Shared.Backend
                     entity.HasKey(x => x.Id);
                     entity.Property(x => x.Name).IsRequired(false);
 
+                    entity.Ignore(x => x.AllowedMembersIds);
                     entity.Property(x => x.Directions);
                     entity.Property(x => x.MinRank).IsRequired();
                     entity.HasOne(x => x.Squad).WithMany().HasForeignKey(x => x.SquadId).IsRequired(false);

@@ -58,7 +58,8 @@
                 <a class="@(SelectedEntity.IsSquadCommander ? "fw-bolder" : "")" href="squad/@(SelectedEntity.SquadNumber?.ToString("D"))">@SelectedEntity.Squad?.ToString()</a>
                 <br/>
             }
-            <b>Награды: </b> <small>Счет: @SelectedEntity.Awards.Sum(x => (int)x.Type)</small>
+            <b>Награды: </b>
+            <small>Счет: @SelectedEntity.Awards.Sum(x => (int)x.Type)</small>
             <table class="table">
                 <thead>
                 <tr>

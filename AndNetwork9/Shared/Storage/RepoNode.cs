@@ -16,7 +16,7 @@ namespace AndNetwork9.Shared.Storage
         public DateTime CreateTime { get; set; }
 
         [JsonIgnore]
-        public virtual Repo Repo { get; set; } = null!;
+        public virtual Repo? Repo { get; set; } = null!;
 
         [JsonIgnore]
         public string Tag

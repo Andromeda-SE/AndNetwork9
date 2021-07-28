@@ -19,7 +19,9 @@ namespace AndNetwork9.Shared.Utility
         public virtual Squad? Squad { get; set; }
 
         [JsonIgnore]
-        public virtual IList<Member> AllowedMembers { get; set; } = Array.Empty<Member>();
+        public virtual IList<Member> AllowedMembers { get; set; } = new List<Member>();
+
+        public virtual int[] AllowedMembersIds { get; set; } = Array.Empty<int>();
 
         public int CompareTo(AccessRule? other)
         {
@@ -31,7 +33,8 @@ namespace AndNetwork9.Shared.Utility
         public bool HasAccess(Member member)
         {
             Direction memberDirection = member.Direction;
-            return AllowedMembers.Any(x => x.Id == member.Id)
+            return member.Rank == Rank.FirstAdvisor
+                   || AllowedMembers.Any(x => x.Id == member.Id)
                    || Directions.Any(x => x == memberDirection)
                    && member.Rank >= MinRank
                    && (Squad is null || member.Squad == Squad);

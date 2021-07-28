@@ -174,5 +174,17 @@ namespace AndNetwork9.Shared.Extensions
                 _ => throw new ArgumentOutOfRangeException(nameof(awardType), awardType, null),
             };
         }
+
+        public static string GetString(this RepoType type)
+        {
+            return type switch
+            {
+                RepoType.None => "Н/Д",
+                RepoType.Blueprint => "Чертёж",
+                RepoType.Script => "Скрипт",
+                RepoType.World => "Мир",
+                _ => throw new ArgumentOutOfRangeException(nameof(type), type, null),
+            };
+        }
     }
 }

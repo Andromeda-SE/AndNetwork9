@@ -48,12 +48,13 @@
                 @foreach (Member member in SelectedEntity.Members)
                 {
                     <tr>
-                        <td><a href="@member.GetLink()">@member.ToString()</a></td>
+                        <td>
+                            <a href="@member.GetLink()">@member.ToString()</a>
+                        </td>
                     </tr>
                 }
                 </tbody>
             </table>
-
         }
     </Aside>
     <Footer>
