@@ -30,5 +30,10 @@ namespace AndNetwork9.Shared.Utility
                 ? this
                 : Children.Select(child => child.FindComment(id)).FirstOrDefault(result => result is not null);
         }
+
+        public override string ToString()
+        {
+            return Text;
+        }
     }
 }

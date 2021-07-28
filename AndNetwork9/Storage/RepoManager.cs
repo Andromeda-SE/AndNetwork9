@@ -93,8 +93,11 @@ namespace AndNetwork9.Storage
                 new(node.Author is null ? ServiceIdentity : node.Author.GetIdentity(), DateTimeOffset.UtcNow);
             await File.WriteAllBytesAsync(filePath, content, CancellationToken.None);
             Commands.Stage(repository, filePath);
-            Commit commit = repository.Commit(comment, signature, signature);
-            repository.Tags.Add(node.Tag, commit);
+            Commit commit = repository.Commit(comment, signature, signature, new CommitOptions()
+            {
+                AllowEmptyCommit = true
+            });
+                repository.Tags.Add(node.Tag, commit);
         }
     }
 }

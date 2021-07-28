@@ -1,0 +1,20 @@
+﻿<ul class="nav nav-tabs">
+    <li class="nav-item">
+        <button class="nav-link @(PreviewEnabled ? string.Empty : "active")" @onclick="() => PreviewEnabled = false">Редактирование</button>
+    </li>
+    <li class="nav-item">
+        <button class="nav-link @(PreviewEnabled ? "active" : string.Empty)" @onclick="() => PreviewEnabled = true">Предпросмотр</button>
+    </li>
+</ul>
+@if (PreviewEnabled)
+{
+    @Text.FromMarkdown()
+}
+else
+{
+    <textarea class="form-control" style="height: 50vh" @bind="Text"/>
+    <div class="d-flex justify-content-between gap-3 mt-3">
+        <button type="button" class="btn btn-secondary" @onclick="ResetFunc">Возврат</button>
+        <button type="button" class="btn btn-primary" @onclick="() => SaveFunc(GetterFunc())">Сохранить</button>
+    </div>
+}

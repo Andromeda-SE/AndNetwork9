@@ -35,6 +35,7 @@ namespace AndNetwork9.Shared
         public string? Comment { get; set; }
 
         int IId.Id => Number;
+
         public override string ToString()
         {
             return (Name is null ? Number.ToRoman() : Number.ToRoman() + " " + Name) + " отряд";

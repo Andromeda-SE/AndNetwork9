@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Linq;
-using System.Net.Http;
 using System.Net.Http.Json;
 using AndNetwork9.Client.Shared;
 using AndNetwork9.Client.Utility;
 using AndNetwork9.Shared;
 using AndNetwork9.Shared.Extensions;
-using Microsoft.AspNetCore.Components;
 
 namespace AndNetwork9.Client.Pages
 {
@@ -15,10 +13,10 @@ namespace AndNetwork9.Client.Pages
         public override ColumnDefinition[] ColumnDefinitions { get; } =
         {
             new("Номер",
-                x => x.Number,
+                x => -x.Number,
                 x => RomanExtensions.ToRoman(x.Number),
                 x => x.DisbandDate is null || x.DisbandDate > DateOnly.FromDateTime(DateTime.Today),
-                (SortType.Numeric, false)),
+                (SortType.Numeric, true)),
             new("Название",
                 x => x.Name,
                 x => string.IsNullOrWhiteSpace(x.Name) ? "—" : x.Name,

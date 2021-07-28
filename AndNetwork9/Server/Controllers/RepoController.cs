@@ -41,7 +41,7 @@ namespace AndNetwork9.Server.Controllers
             Member? member = await this.GetCurrentMember(_data);
             if (member is null) return NotFound();
 
-            return Ok(_data.Repos.AsEnumerable().Where(x => x.CreatorId == member.Id || x.ReadRule.HasAccess(member)));
+            return Ok(_data.Repos.ToArray().Where(x => x.CreatorId == member.Id || x.ReadRule.HasAccess(member)));
         }
 
         [HttpPost]
@@ -71,6 +71,27 @@ namespace AndNetwork9.Server.Controllers
             });
             return Ok(result);
         }
+
+        [HttpPut("{id:int}")]
+        [Authorize]
+        public async Task<ActionResult<Repo>> Put(int id, Repo newRepo)
+        {
+            if (id != newRepo.Id) return BadRequest();
+            Member? member = await this.GetCurrentMember(_data);
+            if (member is null) return Unauthorized();
+
+            Repo? oldRepo = await _data.Repos.FindAsync(id);
+            if (oldRepo is null) return NotFound();
+            if (oldRepo.CreatorId != member.Id) return Forbid();
+
+            oldRepo.ReadRuleId = newRepo.ReadRuleId;
+            oldRepo.WriteRuleId = newRepo.WriteRuleId;
+            oldRepo.Name = newRepo.Name;
+
+            await _data.SaveChangesAsync();
+            return Ok(oldRepo);
+        }
+
 
         [HttpGet("{id:int}")]
         [Authorize]
@@ -108,14 +129,14 @@ namespace AndNetwork9.Server.Controllers
             Repo? result = await _data.Repos.FindAsync(id);
             if (result is null) return NotFound();
             if (!result.ReadRule.HasAccess(member)) return Forbid();
-            RepoNode? node = await _data.RepoNodes.FindAsync(new { id, version, modification, prototype });
+            RepoNode? node = await _data.RepoNodes.FindAsync(id, version, modification, prototype);
             if (node is null) return NotFound();
             return Ok(node);
         }
 
         [HttpPut("{id:int}/node/")]
         [Authorize]
-        public async Task<ActionResult<RepoNode>> GetNode(RepoNodeWithData data)
+        public async Task<ActionResult<RepoNode>> PutNode(RepoNodeWithData data)
         {
             Member? member = await this.GetCurrentMember(_data);
             if (member is null) return NotFound();
@@ -124,8 +145,9 @@ namespace AndNetwork9.Server.Controllers
             Repo? repo = await _data.Repos.FindAsync(data.RepoId);
             if (repo is null) return NotFound();
             if (repo.CreatorId != member.Id && !repo.WriteRule.HasAccess(member)) return Forbid();
+            if (data.Data.Length > 157286400) return StatusCode(413);
             RepoNode? node =
-                await _data.RepoNodes.FindAsync(new { data.RepoId, data.Version, data.Modification, data.Prototype });
+                await _data.RepoNodes.FindAsync(data.RepoId, data.Version, data.Modification, data.Prototype);
             if (node is not null) return Conflict();
             RepoNodeWithData resultNode = data with
             {
@@ -148,12 +170,12 @@ namespace AndNetwork9.Server.Controllers
             Repo? repo = await _data.Repos.FindAsync(id);
             if (repo is null) return NotFound();
             if (repo.CreatorId != member.Id && !repo.ReadRule.HasAccess(member)) return Forbid();
-            RepoNode? node = await _data.RepoNodes.FindAsync(new { id, version, modification, prototype });
+            RepoNode? node = await _data.RepoNodes.FindAsync(id, version, modification, prototype);
             if (node is null) return NotFound();
 
             byte[]? result = await _repoGetFileSender.CallAsync(node);
             if (result is null) return StatusCode((int)HttpStatusCode.FailedDependency);
-            return File(result, repo.Type.GetContentType(), repo.Type.GetFileName(), node.CreateTime,
+            return File(result, repo.Type.GetContentType(), node.GetFileName(), node.CreateTime,
                 EntityTagHeaderValue.Any);
         }
     }

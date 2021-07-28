@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace AndNetwork9.Server.Controllers
 {
+    [Route("api/[controller]")]
+    [ApiController]
     public class CommentController : ControllerBase
     {
         private readonly ClanDataContext _data;
@@ -18,7 +20,7 @@ namespace AndNetwork9.Server.Controllers
             _data = data;
         }
 
-        [HttpPut]
+        [HttpPut("{id:int}")]
         [Authorize]
         public async Task<ActionResult<Comment>> Put(int id, Comment comment)
         {
@@ -30,15 +32,12 @@ namespace AndNetwork9.Server.Controllers
             if (oldComment is null) return NotFound();
             if (oldComment.AuthorId != member.Id) return Forbid();
 
-            Comment resultComment = oldComment with
-            {
-                LastEditTime = DateTime.UtcNow,
-                Text = comment.Text,
-                Files = comment.Files,
-            };
-            _data.Comments.Update(resultComment);
+            oldComment.LastEditTime = DateTime.UtcNow;
+            oldComment.Text = comment.Text;
+            oldComment.Files = comment.Files;
+
             await _data.SaveChangesAsync();
-            return Ok(resultComment);
+            return Ok(oldComment);
         }
     }
 }

@@ -22,13 +22,12 @@ namespace AndNetwork9.Storage.Listeners
 
         protected override Task<byte[]> GetResponseAsync(RepoNode request)
         {
-            RepoNode? node = _data.RepoNodes.Find(new
-            {
+            RepoNode? node = _data.RepoNodes.Find(
                 request.RepoId,
                 request.Version,
                 request.Modification,
-                request.Prototype,
-            });
+                request.Prototype
+            );
             if (node is null) throw new KeyNotFoundException();
             return Task.FromResult(_repoManager.GetFile(node));
         }

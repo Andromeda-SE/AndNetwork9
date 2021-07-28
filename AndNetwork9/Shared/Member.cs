@@ -11,7 +11,7 @@ using AndNetwork9.Shared.Votings;
 
 namespace AndNetwork9.Shared
 {
-    public record Member : IComparable<Member>, IEquatable<Member?>, IId
+    public record Member : IComparable<Member>, IEquatable<Member?>, IId, IComparable
     {
         public ulong SteamId { get; set; }
         public ulong DiscordId { get; set; }
@@ -99,6 +99,14 @@ namespace AndNetwork9.Shared
             result += Nickname;
             if (RealName is not null) result += $" ({RealName})";
             return result;
+        }
+
+        public int CompareTo(object? obj)
+        {
+            if (ReferenceEquals(this, obj)) return 0;
+            if (obj is null) return 1;
+            if (obj is not Member member) throw new ArgumentException();
+            return CompareTo(member);
         }
 
         public override int GetHashCode()
