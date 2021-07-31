@@ -22,11 +22,13 @@ namespace AndNetwork9.Server.Controllers
     {
         private readonly ClanDataContext _data;
         private readonly PublishSender _publishSender;
+        private readonly SendSender _sendSender;
 
-        public AwardController(ClanDataContext data, PublishSender publishSender)
+        public AwardController(ClanDataContext data, PublishSender publishSender, SendSender sendSender)
         {
             _data = data;
             _publishSender = publishSender;
+            _sendSender = sendSender;
         }
 
         [HttpGet]
@@ -84,8 +86,13 @@ namespace AndNetwork9.Server.Controllers
             {
                 Rank newRank = member.Awards.GetRank();
                 if (member.Rank >= newRank) continue;
+                Rank oldRank = member.Rank;
                 member.Rank = newRank;
                 text.AppendLine($"Игрок {member.GetDiscordMention()} повышен до ранга «{member.Rank.GetRankName()}»");
+                if (oldRank == Rank.Neophyte)
+                {
+                    await _sendSender.CallAsync(new(member.DiscordId, "Похоже, вас повысили! Теперь вы можете изменить свое направление на сайте клана"));
+                }
             }
 
             await _data.SaveChangesAsync();

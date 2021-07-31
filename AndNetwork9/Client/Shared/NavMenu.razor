@@ -37,7 +37,7 @@
                         <a class="dropdown-item" href="/member/@(AuthStateProvider.CurrentMember?.Id)">Профиль</a>
                     </li>
                     <li>
-                        <a class="dropdown-item" href="/">Изменить данные…</a>
+                        <a class="dropdown-item" href="/member/edit">Изменить данные…</a>
                     </li>
                     <li>
                         <button class="dropdown-item" @onclick="async () => await Logout()">Выйти</button>

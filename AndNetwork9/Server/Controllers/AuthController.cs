@@ -119,6 +119,8 @@ namespace AndNetwork9.Server.Controllers
 
             member.SetPassword(newPassword);
             await _data.SaveChangesAsync();
+            await DeleteOther();
+            await Delete();
             return Ok();
         }
 #if DEBUG
