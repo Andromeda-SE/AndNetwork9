@@ -99,7 +99,6 @@ namespace AndNetwork9.Discord
             using IServiceScope scope = ScopeFactory.CreateScope();
             await _commandService.AddModuleAsync<Admin>(scope.ServiceProvider);
             await _commandService.AddModuleAsync<Member>(scope.ServiceProvider);
-            await _commandService.AddModuleAsync<Award>(scope.ServiceProvider);
             await _commandService.AddModuleAsync<Elections>(scope.ServiceProvider);
             await _commandService.AddModuleAsync<Send>(scope.ServiceProvider);
             await _commandService.AddModuleAsync<Root>(scope.ServiceProvider);

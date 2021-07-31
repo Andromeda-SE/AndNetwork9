@@ -24,15 +24,10 @@ namespace AndNetwork9.Client.Shared
 
         public async void LoginAsync()
         {
-            Console.WriteLine("0");
             LoginEnabled = false;
-            Console.WriteLine("1");
             ErrorLogin = !await AuthenticationStateProvider.LoginAsync(new(Nickname, Password));
-            Console.WriteLine("2");
             if (!ErrorLogin) NavigationManager.NavigateTo("/", true);
-            Console.WriteLine("3");
             LoginEnabled = true;
-            Console.WriteLine("4");
             StateHasChanged();
         }
     }

@@ -34,16 +34,13 @@
                 <a class="nav-link dropdown-toggle" role="button" href="#" id="dropdownMenuButton1" data-bs-toggle="dropdown">@AuthStateProvider.CurrentMember?.Nickname</a>
                 <ul class="dropdown-menu dropdown-menu-dark">
                     <li>
-                        <a class="dropdown-item" href="/">Профиль</a>
+                        <a class="dropdown-item" href="/member/@(AuthStateProvider.CurrentMember?.Id)">Профиль</a>
                     </li>
                     <li>
-                        <a class="dropdown-item" href="/">Сменить направление…</a>
+                        <a class="dropdown-item" href="/member/edit">Изменить данные…</a>
                     </li>
                     <li>
-                        <a class="dropdown-item" href="/">Уйти в резерв…</a>
-                    </li>
-                    <li>
-                        <a class="dropdown-item" href="/">Выйти</a>
+                        <button class="dropdown-item" @onclick="async () => await Logout()">Выйти</button>
                     </li>
                 </ul>
             </div>
