@@ -1,0 +1,36 @@
+﻿@page "/repo/new"
+<AccessRuleEditor Id="ReadRule" Model="ReadRule"></AccessRuleEditor>
+<AccessRuleEditor Id="WriteRule" Model="WriteRule"></AccessRuleEditor>
+
+<div class="mb-3 row">
+    <label class="col-sm-2 col-form-label">Имя</label>
+    <div class="col-sm-10">
+        <input type="text" class="form-control" @bind="Name">
+    </div>
+</div>
+<div class="mb-3 row">
+    <label class="col-sm-2 col-form-label">Тип</label>
+    <div class="col-sm-10">
+        <select class="form-control form-select" @bind="Type">
+            <option value="@RepoType.Blueprint" selected="">Чертёж</option>
+            <option value="@RepoType.Script" selected="">Скрипт</option>
+        </select>
+    </div>
+</div>
+<div class="mb-3 row">
+    <label class="col-sm-2 col-form-label">Права чтения</label>
+    <div class="col-sm-10">
+        <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#ReadRule">Изменить</button>
+    </div>
+</div>
+<div class="mb-3 row">
+    <label class="col-sm-2 col-form-label">Права записи</label>
+    <div class="col-sm-10">
+        <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#WriteRule">Изменить</button>
+    </div>
+</div>
+<div class="mb-3 row">
+    <div class="col-sm-12">
+        <button disabled="@(string.IsNullOrWhiteSpace(Name))" class="btn btn-primary" @onclick="CreateRepo">Создать</button>
+    </div>
+</div>

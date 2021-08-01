@@ -17,12 +17,12 @@ else
 {
     <BaseBodyWithAside Title="@Entity.Name">
         <Main>
-            @if (Entity.WriteRule.HasAccess(AuthStateProvider.CurrentMember) && Entity.Description.AuthorId == AuthStateProvider.CurrentMember.Id)
+            @if (Entity.WriteRule.HasAccess(AuthStateProvider.CurrentMember) && (Entity.Description?.AuthorId ?? Entity.CreatorId) == AuthStateProvider.CurrentMember.Id)
             {
                 <MarkdownEditor
                     GetterFunc="() => EditedText"
                     SetterFunc="x => EditedText = x"
-                    ResetFunc="() => EditedText = Entity.Description.Text"
+                    ResetFunc="() => EditedText = Entity.Description?.Text"
                     SaveFunc="async _ => await UpdateDescription()">
                 </MarkdownEditor>
             }
