@@ -69,18 +69,18 @@
                                 <tfoot>
                                 <tr>
                                     <td>
-                                    <select class="form-control form-select form-control-sm" @bind="SelectedMemberId">
-                                        <option value="@((int?)null)"></option>
-                                        @foreach (Member member in Members.Except(SelectedMembers).OrderByDescending(x => x))
-                                        {
-                                            <option value="@member.Id">@member.ToString()</option>
-                                        }
-                                    </select>
+                                        <select class="form-control form-select form-control-sm" @bind="SelectedMemberId">
+                                            <option value="@(default(int?))"></option>
+                                            @foreach (Member member in Members.Except(SelectedMembers).OrderByDescending(x => x))
+                                            {
+                                                <option value="@member.Id">@member.ToString()</option>
+                                            }
+                                        </select>
                                     </td>
                                     <td class="align-top">
-                                    <button type="button" disabled="@(SelectedMember is null)" class="btn btn-success btn-sm mt-1" @onclick="AddMember">
-                                        <i class="bi bi-plus-lg"/>
-                                    </button>
+                                        <button type="button" disabled="@(SelectedMember is null)" class="btn btn-success btn-sm mt-1" @onclick="AddMember">
+                                            <i class="bi bi-plus-lg"/>
+                                        </button>
                                     </td>
                                 </tr>
                                 </tfoot>

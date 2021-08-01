@@ -4,7 +4,7 @@
         <label class="form-label">Никнейм</label>
     </div>
     <div class="col">
-        <input type="text" autocomplete="off" class="form-control" placeholder="@AuthStateProvider.CurrentMember.Nickname" @bind="Nickname"> 
+        <input type="text" autocomplete="off" class="form-control" placeholder="@AuthStateProvider.CurrentMember.Nickname" @bind="Nickname">
     </div>
     <div class="col-auto">
         <button type="submit" class="btn btn-primary mb-3" disabled="@(string.IsNullOrWhiteSpace(Nickname) || Nickname.Length > 26)" @onclick="async () => await SetNewNickname()">Изменить</button>
@@ -37,7 +37,6 @@
                 {
                     <option value="@direction">@direction.GetName()</option>
                 }
-                
             }
         </select>
     </div>

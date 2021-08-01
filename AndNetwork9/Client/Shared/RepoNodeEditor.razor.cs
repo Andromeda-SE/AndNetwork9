@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.IO.Pipelines;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
@@ -14,6 +13,13 @@ namespace AndNetwork9.Client.Shared
 {
     public partial class RepoNodeEditor
     {
+        public enum VersionLevel
+        {
+            Version,
+            Modification,
+            Prototype,
+        }
+
         [Inject]
         public HttpClient Client { get; set; }
         [Parameter]
@@ -23,24 +29,22 @@ namespace AndNetwork9.Client.Shared
         public string Description { get; set; }
         public VersionLevel Level { get; set; }
         public byte[] File { get; set; }
-        public enum VersionLevel
-        {
-            Version,
-            Modification,
-            Prototype
-        }
+
         private async void FileChanged(InputFileChangeEventArgs e)
         {
             IBrowserFile file = e.File;
             await using Stream stream = file.OpenReadStream();
-            await using MemoryStream memoryStream = new MemoryStream();
+            await using MemoryStream memoryStream = new();
             await stream.CopyToAsync(memoryStream);
 
             File = memoryStream.ToArray();
         }
+
         private async Task Send()
         {
-            Console.WriteLine(string.Join(Environment.NewLine, Repo.Nodes.Select(x => $"V = {x.Version}, M = {x.Modification}, P = {x.Prototype}, S - {x.Description}")));
+            Console.WriteLine(string.Join(Environment.NewLine,
+                Repo.Nodes.Select(x =>
+                    $"V = {x.Version}, M = {x.Modification}, P = {x.Prototype}, S - {x.Description}")));
             Console.WriteLine();
             int version = Repo.Nodes.Any() ? Repo.Nodes.Max(x => x.Version) : 0;
             int modification = 0;
@@ -53,7 +57,9 @@ namespace AndNetwork9.Client.Shared
             }
             else
             {
-                modification = Repo.Nodes.Any() ? Repo.Nodes.Where(x => x.Version == version).Max(x => x.Modification) : 0;
+                modification = Repo.Nodes.Any()
+                    ? Repo.Nodes.Where(x => x.Version == version).Max(x => x.Modification)
+                    : 0;
                 Console.WriteLine($"2: V = {version}, M = {modification}, P = {prototype}");
                 if (Level == VersionLevel.Modification)
                 {
@@ -62,14 +68,15 @@ namespace AndNetwork9.Client.Shared
                 }
                 else if (Level == VersionLevel.Prototype)
                 {
-                    RepoNode[] nodes = Repo.Nodes.Where(x => x.Version == version).Where(x => x.Modification == modification).ToArray();
+                    RepoNode[] nodes = Repo.Nodes.Where(x => x.Version == version)
+                        .Where(x => x.Modification == modification).ToArray();
                     prototype = nodes.Any() ? nodes.Max(x => x.Prototype) + 1 : 1;
                     Console.WriteLine($"4: V = {version}, M = {modification}, P = {prototype}");
                     Console.WriteLine($"5: V = {version}, M = {modification}, P = {prototype}");
                 }
             }
 
-            RepoNodeWithData newNode = new ()
+            RepoNodeWithData newNode = new()
             {
                 Description = Description,
                 Repo = Repo,

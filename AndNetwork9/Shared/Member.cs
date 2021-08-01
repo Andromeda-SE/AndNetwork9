@@ -71,6 +71,14 @@ namespace AndNetwork9.Shared
         [JsonIgnore]
         public virtual IList<Squad> PendingSquadMembership { get; set; } = new List<Squad>();
 
+        public int CompareTo(object? obj)
+        {
+            if (ReferenceEquals(this, obj)) return 0;
+            if (obj is null) return 1;
+            if (obj is not Member member) throw new ArgumentException();
+            return CompareTo(member);
+        }
+
         public int CompareTo(Member? other)
         {
             if (ReferenceEquals(this, other)) return 0;
@@ -99,14 +107,6 @@ namespace AndNetwork9.Shared
             result += Nickname;
             if (RealName is not null) result += $" ({RealName})";
             return result;
-        }
-
-        public int CompareTo(object? obj)
-        {
-            if (ReferenceEquals(this, obj)) return 0;
-            if (obj is null) return 1;
-            if (obj is not Member member) throw new ArgumentException();
-            return CompareTo(member);
         }
 
         public override int GetHashCode()

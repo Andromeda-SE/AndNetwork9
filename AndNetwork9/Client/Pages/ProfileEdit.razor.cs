@@ -1,24 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
+﻿using System.Net.Http;
 using System.Net.Http.Json;
-using System.Reflection.Metadata;
-using System.Text.Json;
-using System.Threading.Tasks;
 using AndNetwork9.Client.Services;
 using AndNetwork9.Shared.Enums;
 using Microsoft.AspNetCore.Components;
-using Microsoft.JSInterop;
 
 namespace AndNetwork9.Client.Pages
 {
     public partial class ProfileEdit
     {
+        private Direction _direction;
         private string _nickname;
         private string _realname;
-        private Direction _direction;
         [Inject]
         public HttpClient Client { get; set; }
         [Inject]
@@ -58,6 +50,7 @@ namespace AndNetwork9.Client.Pages
                 StateHasChanged();
             }
         }
+
         [Parameter]
         public string SelectedTimeZoneId { get; set; }
 
