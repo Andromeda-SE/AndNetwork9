@@ -1,0 +1,88 @@
+﻿@page "/member/edit"
+<div class="row">
+    <div class="col-3">
+        <label class="form-label">Никнейм</label>
+    </div>
+    <div class="col">
+        <input type="text" autocomplete="off" class="form-control" placeholder="@AuthStateProvider.CurrentMember.Nickname" @bind="Nickname"> 
+    </div>
+    <div class="col-auto">
+        <button type="submit" class="btn btn-primary mb-3" disabled="@(string.IsNullOrWhiteSpace(Nickname) || Nickname.Length > 26)" @onclick="async () => await SetNewNickname()">Изменить</button>
+    </div>
+</div>
+<div class="row">
+    <div class="col-3">
+        <label class="form-label">Имя</label>
+    </div>
+    <div class="col">
+        <input type="text" autocomplete="off" class="form-control" placeholder="@AuthStateProvider.CurrentMember.RealName" @bind="Realname">
+    </div>
+    <div class="col-auto">
+        <button type="submit" class="btn btn-primary mb-3" @onclick="async () => await SetNewRealname()">Изменить</button>
+    </div>
+</div>
+<div class="row">
+    <div class="col-3">
+        <label class="form-label">Направление</label>
+    </div>
+    <div class="col">
+        <select class="form-select" disabled="@(AuthStateProvider.CurrentMember.Direction == Direction.None)" placeholder="@AuthStateProvider.CurrentMember.Direction.GetName()" @bind="Direction">
+            @foreach (Direction direction in Enum.GetValues<Direction>().Where(x => x > Direction.None))
+            {
+                @if (direction == AuthStateProvider.CurrentMember.Direction)
+                {
+                    <option value="@direction" selected>@direction.GetName()</option>
+                }
+                else
+                {
+                    <option value="@direction">@direction.GetName()</option>
+                }
+                
+            }
+        </select>
+    </div>
+    <div class="col-auto">
+        <button type="submit" class="btn btn-primary mb-3" disabled="@(Direction == AuthStateProvider.CurrentMember.Direction || Direction <= Direction.None || AuthStateProvider.CurrentMember.Rank <= Rank.Neophyte)" @onclick="async () => await SetNewDirection()">Изменить</button>
+    </div>
+</div>
+<div class="row">
+    <div class="col-3">
+        <label class="form-label">Часовой пояс</label>
+    </div>
+    <div class="col">
+        <div class="d-flex">
+            <select class="form-select" placeholder="@AuthStateProvider.CurrentMember.Direction.GetName()" @bind="SelectedTimeZoneId">
+                @foreach (TimeZoneInfo timeZone in TimeZoneInfo.GetSystemTimeZones())
+                {
+                    @if (timeZone.Id == AuthStateProvider.CurrentMember.TimeZone?.Id)
+                    {
+                        <option value="@timeZone.Id" selected>@timeZone.DisplayName</option>
+                    }
+                    else
+                    {
+                        <option value="@timeZone.Id">@timeZone.DisplayName</option>
+                    }
+                }
+            </select>
+            <button class="btn btn-secondary" @onclick="() => SelectedTimeZoneId = TimeZoneInfo.Local.Id">Текущий</button>
+        </div>
+
+    </div>
+    <div class="col-auto">
+        <button type="submit" class="btn btn-primary mb-3" @onclick="async () => await SetCurrentTimeZone()">Изменить</button>
+    </div>
+</div>
+<div class="row">
+    <div class="col-3">
+        <label class="form-label">Пароль</label>
+    </div>
+    <div class="col">
+        <div class="d-flex">
+            <input type="password" autocomplete="new-password" class="form-control" placeholder="Введите новый пароль" @bind="PasswordFirst">
+            <input type="password" autocomplete="new-password" class="form-control" placeholder="Повторите пароль" @bind="PasswordSecond">
+        </div>
+    </div>
+    <div class="col-auto">
+        <button type="password" disabled="@(PasswordFirst != PasswordSecond)" class="btn btn-primary mb-3" @onclick="async () => await SetNewPassword()">Изменить</button>
+    </div>
+</div>

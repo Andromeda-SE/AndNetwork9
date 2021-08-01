@@ -74,9 +74,9 @@ namespace AndNetwork9.Server.Controllers
             return Ok(result.Entity);
         }
 
-        [HttpPatch("direction")]
+        [HttpPut("direction")]
         [MinRankAuthorize(Rank.Trainee)]
-        public async Task<IActionResult> Patch(Direction direction)
+        public async Task<IActionResult> Patch([FromBody] Direction direction)
         {
             Member? member = await this.GetCurrentMember(_data);
             if (member is null) return Unauthorized();
@@ -91,8 +91,59 @@ namespace AndNetwork9.Server.Controllers
             return Ok();
         }
 
+        [HttpPut("nickname")]
+        [MinRankAuthorize(Rank.Guest)]
+        public async Task<IActionResult> PatchNickname([FromBody] string newNickname)
+        {
+            Member? member = await this.GetCurrentMember(_data);
+            if (member is null) return Unauthorized(); ;
+            if (newNickname.Length > 26) return BadRequest();
+            if (_data.Members.Any(x => x.Nickname == newNickname)) return Conflict();
+
+            string oldNickname = member.Nickname;
+            member.Nickname = newNickname;
+            await _data.SaveChangesAsync();
+            await _publishSender.CallAsync(
+                $"Игрок {member.GetDiscordMention()} сменил никнейм с «{oldNickname}» на «{newNickname}»");
+            return Ok();
+        }
+
+        [HttpPut("realname")]
+        [MinRankAuthorize(Rank.Guest)]
+        public async Task<IActionResult> PatchRealname([FromBody] string newRealname)
+        {
+            Member? member = await this.GetCurrentMember(_data);
+            if (member is null) return Unauthorized();
+
+            member.RealName = string.IsNullOrWhiteSpace(newRealname) ? null : newRealname;
+            await _data.SaveChangesAsync();
+            return Ok();
+        }
+
+        [HttpPut("timezone")]
+        [MinRankAuthorize(Rank.Guest)]
+        public async Task<IActionResult> PatchTimezone([FromBody] string newTimezone)
+        {
+            Member? member = await this.GetCurrentMember(_data);
+            if (member is null) return Unauthorized();
+
+            try
+            {
+                TimeZoneInfo zone = TimeZoneInfo.FindSystemTimeZoneById(newTimezone);
+                member.TimeZone = zone;
+            }
+            catch (TimeZoneNotFoundException)
+            {
+                return NotFound();
+            }
+            
+
+            await _data.SaveChangesAsync();
+            return Ok();
+        }
+
         [HttpPut("{id:int}")]
-        [MinRankAuthorize]
+        [MinRankAuthorize(Rank.Advisor)]
         public async Task<IActionResult> Put(int id, [FromBody] Member newMember)
         {
             if (id != newMember.Id) return BadRequest();
