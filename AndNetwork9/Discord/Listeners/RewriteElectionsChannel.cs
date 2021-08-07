@@ -34,7 +34,7 @@ namespace AndNetwork9.Discord.Listeners
 
         public override async void Run(Election request)
         {
-            using IServiceScope scope = _scopeFactory.CreateScope();
+            await using AsyncServiceScope scope = _scopeFactory.CreateAsyncScope();
             ClanDataContext data = (ClanDataContext)scope.ServiceProvider.GetService(typeof(ClanDataContext))!;
             if (data is null) throw new ApplicationException();
 
