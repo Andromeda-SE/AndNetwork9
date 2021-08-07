@@ -30,7 +30,7 @@ namespace AndNetwork9.Elections.Listeners
 
         public override async void Run(ElectionStage _)
         {
-            using IServiceScope scope = _scopeFactory.CreateScope();
+            await using AsyncServiceScope scope = _scopeFactory.CreateAsyncScope();
             ClanDataContext data = (ClanDataContext)scope.ServiceProvider.GetService(typeof(ClanDataContext))!;
             if (data is null) throw new ApplicationException();
 

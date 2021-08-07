@@ -6,25 +6,30 @@ using AndNetwork9.Shared.Backend.Rabbit;
 using AndNetwork9.Shared.Backend.Senders.Storage;
 using AndNetwork9.Shared.Storage;
 using LibGit2Sharp;
+using Microsoft.Extensions.DependencyInjection;
 using RabbitMQ.Client;
 
 namespace AndNetwork9.Storage.Listeners
 {
     public class RepoSetFileListener : BaseRabbitListenerWithoutResponse<RepoNodeWithData>
     {
-        private readonly ClanDataContext _data;
+        private readonly IServiceScopeFactory _scopeFactory;
         private readonly RepoManager _repoManager;
 
-        public RepoSetFileListener(IConnection connection, ClanDataContext data) : base(connection,
+        public RepoSetFileListener(IConnection connection, IServiceScopeFactory scopeFactory) : base(connection,
             RepoSetFileSender.QUEUE_NAME)
         {
-            _data = data;
+            _scopeFactory = scopeFactory;
             _repoManager = new();
         }
 
         public override async void Run(RepoNodeWithData request)
         {
-            RepoNode? node = await _data.RepoNodes.FindAsync(
+            await using AsyncServiceScope scope = _scopeFactory.CreateAsyncScope();
+            ClanDataContext? data = (ClanDataContext?)scope.ServiceProvider.GetService(typeof(ClanDataContext));
+            if (data is null) throw new ApplicationException();
+
+            RepoNode? node = await data.RepoNodes.FindAsync(
                 request.RepoId,
                 request.Version,
                 request.Modification,
@@ -32,14 +37,14 @@ namespace AndNetwork9.Storage.Listeners
             );
 
             if (node is not null) throw new FailedCallException(HttpStatusCode.Conflict);
-            Repo? repo = await _data.Repos.FindAsync(request.RepoId);
+            Repo? repo = await data.Repos.FindAsync(request.RepoId);
             if (repo is null) throw new KeyNotFoundException();
             request.Repo = repo;
             await _repoManager.LoadFile(request.Data, request);
-                await _data.RepoNodes.AddAsync(request);
+                await data.RepoNodes.AddAsync(request);
 
 
-                await _data.SaveChangesAsync();
+                await data.SaveChangesAsync();
         }
     }
 }

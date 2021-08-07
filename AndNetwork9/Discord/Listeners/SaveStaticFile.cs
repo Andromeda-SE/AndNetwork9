@@ -34,7 +34,7 @@ namespace AndNetwork9.Discord.Listeners
         protected override async Task<StaticFile> GetResponseAsync(SaveStaticFileArg request)
         {
             if (request.FileData.Length > 8388608) throw new ArgumentOutOfRangeException(nameof(request));
-            using IServiceScope scope = _scopeFactory.CreateScope();
+            await using AsyncServiceScope scope = _scopeFactory.CreateAsyncScope();
             ClanDataContext data = (ClanDataContext)scope.ServiceProvider.GetService(typeof(ClanDataContext))!;
             if (data is null) throw new ApplicationException();
 
