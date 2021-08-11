@@ -1,4 +1,5 @@
-﻿using System.Net.Http.Json;
+﻿using System;
+using System.Net.Http.Json;
 using AndNetwork9.Client.Shared;
 using AndNetwork9.Client.Utility;
 using AndNetwork9.Shared;
@@ -38,6 +39,7 @@ namespace AndNetwork9.Client.Pages
 
         protected override async void SetNewEntity(int? value)
         {
+            Console.WriteLine(value?.ToString() ?? "null");
             SelectedEntity = value is null ? null : await Client.GetFromJsonAsync<Member>($"api/Member/{value}");
             if (SelectedEntity is not null)
             {

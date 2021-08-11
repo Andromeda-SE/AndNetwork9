@@ -21,7 +21,7 @@ namespace AndNetwork9.Client.Pages.Repos
         [Parameter]
         public RepoType Type { get; set; }
         [Parameter]
-        public AccessRule ReadRule { get; set; } = new ()
+        public AccessRule ReadRule { get; set; } = new()
         {
             Directions = Enum.GetValues<Direction>().Where(x => x > Direction.None).ToArray(),
             MinRank = Rank.Neophyte,
@@ -29,7 +29,7 @@ namespace AndNetwork9.Client.Pages.Repos
             SquadId = null,
         };
         [Parameter]
-        public AccessRule WriteRule { get; set; } = new ()
+        public AccessRule WriteRule { get; set; } = new()
         {
             Directions = Enum.GetValues<Direction>().Where(x => x > Direction.None).ToArray(),
             MinRank = Rank.Advisor,
@@ -44,21 +44,23 @@ namespace AndNetwork9.Client.Pages.Repos
             AccessRule readRule = await readResponse.Content.ReadFromJsonAsync<AccessRule>();
             AccessRule writeRule = await writeResponse.Content.ReadFromJsonAsync<AccessRule>();
 
-            HttpResponseMessage repoResponse = await Client.PostAsJsonAsync("api/repo", new AndNetwork9.Shared.Storage.Repo()
-            {
-                ReadRuleId = readRule.Id,
-                ReadRule = readRule,
-                WriteRuleId = writeRule.Id,
-                WriteRule = writeRule,
-                CreatorId = AuthStateProvider.CurrentMember.Id,
-                Creator = AuthStateProvider.CurrentMember,
-                Name = Name,
-                Type = Type,
-                RepoName = Name,
-            });
+            HttpResponseMessage repoResponse = await Client.PostAsJsonAsync("api/repo",
+                new AndNetwork9.Shared.Storage.Repo
+                {
+                    ReadRuleId = readRule.Id,
+                    ReadRule = readRule,
+                    WriteRuleId = writeRule.Id,
+                    WriteRule = writeRule,
+                    CreatorId = AuthStateProvider.CurrentMember.Id,
+                    Creator = AuthStateProvider.CurrentMember,
+                    Name = Name,
+                    Type = Type,
+                    RepoName = Name,
+                });
             if (repoResponse.IsSuccessStatusCode)
             {
-                AndNetwork9.Shared.Storage.Repo repo = await repoResponse.Content.ReadFromJsonAsync<AndNetwork9.Shared.Storage.Repo>();
+                AndNetwork9.Shared.Storage.Repo repo =
+                    await repoResponse.Content.ReadFromJsonAsync<AndNetwork9.Shared.Storage.Repo>();
                 NavigationManager.NavigateTo($"repo/{repo.Id}");
             }
         }

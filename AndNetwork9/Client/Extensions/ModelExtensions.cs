@@ -18,12 +18,13 @@ namespace AndNetwork9.Client.Extensions
         {
             return $"/member/{member.Id:D}";
         }
-        
+
 
         public static MarkupString GetHtml(this Member member)
         {
             return (MarkupString)$"<a href=\"{member.GetLink()}\">{member}</a>";
         }
+
         public static string GetLink(this Task member)
         {
             return $"/task/{member.Id:D}";

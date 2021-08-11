@@ -77,7 +77,7 @@ namespace AndNetwork9.Server.Controllers
                     MemberId = member.Id,
                 };
                 text.AppendLine($"{result.Type.GetDisplayName()} достается игроку {member.GetDiscordMention()}");
-                members.Add(member);
+                if (!members.Contains(member)) members.Add(member);
                 member.Awards.Add(result);
             }
 
@@ -90,9 +90,8 @@ namespace AndNetwork9.Server.Controllers
                 member.Rank = newRank;
                 text.AppendLine($"Игрок {member.GetDiscordMention()} повышен до ранга «{member.Rank.GetRankName()}»");
                 if (oldRank == Rank.Neophyte)
-                {
-                    await _sendSender.CallAsync(new(member.DiscordId, "Похоже, вас повысили! Теперь вы можете изменить свое направление на сайте клана"));
-                }
+                    await _sendSender.CallAsync(new(member.DiscordId,
+                        "Похоже, вас повысили! Теперь вы можете изменить свое направление на сайте клана"));
             }
 
             await _data.SaveChangesAsync();

@@ -1,0 +1,54 @@
+﻿@page "/management/addmember"
+<div class="mb-3 row">
+    <label class="col-sm-2 col-form-label">Никнейм</label>
+    <div class="col-sm-10">
+        <input type="text" class="form-control" @bind="Model.Nickname">
+    </div>
+</div>
+<div class="mb-3 row">
+    <label class="col-sm-2 col-form-label">Имя</label>
+    <div class="col-sm-10">
+        <input type="text" class="form-control" @bind="Model.RealName">
+    </div>
+</div>
+<div class="mb-3 row">
+    <label class="col-sm-2 col-form-label">SteamID</label>
+    <div class="col-sm-10">
+        <input type="number" class="form-control" @bind="Model.SteamId">
+    </div>
+</div>
+<div class="mb-3 row">
+    <label class="col-sm-2 col-form-label">DiscordID</label>
+    <div class="col-sm-10">
+        <input type="text" class="form-control" @bind="Model.DiscordId">
+    </div>
+</div>
+<div class="mb-3 row">
+    <label class="col-sm-2 col-form-label">VkID</label>
+    <div class="col-sm-10">
+        <input type="number" class="form-control" @bind="Model.VkId">
+    </div>
+</div>
+<div class="mb-3 row">
+    <label class="col-sm-2 col-form-label">Статус</label>
+    <div class="col-sm-10">
+        <select class="form-control form-select" @bind="Model.Rank">
+            @foreach (Rank rank in Enum.GetValues<Rank>().Where(x => x < Rank.None))
+            {
+                @if (rank == Rank.Guest)
+                {
+                    <option value="@rank" selected>@rank.GetRankName()</option>
+                }
+                else
+                {
+                    <option value="@rank">@rank.GetRankName()</option>
+                }
+            }
+        </select>
+    </div>
+</div>
+<div class="mb-3 row">
+    <div class="col-sm-12">
+        <button disabled="@(!Validate())" class="btn btn-primary" @onclick="Create">Создать</button>
+    </div>
+</div>

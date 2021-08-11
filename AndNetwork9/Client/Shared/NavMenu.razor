@@ -6,9 +6,6 @@
         <div class="collapse navbar-collapse d-lg-flex justify-content-between" id="navbarNav">
             <ul class="navbar-nav me-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="/">Главная</a>
-                </li>
-                <li class="nav-item">
                     <a class="nav-link disabled" href="/war">Война отрядов</a>
                 </li>
                 <li class="nav-item">
@@ -18,17 +15,34 @@
                     <a class="nav-link" href="/repo">Репозитории</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/member">Игроки</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/squad">Отряды</a>
-                </li>
-                <li class="nav-item">
                     <a class="nav-link" href="/election">Выборы</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="/voting">Голосования</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/member">Игроки</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/squad">Отряды</a>
+                </li>
+                @if (AuthStateProvider.CurrentMember.Rank >= Rank.Advisor)
+                {
+                    <li class="navbar-nav nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" role="button" href="#" id="dropdownMenuButton2" data-bs-toggle="dropdown">Управление</a>
+                        <ul class="dropdown-menu dropdown-menu-dark">
+                            <li>
+                                <a class="dropdown-item" href="/management/addmember">Добавить участника…</a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="/management/addaward">Выдать награду…</a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="/management/message">Отправить сообщения…</a>
+                            </li>
+                        </ul>
+                    </li>
+                }
             </ul>
             <div class="navbar-nav nav-item dropdown">
                 <a class="nav-link dropdown-toggle" role="button" href="#" id="dropdownMenuButton1" data-bs-toggle="dropdown">@AuthStateProvider.CurrentMember?.Nickname</a>

@@ -1,0 +1,90 @@
+﻿<div class="modal fade show" tabindex="-1" id="@Id">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Изменить список учаcтников…</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                                        <div class="d-grid table-responsive">
+                            <table class="table table-sm">
+                                <tbody>
+                                @foreach (Member member in Members)
+                                {
+                                    <tr>
+                                        <td>
+                                            <a target="_blank" href="@member.GetLink()">@member.ToString()</a>
+                                        </td>
+                                        <td class="align-middle">
+                                            <button type="button" class="btn btn-danger btn-sm" @onclick="e => Members.Remove(member)">
+                                                <i class="bi bi-dash-lg"/>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                }
+                                </tbody>
+                                <tfoot>
+                                <tr>
+                                    <td>
+                                        <select class="form-control form-select form-control-sm" @bind="SelectedMemberId">
+                                            <option value="@(default(int?))"></option>
+                                            @foreach (Member member in Members.Except(Members).OrderByDescending(x => x))
+                                            {
+                                                <option value="@member.Id">@member.ToString()</option>
+                                            }
+                                        </select>
+                                    </td>
+                                    <td class="align-top">
+                                        <button type="button" disabled="@(SelectedMember is null)" class="btn btn-success btn-sm mt-1" @onclick="AddMember">
+                                            <i class="bi bi-plus-lg"/>
+                                        </button>
+                                    </td>
+                                </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                
+                
+                
+
+                <div class="mb-3 row">
+                    <label class="col-form-label">Направления</label>
+                    <div class="">
+                        <select class="form-control form-select form-control-sm" @bind="SelectedEditType">
+                            @foreach (FastEditType editType in Enum.GetValues<FastEditType>())
+                            {
+                                <option value="@editType">@editType.GetName()</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+
+                @switch (SelectedEditType)
+                {
+                    case FastEditType.One: { }
+                        break;
+                    case FastEditType.Squad:
+                        break;
+                    case FastEditType.Direction:
+                        break;
+                    case FastEditType.VoteMembers:
+                        break;
+                    case FastEditType.VoteVoted:
+                        break;
+                    case FastEditType.SquadCommanders:
+                        break;
+                    case FastEditType.Advisors:
+                        break;
+                    case FastEditType.All:
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal" @onclick="Update">Сохранить</button>
+            </div>
+        </div>
+    </div>
+</div>

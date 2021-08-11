@@ -56,6 +56,7 @@ namespace AndNetwork9.Server
             services.AddScoped<RepoSetFileSender>();
             services.AddScoped<NewRepoSender>();
             services.AddScoped<VoteSender>();
+            services.AddScoped<SendSender>();
 
             services.AddSingleton<IAuthorizationPolicyProvider, ClanPolicyProvider>();
             services.AddSingleton<IAuthorizationHandler, ClanPolicyProvider>();
