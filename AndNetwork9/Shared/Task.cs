@@ -45,7 +45,7 @@ namespace AndNetwork9.Shared
         public DateTime StartTime { get; set; }
         public DateTime? LastEditTime { get; set; }
         public DateTime? EndTime { get; set; }
-        public TaskStatus Status { get; set; }
+        public Enums.TaskStatus Status { get; set; }
         public TaskPriority Priority { get; set; }
         public AwardType? Award { get; set; }
 

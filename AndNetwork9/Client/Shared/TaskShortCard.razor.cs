@@ -6,6 +6,6 @@ namespace AndNetwork9.Client.Shared
     public partial class TaskShortCard
     {
         [Parameter]
-        public Task Task { get; set; }
+        public AndNetwork9.Shared.Task Task { get; set; }
     }
 }

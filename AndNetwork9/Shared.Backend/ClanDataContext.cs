@@ -21,7 +21,7 @@ namespace AndNetwork9.Shared.Backend
             NpgsqlConnection.GlobalTypeMapper.MapEnum<ElectionStage>();
             NpgsqlConnection.GlobalTypeMapper.MapEnum<MemberVote>();
             NpgsqlConnection.GlobalTypeMapper.MapEnum<Rank>();
-            NpgsqlConnection.GlobalTypeMapper.MapEnum<TaskStatus>();
+            NpgsqlConnection.GlobalTypeMapper.MapEnum<Enums.TaskStatus>();
             NpgsqlConnection.GlobalTypeMapper.MapEnum<TaskPriority>();
 
             NpgsqlConnection.GlobalTypeMapper.MapEnum<ChannelType>();
@@ -75,7 +75,7 @@ namespace AndNetwork9.Shared.Backend
                 modelBuilder.HasPostgresEnum<ElectionStage>();
                 modelBuilder.HasPostgresEnum<MemberVote>();
                 modelBuilder.HasPostgresEnum<Rank>();
-                modelBuilder.HasPostgresEnum<TaskStatus>();
+                modelBuilder.HasPostgresEnum<Enums.TaskStatus>();
                 modelBuilder.HasPostgresEnum<TaskPriority>();
 
                 modelBuilder.HasPostgresEnum<ChannelType>();
