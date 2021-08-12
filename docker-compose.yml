@@ -66,3 +66,5 @@ services:
     image: rabbitmq:alpine
     restart: "no"
     env_file: .env
+    volumes:
+      - "./rabbitmq.conf:/var/lib/rabbitmq/rabbitmq.conf"
