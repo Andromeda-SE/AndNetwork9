@@ -5,6 +5,7 @@
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     <DockerfileContext>..\..</DockerfileContext>
     <Nullable>enable</Nullable>
+	  <LangLevel>preview</LangLevel>
   </PropertyGroup>
 
   <ItemGroup>

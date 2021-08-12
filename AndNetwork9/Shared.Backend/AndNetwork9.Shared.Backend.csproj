@@ -9,6 +9,7 @@
     <ApplicationIcon />
     <OutputType>Library</OutputType>
     <StartupObject />
+    <LangLevel>preview</LangLevel>
   </PropertyGroup>
 
   <ItemGroup>
