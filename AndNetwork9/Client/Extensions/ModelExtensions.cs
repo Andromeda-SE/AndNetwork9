@@ -24,7 +24,7 @@ namespace AndNetwork9.Client.Extensions
         {
             return (MarkupString)$"<a href=\"{member.GetLink()}\">{member}</a>";
         }
-        public static string GetLink(this Task member)
+        public static string GetLink(this AndNetwork9.Shared.Task member)
         {
             return $"/task/{member.Id:D}";
         }
@@ -39,20 +39,20 @@ namespace AndNetwork9.Client.Extensions
             return $"api/repo/{node.RepoId}/node/{node.Version}/{node.Modification}/{node.Prototype}/file";
         }
 
-        public static string ToLocalString(this TaskStatus status)
+        public static string ToLocalString(this AndNetwork9.Shared.Enums.TaskStatus status)
         {
             return status switch
             {
-                TaskStatus.Failed => "Провалена",
-                TaskStatus.Rejected => "Отклонена",
-                TaskStatus.Canceled => "Отменена",
-                TaskStatus.Inactive => "Неактивна",
-                TaskStatus.ToDo => "Ожидает начала выполнения",
-                TaskStatus.Postponed => "Отложена",
-                TaskStatus.Analysis => "Анализ",
-                TaskStatus.InProgress => "В процессе",
-                TaskStatus.Resolved => "Выполнена",
-                TaskStatus.Done => "Закрыта",
+                AndNetwork9.Shared.Enums.TaskStatus.Failed => "Провалена",
+                AndNetwork9.Shared.Enums.TaskStatus.Rejected => "Отклонена",
+                AndNetwork9.Shared.Enums.TaskStatus.Canceled => "Отменена",
+                AndNetwork9.Shared.Enums.TaskStatus.Inactive => "Неактивна",
+                AndNetwork9.Shared.Enums.TaskStatus.ToDo => "Ожидает начала выполнения",
+                AndNetwork9.Shared.Enums.TaskStatus.Postponed => "Отложена",
+                AndNetwork9.Shared.Enums.TaskStatus.Analysis => "Анализ",
+                AndNetwork9.Shared.Enums.TaskStatus.InProgress => "В процессе",
+                AndNetwork9.Shared.Enums.TaskStatus.Resolved => "Выполнена",
+                AndNetwork9.Shared.Enums.TaskStatus.Done => "Закрыта",
                 _ => throw new ArgumentOutOfRangeException(nameof(status), status, null),
             };
         }
