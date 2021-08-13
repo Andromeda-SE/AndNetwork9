@@ -542,7 +542,7 @@ namespace AndNetwork9.Shared.Backend.Migrations
                     b.Property<DateTime>("StartTime")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<TaskStatus>("Status")
+                    b.Property<Enums.TaskStatus>("Status")
                         .HasColumnType("task_status");
 
                     b.Property<string>("Title")

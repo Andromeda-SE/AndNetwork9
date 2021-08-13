@@ -345,7 +345,7 @@ namespace AndNetwork9.Shared.Backend.Migrations
                     StartTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     LastEditTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
                     EndTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
-                    Status = table.Column<TaskStatus>(type: "task_status", nullable: false),
+                    Status = table.Column<Enums.TaskStatus>(type: "task_status", nullable: false),
                     Priority = table.Column<TaskPriority>(type: "task_priority", nullable: false),
                     Award = table.Column<AwardType>(type: "award_type", nullable: true),
                     AllowAssignByMember = table.Column<bool>(type: "boolean", nullable: false),

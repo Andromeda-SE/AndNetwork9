@@ -11,6 +11,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using IResult = Discord.Commands.IResult;
 
 namespace AndNetwork9.Discord
 {
@@ -102,7 +103,7 @@ namespace AndNetwork9.Discord
             await _commandService.AddModuleAsync<Elections>(scope.ServiceProvider);
             await _commandService.AddModuleAsync<Send>(scope.ServiceProvider);
             await _commandService.AddModuleAsync<Root>(scope.ServiceProvider);
-            await _commandService.AddModuleAsync<File>(scope.ServiceProvider);
+            await _commandService.AddModuleAsync<Commands.File>(scope.ServiceProvider);
 
             MessageReceived += HandleCommandAsync;
             _commandService.CommandExecuted += CommandExecuted;
