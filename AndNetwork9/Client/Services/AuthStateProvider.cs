@@ -42,10 +42,11 @@ namespace AndNetwork9.Client.Services
                 {
                     CurrentMember = await Client.GetFromJsonAsync<Member>("api/member");
                     return new(new(new ClaimsIdentity(new[]
-                    {
-                        new Claim(_SESSION_ID_KEY, await LocalStorage.GetItemAsStringAsync(_SESSION_ID_KEY)),
-                        new Claim(_MEMBER_ID_KEY, await LocalStorage.GetItemAsStringAsync(_MEMBER_ID_KEY)),
-                    }, "Cookies")));
+                        {
+                            new Claim(_SESSION_ID_KEY, await LocalStorage.GetItemAsStringAsync(_SESSION_ID_KEY)),
+                            new Claim(_MEMBER_ID_KEY, await LocalStorage.GetItemAsStringAsync(_MEMBER_ID_KEY)),
+                        },
+                        "Cookies")));
                 }
 
                 await LogoutAsync();
@@ -56,7 +57,7 @@ namespace AndNetwork9.Client.Services
 
         public async Task<bool> LoginAsync(AuthCredentials authCredentials)
         {
-            HttpResponseMessage response = await Client.PostAsJsonAsync("api/Auth", authCredentials);
+            HttpResponseMessage response = await Client.PostAsJsonAsync("api/auth", authCredentials);
             if (!response.IsSuccessStatusCode) return false;
             Dictionary<string, string>
                 values = await response.Content.ReadFromJsonAsync<Dictionary<string, string>>();

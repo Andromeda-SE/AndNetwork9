@@ -17,9 +17,6 @@ namespace AndNetwork9.Shared.Utility
             return Name == other.Name;
         }
 
-        public override int GetHashCode()
-        {
-            return Name.GetHashCode();
-        }
+        public override int GetHashCode() => Name.GetHashCode();
     }
 }

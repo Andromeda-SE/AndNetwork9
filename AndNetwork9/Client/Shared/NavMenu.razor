@@ -1,12 +1,12 @@
-﻿<nav class="navbar navbar-expand-lg navbar-light bg-warning mb-3">
+﻿<nav class="bg-warning mb-3 navbar navbar-expand-lg navbar-light">
     <div class="container">
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <button class="navbar-toggler" data-bs-target="#navbarNav" data-bs-toggle="collapse" type="button">
             <span class="navbar-toggler-icon"></span>
         </button>
-        <div class="collapse navbar-collapse d-lg-flex justify-content-between" id="navbarNav">
-            <ul class="navbar-nav me-auto">
+        <div class="collapse d-lg-flex justify-content-between navbar-collapse" id="navbarNav">
+            <ul class="me-auto navbar-nav">
                 <li class="nav-item">
-                    <a class="nav-link disabled" href="/war">Война отрядов</a>
+                    <a class="disabled nav-link" href="/war">Война отрядов</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="/task">Задачи</a>
@@ -28,8 +28,8 @@
                 </li>
                 @if (AuthStateProvider.CurrentMember.Rank >= Rank.Advisor)
                 {
-                    <li class="navbar-nav nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" role="button" href="#" id="dropdownMenuButton2" data-bs-toggle="dropdown">Управление</a>
+                    <li class="dropdown navbar-nav nav-item">
+                        <a class="dropdown-toggle nav-link" data-bs-toggle="dropdown" href="#" id="dropdownMenuButton2" role="button">Управление</a>
                         <ul class="dropdown-menu dropdown-menu-dark">
                             <li>
                                 <a class="dropdown-item" href="/management/addmember">Добавить участника…</a>
@@ -44,8 +44,8 @@
                     </li>
                 }
             </ul>
-            <div class="navbar-nav nav-item dropdown">
-                <a class="nav-link dropdown-toggle" role="button" href="#" id="dropdownMenuButton1" data-bs-toggle="dropdown">@AuthStateProvider.CurrentMember?.Nickname</a>
+            <div class="dropdown navbar-nav nav-item">
+                <a class="dropdown-toggle nav-link" data-bs-toggle="dropdown" href="#" id="dropdownMenuButton1" role="button">@AuthStateProvider.CurrentMember?.Nickname</a>
                 <ul class="dropdown-menu dropdown-menu-dark">
                     <li>
                         <a class="dropdown-item" href="/member/@(AuthStateProvider.CurrentMember?.Id)">Профиль</a>

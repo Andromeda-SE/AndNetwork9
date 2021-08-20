@@ -1,43 +1,43 @@
 ﻿@page "/management/addmember"
 <div class="mb-3 row">
-    <label class="col-sm-2 col-form-label">Никнейм</label>
+    <label class="col-form-label col-sm-2">Никнейм</label>
     <div class="col-sm-10">
-        <input type="text" class="form-control" @bind="Model.Nickname">
+        <input @bind="Model.Nickname" class="form-control" type="text">
     </div>
 </div>
 <div class="mb-3 row">
-    <label class="col-sm-2 col-form-label">Имя</label>
+    <label class="col-form-label col-sm-2">Имя</label>
     <div class="col-sm-10">
-        <input type="text" class="form-control" @bind="Model.RealName">
+        <input @bind="Model.RealName" class="form-control" type="text">
     </div>
 </div>
 <div class="mb-3 row">
-    <label class="col-sm-2 col-form-label">SteamID</label>
+    <label class="col-form-label col-sm-2">SteamID</label>
     <div class="col-sm-10">
-        <input type="number" class="form-control" @bind="Model.SteamId">
+        <input @bind="Model.SteamId" class="form-control" type="number">
     </div>
 </div>
 <div class="mb-3 row">
-    <label class="col-sm-2 col-form-label">DiscordID</label>
+    <label class="col-form-label col-sm-2">DiscordID</label>
     <div class="col-sm-10">
-        <input type="text" class="form-control" @bind="Model.DiscordId">
+        <input @bind="Model.DiscordId" class="form-control" type="text">
     </div>
 </div>
 <div class="mb-3 row">
-    <label class="col-sm-2 col-form-label">VkID</label>
+    <label class="col-form-label col-sm-2">VkID</label>
     <div class="col-sm-10">
-        <input type="number" class="form-control" @bind="Model.VkId">
+        <input @bind="Model.VkId" class="form-control" type="number">
     </div>
 </div>
 <div class="mb-3 row">
-    <label class="col-sm-2 col-form-label">Статус</label>
+    <label class="col-form-label col-sm-2">Статус</label>
     <div class="col-sm-10">
-        <select class="form-control form-select" @bind="Model.Rank">
+        <select @bind="Model.Rank" class="form-control form-select">
             @foreach (Rank rank in Enum.GetValues<Rank>().Where(x => x < Rank.None))
             {
                 @if (rank == Rank.Guest)
                 {
-                    <option value="@rank" selected>@rank.GetRankName()</option>
+                    <option selected value="@rank">@rank.GetRankName()</option>
                 }
                 else
                 {
@@ -49,6 +49,6 @@
 </div>
 <div class="mb-3 row">
     <div class="col-sm-12">
-        <button disabled="@(!Validate())" class="btn btn-primary" @onclick="Create">Создать</button>
+        <button class="btn btn-primary" disabled="@(!Validate())" @onclick="Create">Создать</button>
     </div>
 </div>

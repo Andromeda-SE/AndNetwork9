@@ -43,7 +43,7 @@ namespace AndNetwork9.Client.Extensions
                 FastMemberSelector.FastEditType.SquadCommanders => "Командующие отрядами",
                 FastMemberSelector.FastEditType.Advisors => "Советники",
                 FastMemberSelector.FastEditType.All => "Весь клан",
-                _ => throw new ArgumentOutOfRangeException(nameof(editType), editType, null)
+                _ => throw new ArgumentOutOfRangeException(nameof(editType), editType, null),
             };
         }
     }

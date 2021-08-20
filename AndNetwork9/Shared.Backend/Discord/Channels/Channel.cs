@@ -51,25 +51,17 @@ namespace AndNetwork9.Shared.Backend.Discord.Channels
             return DiscordId == other.DiscordId;
         }
 
-        public static bool operator <(Channel? left, Channel? right)
-        {
-            return Comparer<Channel>.Default.Compare(left, right) < 0;
-        }
+        public static bool operator <(Channel? left, Channel? right) =>
+            Comparer<Channel>.Default.Compare(left, right) < 0;
 
-        public static bool operator >(Channel? left, Channel? right)
-        {
-            return Comparer<Channel>.Default.Compare(left, right) > 0;
-        }
+        public static bool operator >(Channel? left, Channel? right) =>
+            Comparer<Channel>.Default.Compare(left, right) > 0;
 
-        public static bool operator <=(Channel? left, Channel? right)
-        {
-            return Comparer<Channel>.Default.Compare(left, right) <= 0;
-        }
+        public static bool operator <=(Channel? left, Channel? right) =>
+            Comparer<Channel>.Default.Compare(left, right) <= 0;
 
-        public static bool operator >=(Channel? left, Channel? right)
-        {
-            return Comparer<Channel>.Default.Compare(left, right) >= 0;
-        }
+        public static bool operator >=(Channel? left, Channel? right) =>
+            Comparer<Channel>.Default.Compare(left, right) >= 0;
 
         public override bool Equals(object? obj)
         {
@@ -78,19 +70,10 @@ namespace AndNetwork9.Shared.Backend.Discord.Channels
             return obj.GetType() == GetType() && Equals((Channel)obj);
         }
 
-        public override int GetHashCode()
-        {
-            return DiscordId.GetHashCode();
-        }
+        public override int GetHashCode() => DiscordId.GetHashCode();
 
-        public static bool operator ==(Channel? left, Channel? right)
-        {
-            return Equals(left, right);
-        }
+        public static bool operator ==(Channel? left, Channel? right) => Equals(left, right);
 
-        public static bool operator !=(Channel? left, Channel? right)
-        {
-            return !Equals(left, right);
-        }
+        public static bool operator !=(Channel? left, Channel? right) => !Equals(left, right);
     }
 }

@@ -109,24 +109,12 @@ namespace AndNetwork9.Shared
             return result;
         }
 
-        public override int GetHashCode()
-        {
-            return Id;
-        }
+        public override int GetHashCode() => Id;
 
-        public string GetDiscordMention()
-        {
-            return $"<@{DiscordId:D}>";
-        }
+        public string GetDiscordMention() => $"<@{DiscordId:D}>";
 
-        public string GetSteamLink()
-        {
-            return $"http://steamcommunity.com/profiles/{SteamId:D}";
-        }
+        public string GetSteamLink() => $"http://steamcommunity.com/profiles/{SteamId:D}";
 
-        public string GetVkLink()
-        {
-            return $"http://vk.com/id{VkId:D}";
-        }
+        public string GetVkLink() => $"http://vk.com/id{VkId:D}";
     }
 }

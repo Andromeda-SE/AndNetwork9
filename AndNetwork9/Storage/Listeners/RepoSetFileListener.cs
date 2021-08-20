@@ -5,7 +5,6 @@ using AndNetwork9.Shared.Backend;
 using AndNetwork9.Shared.Backend.Rabbit;
 using AndNetwork9.Shared.Backend.Senders.Storage;
 using AndNetwork9.Shared.Storage;
-using LibGit2Sharp;
 using Microsoft.Extensions.DependencyInjection;
 using RabbitMQ.Client;
 
@@ -13,7 +12,6 @@ namespace AndNetwork9.Storage.Listeners
 {
     public class RepoSetFileListener : BaseRabbitListenerWithoutResponse<RepoNodeWithData>
     {
-        private readonly IServiceScopeFactory _scopeFactory;
         private readonly RepoManager _repoManager;
         private readonly IServiceScopeFactory _scopeFactory;
 

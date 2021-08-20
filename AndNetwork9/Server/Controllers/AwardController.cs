@@ -12,7 +12,6 @@ using AndNetwork9.Shared.Enums;
 using AndNetwork9.Shared.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.OpenApi.Extensions;
 
 namespace AndNetwork9.Server.Controllers
 {
@@ -62,7 +61,7 @@ namespace AndNetwork9.Server.Controllers
             List<Member> members = new(awards.Length);
             foreach (Award award in awards)
             {
-                Member? member = await _data.Members.FindAsync(award.Id);
+                Member? member = await _data.Members.FindAsync(award.MemberId);
                 if (member is null) return NotFound();
                 if (member.Rank < Rank.Neophyte) return Forbid();
                 if (caller.Rank < Rank.FirstAdvisor && award.Type > AwardType.Bronze) return Forbid();
@@ -76,7 +75,8 @@ namespace AndNetwork9.Server.Controllers
                     Member = member,
                     MemberId = member.Id,
                 };
-                text.AppendLine($"{result.Type.GetDisplayName()} достается игроку {member.GetDiscordMention()}");
+                text.AppendLine(
+                    $"{result.Type.GetTypeName()} [{result.Description}] достается игроку {member.GetDiscordMention()}");
                 if (!members.Contains(member)) members.Add(member);
                 member.Awards.Add(result);
             }

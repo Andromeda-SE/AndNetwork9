@@ -4,10 +4,10 @@
         <label class="form-label">Никнейм</label>
     </div>
     <div class="col">
-        <input type="text" autocomplete="off" class="form-control" placeholder="@AuthStateProvider.CurrentMember.Nickname" @bind="Nickname">
+        <input autocomplete="off" @bind="Nickname" class="form-control" placeholder="@AuthStateProvider.CurrentMember.Nickname" type="text">
     </div>
     <div class="col-auto">
-        <button type="submit" class="btn btn-primary mb-3" disabled="@(string.IsNullOrWhiteSpace(Nickname) || Nickname.Length > 26)" @onclick="async () => await SetNewNickname()">Изменить</button>
+        <button class="btn btn-primary mb-3" disabled="@(string.IsNullOrWhiteSpace(Nickname) || Nickname.Length > 26)" @onclick="async () => await SetNewNickname()" type="submit">Изменить</button>
     </div>
 </div>
 <div class="row">
@@ -15,10 +15,10 @@
         <label class="form-label">Имя</label>
     </div>
     <div class="col">
-        <input type="text" autocomplete="off" class="form-control" placeholder="@AuthStateProvider.CurrentMember.RealName" @bind="Realname">
+        <input autocomplete="off" @bind="Realname" class="form-control" placeholder="@AuthStateProvider.CurrentMember.RealName" type="text">
     </div>
     <div class="col-auto">
-        <button type="submit" class="btn btn-primary mb-3" @onclick="async () => await SetNewRealname()">Изменить</button>
+        <button class="btn btn-primary mb-3" @onclick="async () => await SetNewRealname()" type="submit">Изменить</button>
     </div>
 </div>
 <div class="row">
@@ -26,12 +26,12 @@
         <label class="form-label">Направление</label>
     </div>
     <div class="col">
-        <select class="form-select" disabled="@(AuthStateProvider.CurrentMember.Direction == Direction.None)" placeholder="@AuthStateProvider.CurrentMember.Direction.GetName()" @bind="Direction">
+        <select @bind="Direction" class="form-select" disabled="@(AuthStateProvider.CurrentMember.Direction == Direction.None)" placeholder="@AuthStateProvider.CurrentMember.Direction.GetName()">
             @foreach (Direction direction in Enum.GetValues<Direction>().Where(x => x > Direction.None))
             {
                 @if (direction == AuthStateProvider.CurrentMember.Direction)
                 {
-                    <option value="@direction" selected>@direction.GetName()</option>
+                    <option selected value="@direction">@direction.GetName()</option>
                 }
                 else
                 {
@@ -41,7 +41,7 @@
         </select>
     </div>
     <div class="col-auto">
-        <button type="submit" class="btn btn-primary mb-3" disabled="@(Direction == AuthStateProvider.CurrentMember.Direction || Direction <= Direction.None || AuthStateProvider.CurrentMember.Rank <= Rank.Neophyte)" @onclick="async () => await SetNewDirection()">Изменить</button>
+        <button class="btn btn-primary mb-3" disabled="@(Direction == AuthStateProvider.CurrentMember.Direction || Direction <= Direction.None || AuthStateProvider.CurrentMember.Rank <= Rank.Neophyte)" @onclick="async () => await SetNewDirection()" type="submit">Изменить</button>
     </div>
 </div>
 <div class="row">
@@ -50,12 +50,12 @@
     </div>
     <div class="col">
         <div class="d-flex">
-            <select class="form-select" placeholder="@AuthStateProvider.CurrentMember.Direction.GetName()" @bind="SelectedTimeZoneId">
+            <select @bind="SelectedTimeZoneId" class="form-select" placeholder="@AuthStateProvider.CurrentMember.Direction.GetName()">
                 @foreach (TimeZoneInfo timeZone in TimeZoneInfo.GetSystemTimeZones())
                 {
                     @if (timeZone.Id == AuthStateProvider.CurrentMember.TimeZone?.Id)
                     {
-                        <option value="@timeZone.Id" selected>@timeZone.DisplayName</option>
+                        <option selected value="@timeZone.Id">@timeZone.DisplayName</option>
                     }
                     else
                     {
@@ -68,7 +68,7 @@
 
     </div>
     <div class="col-auto">
-        <button type="submit" class="btn btn-primary mb-3" @onclick="async () => await SetCurrentTimeZone()">Изменить</button>
+        <button class="btn btn-primary mb-3" @onclick="async () => await SetCurrentTimeZone()" type="submit">Изменить</button>
     </div>
 </div>
 <div class="row">
@@ -77,11 +77,11 @@
     </div>
     <div class="col">
         <div class="d-flex">
-            <input type="password" autocomplete="new-password" class="form-control" placeholder="Введите новый пароль" @bind="PasswordFirst">
-            <input type="password" autocomplete="new-password" class="form-control" placeholder="Повторите пароль" @bind="PasswordSecond">
+            <input autocomplete="new-password" @bind="PasswordFirst" class="form-control" placeholder="Введите новый пароль" type="password">
+            <input autocomplete="new-password" @bind="PasswordSecond" class="form-control" placeholder="Повторите пароль" type="password">
         </div>
     </div>
     <div class="col-auto">
-        <button type="password" disabled="@(PasswordFirst != PasswordSecond)" class="btn btn-primary mb-3" @onclick="async () => await SetNewPassword()">Изменить</button>
+        <button class="btn btn-primary mb-3" disabled="@(PasswordFirst != PasswordSecond)" @onclick="async () => await SetNewPassword()" type="password">Изменить</button>
     </div>
 </div>

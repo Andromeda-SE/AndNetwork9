@@ -33,7 +33,9 @@ namespace AndNetwork9.Shared.Backend.Rabbit
                 }
                 finally
                 {
-                    Model.BasicPublish(string.Empty, args.BasicProperties.ReplyTo, replyProperties,
+                    Model.BasicPublish(string.Empty,
+                        args.BasicProperties.ReplyTo,
+                        replyProperties,
                         ReadOnlyMemory<byte>.Empty);
                     Model.BasicAck(args.DeliveryTag, false);
                 }

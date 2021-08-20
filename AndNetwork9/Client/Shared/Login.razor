@@ -1,16 +1,16 @@
 ﻿<div class="d-flex justify-content-center">
     <div style="max-width: 300px">
-        <form>
+        <form autocomplete="on">
             <div class="mb-3">
-                <label for="loginInput" class="form-label">Никнейм</label>
-                <input type="email" class="form-control" id="loginInput" @bind="Nickname">
+                <label class="form-label" for="loginInput">Никнейм</label>
+                <input @bind="Nickname" class="form-control" id="loginInput" @onkeypress="Callback" type="text">
             </div>
             <div class="mb-3">
-                <label for="passwordInput" class="form-label">Пароль</label>
-                <input type="password" class="form-control" id="passwordInput" @bind="Password">
+                <label class="form-label" for="passwordInput">Пароль</label>
+                <input @bind="Password" class="form-control" id="passwordInput" @onkeypress="Callback" type="password">
             </div>
-            <div class="text-danger form-text" hidden="@(!ErrorLogin)">Неверный логин или пароль</div>
-            <button type="submit" class="btn btn-primary" disabled="@(!LoginEnabled)" @onclick="LoginAsync">Войти</button>
+            <div class="form-text text-danger" hidden="@(!ErrorLogin)">Неверный логин или пароль</div>
+            <button class="btn btn-primary" disabled="@(!LoginEnabled)" @onclick="LoginAsync" type="button">Войти</button>
         </form>
     </div>
 </div>

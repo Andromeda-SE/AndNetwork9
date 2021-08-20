@@ -19,12 +19,9 @@ namespace AndNetwork9.Client.Pages.Management
             Rank = Rank.Guest,
         };
 
-        private bool Validate()
-        {
-            return !string.IsNullOrWhiteSpace(Model.Nickname)
-                   && Model.SteamId != 0
-                   && Model.DiscordId != 0;
-        }
+        private bool Validate() => !string.IsNullOrWhiteSpace(Model.Nickname)
+                                   && Model.SteamId != 0
+                                   && Model.DiscordId != 0;
 
         private async System.Threading.Tasks.Task Create()
         {

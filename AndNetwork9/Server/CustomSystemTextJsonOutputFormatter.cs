@@ -48,7 +48,8 @@ namespace AndNetwork9.Server
             {
                 await using Stream stream = Encoding.CreateTranscodingStream(httpContext.Response.Body,
                     selectedEncoding,
-                    Encoding.UTF8, true);
+                    Encoding.UTF8,
+                    true);
                 await JsonSerializer.SerializeAsync(stream, context.Object, type, SerializerOptions);
                 await stream.FlushAsync();
             }

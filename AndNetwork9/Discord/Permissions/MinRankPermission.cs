@@ -12,10 +12,7 @@ namespace AndNetwork9.Discord.Permissions
     {
         private readonly Rank _rank;
 
-        public MinRankPermission(Rank rank = Rank.Neophyte)
-        {
-            _rank = rank;
-        }
+        public MinRankPermission(Rank rank = Rank.Neophyte) => _rank = rank;
 
         public override async Task<PreconditionResult> CheckPermissionsAsync(ICommandContext context,
             CommandInfo command, IServiceProvider services)

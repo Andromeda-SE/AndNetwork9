@@ -58,7 +58,8 @@ namespace AndNetwork9.Discord.Listeners
                                 new(
                                     GetVotingMessage(request.Votings.Single(x => x.Direction == direction),
                                         nicknameLength));
-                        }, RequestOptions.Default);
+                        },
+                        RequestOptions.Default);
             }
         }
 
@@ -71,7 +72,9 @@ namespace AndNetwork9.Discord.Listeners
 
             int totalVoters = voting.Members.Count(x => x.Votes is null);
             int currentVoters = voting.Members.Count(x => x.Votes is null && x.Voted);
-            text.AppendFormat("Явка: {0:D}/{1:D}\t({2:P0})", currentVoters, totalVoters,
+            text.AppendFormat("Явка: {0:D}/{1:D}\t({2:P0})",
+                currentVoters,
+                totalVoters,
                 totalVoters == 0 ? "--- %" : (double)currentVoters / totalVoters);
             text.AppendLine();
 
@@ -121,7 +124,8 @@ namespace AndNetwork9.Discord.Listeners
                 stringText.Append(' ', nicknameLength - electionsMember.Member.Nickname.Length + 1);
 
                 double percent = electionsMember.Votes.GetValueOrDefault(0) / (double)totalVotes;
-                int filledCount = (int)Math.Round(barLength * (double.IsNaN(percent) ? 0 : percent), 0,
+                int filledCount = (int)Math.Round(barLength * (double.IsNaN(percent) ? 0 : percent),
+                    0,
                     MidpointRounding.ToEven);
                 int emptyCount = barLength - filledCount;
                 stringText.Append('[');

@@ -53,8 +53,12 @@ namespace AndNetwork9.Discord
 
             string firstAdvisorName = Enum.GetValues<Rank>().Max().GetRankName();
             FirstAdvisorRole = roles.FirstOrDefault(x => x.Name == firstAdvisorName)
-                               ?? await guild.CreateRoleAsync(firstAdvisorName, GuildPermissions.None, Color.Red, true,
-                                   true, RequestOptions.Default);
+                               ?? await guild.CreateRoleAsync(firstAdvisorName,
+                                   GuildPermissions.None,
+                                   Color.Red,
+                                   true,
+                                   true,
+                                   RequestOptions.Default);
 
             ImmutableDictionary<Direction, IRole>.Builder rolesBuilder =
                 ImmutableDictionary<Direction, IRole>.Empty.ToBuilder();
@@ -63,7 +67,10 @@ namespace AndNetwork9.Discord
                 string name = department.GetName();
                 IRole? role = roles.FirstOrDefault(x => x.Name == name)
                               ?? await guild.CreateRoleAsync(name,
-                                  GuildPermissions.None, department.GetDiscordColor(), false, true,
+                                  GuildPermissions.None,
+                                  department.GetDiscordColor(),
+                                  false,
+                                  true,
                                   RequestOptions.Default);
                 rolesBuilder.Add(department, role);
             }
@@ -76,7 +83,11 @@ namespace AndNetwork9.Discord
                 .Where(x => x.DisbandDate <= DateOnly.FromDateTime(DateTime.UtcNow)).ToArrayAsync())
             {
                 IRole role = squad.DiscordRoleId is null
-                    ? await guild.CreateRoleAsync(squad.ToString(), GuildPermissions.None, Color.Default, true, true,
+                    ? await guild.CreateRoleAsync(squad.ToString(),
+                        GuildPermissions.None,
+                        Color.Default,
+                        true,
+                        true,
                         RequestOptions.Default)
                     : guild.Roles.First(x => x.Id == squad.DiscordRoleId.Value);
                 squadRolesBuilder.Add(squad, role);
@@ -86,12 +97,20 @@ namespace AndNetwork9.Discord
 
             const string advisorRoleName = "Советник клана";
             AdvisorRole = roles.FirstOrDefault(x => x.Name == advisorRoleName)
-                          ?? await guild.CreateRoleAsync(advisorRoleName, GuildPermissions.None, null, false, false,
+                          ?? await guild.CreateRoleAsync(advisorRoleName,
+                              GuildPermissions.None,
+                              null,
+                              false,
+                              false,
                               RequestOptions.Default);
 
             const string defaultRoleName = "Участник клана";
             DefaultRole = roles.FirstOrDefault(x => x.Name == defaultRoleName)
-                          ?? await guild.CreateRoleAsync(defaultRoleName, GuildPermissions.None, null, false, false,
+                          ?? await guild.CreateRoleAsync(defaultRoleName,
+                              GuildPermissions.None,
+                              null,
+                              false,
+                              false,
                               RequestOptions.Default);
         }
 

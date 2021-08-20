@@ -8,12 +8,11 @@ namespace AndNetwork9.Shared.Storage
 {
     public record Repo : IId
     {
-        public int Id { get; set; }
         public string Name { get; set; } = string.Empty;
         public string RepoName { get; set; } = string.Empty;
         public RepoType Type { get; set; }
         public int? CreatorId { get; set; }
-        
+
         public virtual Member? Creator { get; set; }
 
         [JsonIgnore]
@@ -30,5 +29,6 @@ namespace AndNetwork9.Shared.Storage
         public int WriteRuleId { get; set; }
         [JsonIgnore]
         public virtual AccessRule? WriteRule { get; set; } = null!;
+        public int Id { get; set; }
     }
 }
