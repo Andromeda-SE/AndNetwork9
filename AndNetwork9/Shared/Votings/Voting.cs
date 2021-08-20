@@ -39,9 +39,6 @@ namespace AndNetwork9.Shared.Votings
             return Votes.Any(x => x.MemberId == member.Id) || ReadRule.HasAccess(member);
         }
 
-        public bool HasWriteAccess(Member member)
-        {
-            return Reporter?.Id == member.Id || EditRule.HasAccess(member);
-        }
+        public bool HasWriteAccess(Member member) => Reporter?.Id == member.Id || EditRule.HasAccess(member);
     }
 }

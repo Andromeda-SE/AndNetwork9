@@ -102,6 +102,7 @@ namespace AndNetwork9.Shared.Extensions
             return rank switch
             {
                 Rank.Outcast => "Изганнник",
+                Rank.Enemy => "Противник",
                 Rank.Guest => "Гость",
                 Rank.Diplomat => "Дипломат",
                 Rank.Ally => "Союзник",

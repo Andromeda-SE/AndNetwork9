@@ -40,12 +40,13 @@ namespace AndNetwork9.Shared.Backend.Elections
 
                 Stage = election.Stage,
 
-                Votes = election.Votings.ToDictionary(x => x.Direction, x => x.Members.Where(y => y.Votes is not null)
-                    .Append(new()
-                    {
-                        MemberId = 0,
-                        Votes = x.AgainstAll,
-                    }).ToDictionary(y => y.MemberId, y => y.Votes ?? throw new ArgumentException())),
+                Votes = election.Votings.ToDictionary(x => x.Direction,
+                    x => x.Members.Where(y => y.Votes is not null)
+                        .Append(new()
+                        {
+                            MemberId = 0,
+                            Votes = x.AgainstAll,
+                        }).ToDictionary(y => y.MemberId, y => y.Votes ?? throw new ArgumentException())),
             };
         }
     }

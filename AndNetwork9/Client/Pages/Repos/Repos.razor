@@ -12,7 +12,7 @@
     <li class="nav-item">
         <button class="nav-link @(Selected == SelectedTab.Me ? "active" : string.Empty)" @onclick="() => Selected = SelectedTab.Me">Я</button>
     </li>
-    <li class="nav-item align-content-end">
+    <li class="align-content-end nav-item">
         <a class="btn btn-success" href="repo/new">Создать новый</a>
     </li>
 </ul>
@@ -26,5 +26,5 @@
 }
 else
 {
-    <Table TItem="AndNetwork9.Shared.Storage.Repo" Source="@(ViewEntities.ToArray())" Columns="ColumnDefinitions" SelectionChanged="SelectionChanged" InitialSort="(3, true)"/>
+    <Table Columns="ColumnDefinitions" InitialSort="(3, true)" SelectionChanged="SelectionChanged" Source="@(ViewEntities.ToArray())" TItem="AndNetwork9.Shared.Storage.Repo"/>
 }

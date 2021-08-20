@@ -4,8 +4,9 @@
     <tr>
         @foreach (ColumnDefinition column in Columns)
         {
-            <th scope="col" class="user-select-none" @onclick="() => SelectedColumn = Array.IndexOf(Columns, column)">
-                @column.Name <i class="@(SelectedColumn == Array.IndexOf(Columns, column) ? column.SortType.Type.GetIconStyle(column.SortType.Reverse ? !View.Descending : View.Descending) : string.Empty)"></i>
+            <th class="user-select-none" @onclick="() => SelectedColumn = Array.IndexOf(Columns, column)" scope="col">
+                @column.Name
+                <i class="@(SelectedColumn == Array.IndexOf(Columns, column) ? column.SortType.Type.GetIconStyle(column.SortType.Reverse ? !View.Descending : View.Descending) : string.Empty)"></i>
             </th>
         }
     </tr>
@@ -13,7 +14,7 @@
     <tbody>
     @foreach (TItem item in View)
     {
-        <tr @onclick="() => SelectedRow = item.Id" class="@(item.Id == SelectedRow ? "table-secondary" : string.Empty)">
+        <tr class="@(item.Id == SelectedRow ? "table-secondary" : string.Empty)" @onclick="() => SelectedRow = item.Id">
             @foreach (ColumnDefinition column in Columns)
             {
                 @if (column.HeaderFunc(item))

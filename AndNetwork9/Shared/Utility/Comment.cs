@@ -31,9 +31,6 @@ namespace AndNetwork9.Shared.Utility
                 : Children.Select(child => child.FindComment(id)).FirstOrDefault(result => result is not null);
         }
 
-        public override string ToString()
-        {
-            return Text;
-        }
+        public override string ToString() => Text;
     }
 }

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Net;
 using AndNetwork9.Shared.Backend;
 using AndNetwork9.Shared.Backend.Discord.Enums;
 using AndNetwork9.Shared.Backend.Rabbit;
@@ -27,19 +26,9 @@ namespace AndNetwork9.Discord.Listeners
             await using AsyncServiceScope scope = _scopeFactory.CreateAsyncScope();
             ClanDataContext? data = (ClanDataContext?)scope.ServiceProvider.GetService(typeof(ClanDataContext));
             if (data is null) throw new ApplicationException();
-            try
-            {
-                ulong channelId = data.DiscordChannels.Single(x => x.ChannelFlags.HasFlag(ChannelFlags.Advertisement))
-                    .DiscordId;
-                await _bot.GetGuild(_bot.GuildId).GetTextChannel(channelId).SendMessageAsync(arg);
-            }
-            catch (Exception e)
-            {
-                throw new FailedCallException(HttpStatusCode.Locked)
-                {
-                    Description = e.Message,
-                };
-            }
+            ulong channelId = data.DiscordChannels.Single(x => x.ChannelFlags.HasFlag(ChannelFlags.Advertisement))
+                .DiscordId;
+            await _bot.GetGuild(_bot.GuildId).GetTextChannel(channelId).SendMessageAsync(arg);
         }
     }
 }

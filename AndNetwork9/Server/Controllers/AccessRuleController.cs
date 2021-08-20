@@ -18,10 +18,7 @@ namespace AndNetwork9.Server.Controllers
     {
         private readonly ClanDataContext _data;
 
-        public AccessRuleController(ClanDataContext data)
-        {
-            _data = data;
-        }
+        public AccessRuleController(ClanDataContext data) => _data = data;
 
         [HttpGet("{id:int}")]
         [Authorize]
@@ -48,7 +45,7 @@ namespace AndNetwork9.Server.Controllers
             rule.AllowedMembers = _data.Members.AsEnumerable()
                 .Join(rule.AllowedMembersIds, x => x.Id, x => x, (member, _) => member)
                 .ToArray();
-            EntityEntry<AccessRule> result = await _data.AccessRules.AddAsync(rule with { Id = 0 });
+            EntityEntry<AccessRule> result = await _data.AccessRules.AddAsync(rule with {Id = 0});
             await _data.SaveChangesAsync();
             return Ok(result.Entity);
         }

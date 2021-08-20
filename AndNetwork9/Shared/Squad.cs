@@ -36,9 +36,7 @@ namespace AndNetwork9.Shared
 
         int IId.Id => Number;
 
-        public override string ToString()
-        {
-            return (Name is null ? Number.ToRoman() : Number.ToRoman() + " " + Name) + " отряд";
-        }
+        public override string ToString() =>
+            (Name is null ? Number.ToRoman() : Number.ToRoman() + " " + Name) + " отряд";
     }
 }

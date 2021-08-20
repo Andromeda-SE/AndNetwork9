@@ -26,10 +26,7 @@ namespace AndNetwork9.Server.Controllers
     {
         private readonly ClanDataContext _data;
 
-        public AuthController(ClanDataContext data)
-        {
-            _data = data;
-        }
+        public AuthController(ClanDataContext data) => _data = data;
 
         // POST api/<AuthController>
         [HttpPost]
@@ -123,7 +120,8 @@ namespace AndNetwork9.Server.Controllers
             await Delete();
             return Ok();
         }
-#if DEBUG
+
+//#if DEBUG
         // PUT api/<AuthController>/5
         [HttpPut("{id:int}")]
         public async Task<IActionResult> Put(int id, [FromBody] string newPassword)
@@ -139,7 +137,7 @@ namespace AndNetwork9.Server.Controllers
             return NotFound();
         }
 
-#endif
+//#endif
 
         // DELETE api/<AuthController>/5
         [HttpDelete]

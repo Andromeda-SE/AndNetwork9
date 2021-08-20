@@ -2,7 +2,6 @@
 using System.Net.Http;
 using System.Net.Http.Json;
 using AndNetwork9.Client.Extensions;
-using AndNetwork9.Shared;
 using AndNetwork9.Shared.Storage;
 using AndNetwork9.Shared.Utility;
 using Microsoft.AspNetCore.Components;

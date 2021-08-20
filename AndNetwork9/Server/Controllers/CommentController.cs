@@ -15,10 +15,7 @@ namespace AndNetwork9.Server.Controllers
     {
         private readonly ClanDataContext _data;
 
-        public CommentController(ClanDataContext data)
-        {
-            _data = data;
-        }
+        public CommentController(ClanDataContext data) => _data = data;
 
         [HttpPut("{id:int}")]
         [Authorize]

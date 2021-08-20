@@ -19,11 +19,13 @@ namespace AndNetwork9.Shared.Backend.Rabbit
 
             properties.ReplyTo = ReplyQueueName;
             properties.CorrelationId = guid.ToString("N");
-            Waiting.AddOrUpdate(guid, _ => new(false), (_, oldEvent) =>
-            {
-                oldEvent?.Dispose();
-                return new(false);
-            });
+            Waiting.AddOrUpdate(guid,
+                _ => new(false),
+                (_, oldEvent) =>
+                {
+                    oldEvent?.Dispose();
+                    return new(false);
+                });
             Model.BasicPublish(string.Empty, MethodQueueName, properties, bytes);
             Model.BasicConsume(ReplyQueueName, false, Consumer);
             return System.Threading.Tasks.Task.Run(() =>

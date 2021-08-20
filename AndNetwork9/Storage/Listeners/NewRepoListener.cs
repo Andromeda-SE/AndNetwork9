@@ -15,8 +15,8 @@ namespace AndNetwork9.Storage.Listeners
 {
     public class NewRepoListener : BaseRabbitListenerWithResponse<Repo, Repo>
     {
-        private readonly IServiceScopeFactory _scopeFactory;
         private readonly RepoManager _repoManager;
+        private readonly IServiceScopeFactory _scopeFactory;
 
         public NewRepoListener(IConnection connection, IServiceScopeFactory scopeFactory) : base(connection,
             NewRepoSender.QUEUE_NAME)
@@ -31,24 +31,24 @@ namespace AndNetwork9.Storage.Listeners
             ClanDataContext? data = (ClanDataContext?)scope.ServiceProvider.GetService(typeof(ClanDataContext));
             if (data is null) throw new ApplicationException();
             if (data.Repos.Any(x => x.RepoName == request.RepoName))
-                    throw new ArgumentException(null, nameof(request));
+                throw new ArgumentException(null, nameof(request));
 
             request.RepoName = Guid.NewGuid().ToString("N");
 
             _repoManager.CreateRepo(request);
-            EntityEntry<Comment>? comment = data.Comments.Add(new Comment()
-            { 
-                AuthorId = request.CreatorId, 
-                CreateTime = DateTime.UtcNow, 
-                LastEditTime = null, 
+            EntityEntry<Comment>? comment = data.Comments.Add(new()
+            {
+                AuthorId = request.CreatorId,
+                CreateTime = DateTime.UtcNow,
+                LastEditTime = null,
                 Text = string.Empty,
             });
             await data.SaveChangesAsync();
             request.CommentId = comment.Entity.Id;
             EntityEntry<Repo> result = await data.Repos.AddAsync(request with
-            { 
-                Nodes = new List<RepoNode>(), 
-                Creator = null
+            {
+                Nodes = new List<RepoNode>(),
+                Creator = null,
             });
             await data.SaveChangesAsync();
             return result.Entity;

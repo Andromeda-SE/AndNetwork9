@@ -34,7 +34,7 @@ namespace AndNetwork9.Server.Controllers
             Member? member = await this.GetCurrentMember(_data);
             if (member is null) return Unauthorized();
 
-            return Ok(_data.Elections.Select(x => new { x.Id, x.Stage }));
+            return Ok(_data.Elections.Select(x => new {x.Id, x.Stage}));
         }
 
         [HttpGet("current")]
@@ -93,7 +93,9 @@ namespace AndNetwork9.Server.Controllers
             if (member is null) return Unauthorized();
             try
             {
-                await _voteSender.CallAsync(new(member.Id, vote.Key, vote.Direction,
+                await _voteSender.CallAsync(new(member.Id,
+                    vote.Key,
+                    vote.Direction,
                     vote.Votes.Select(x => new VoteArgNode(x.Key == 0 ? null : x.Key, x.Value)).ToArray()));
             }
             catch

@@ -21,10 +21,7 @@ namespace AndNetwork9.Discord.Commands
     {
         private readonly ILogger<Send> _logger;
 
-        public Send(DiscordBot bot, ClanDataContext data, ILogger<Send> logger) : base(bot, data)
-        {
-            _logger = logger;
-        }
+        public Send(DiscordBot bot, ClanDataContext data, ILogger<Send> logger) : base(bot, data) => _logger = logger;
 
 
         [Command(nameof(Dm))]

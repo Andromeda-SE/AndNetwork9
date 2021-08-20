@@ -69,6 +69,7 @@ namespace AndNetwork9.Server.Controllers
             {
                 Id = 0,
                 AccessRulesOverrides = Array.Empty<AccessRule>(),
+                JoinDate = DateOnly.FromDateTime(DateTime.UtcNow),
             });
             await _data.SaveChangesAsync();
             return Ok(result.Entity);
@@ -96,7 +97,8 @@ namespace AndNetwork9.Server.Controllers
         public async Task<IActionResult> PatchNickname([FromBody] string newNickname)
         {
             Member? member = await this.GetCurrentMember(_data);
-            if (member is null) return Unauthorized(); ;
+            if (member is null) return Unauthorized();
+            ;
             if (newNickname.Length > 26) return BadRequest();
             if (_data.Members.Any(x => x.Nickname == newNickname)) return Conflict();
 
@@ -136,7 +138,7 @@ namespace AndNetwork9.Server.Controllers
             {
                 return NotFound();
             }
-            
+
 
             await _data.SaveChangesAsync();
             return Ok();

@@ -1,11 +1,11 @@
 ﻿@if (_initialized)
 {
-    <div class="modal fade show" tabindex="-1" id="@Id">
+    <div class="fade modal show" id="@Id" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Изменение правил доступа</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    <button class="btn-close" data-bs-dismiss="modal" type="button"></button>
                 </div>
                 <div class="modal-body">
                     <div class="mb-3 row">
@@ -14,7 +14,7 @@
                             @foreach (KeyValuePair<Direction, bool> direction in DirectionAccess)
                             {
                                 <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" @bind="DirectionAccess[direction.Key]">
+                                    <input @bind="DirectionAccess[direction.Key]" class="form-check-input" type="checkbox">
                                     <label class="form-check-label">
                                         @direction.Key.GetName()
                                     </label>
@@ -25,7 +25,7 @@
                     <div class="mb-3 row">
                         <label class="col-form-label">Минимальный ранг</label>
                         <div class="">
-                            <select class="form-control form-select" @bind="MinRank">
+                            <select @bind="MinRank" class="form-control form-select">
                                 @foreach (Rank rank in Enum.GetValues<Rank>().Where(x => x > Rank.None && x <= AuthStateProvider.CurrentMember.Rank))
                                 {
                                     <option value="@rank">@rank.GetRankName()</option>
@@ -36,7 +36,7 @@
                     <div class="mb-3 row">
                         <label class="col-form-label">Отряд</label>
                         <div class="">
-                            <select class="form-control form-select" @bind="SelectedSquadId">
+                            <select @bind="SelectedSquadId" class="form-control form-select">
                                 @* ReSharper disable once RedundantCast *@
                                 <option value="@(default(int?))">(нет)</option>
                                 @foreach (Squad squad in Squads)
@@ -55,21 +55,20 @@
                                 {
                                     <tr>
                                         <td>
-                                            <a target="_blank" href="@member.GetLink()">@member.ToString()</a>
+                                            <a href="@member.GetLink()" target="_blank">@member.ToString()</a>
                                         </td>
                                         <td class="align-middle">
-                                            <button type="button" class="btn btn-danger btn-sm" @onclick="e => SelectedMembers.Remove(member)">
+                                            <button class="btn btn-danger btn-sm" @onclick="e => SelectedMembers.Remove(member)" type="button">
                                                 <i class="bi bi-dash-lg"/>
                                             </button>
                                         </td>
                                     </tr>
                                 }
-
                                 </tbody>
                                 <tfoot>
                                 <tr>
                                     <td>
-                                        <select class="form-control form-select form-control-sm" @bind="SelectedMemberId">
+                                        <select @bind="SelectedMemberId" class="form-control form-control-sm form-select">
                                             <option value="@(default(int?))"></option>
                                             @foreach (Member member in Members.Except(SelectedMembers).OrderByDescending(x => x))
                                             {
@@ -78,22 +77,19 @@
                                         </select>
                                     </td>
                                     <td class="align-top">
-                                        <button type="button" disabled="@(SelectedMember is null)" class="btn btn-success btn-sm mt-1" @onclick="AddMember">
+                                        <button class="btn btn-sm btn-success mt-1" disabled="@(SelectedMember is null)" @onclick="AddMember" type="button">
                                             <i class="bi bi-plus-lg"/>
                                         </button>
                                     </td>
                                 </tr>
                                 </tfoot>
-
                             </table>
-
-
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" @onclick="Cancel">Отмена</button>
-                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal" @onclick="Save">Сохранить</button>
+                    <button class="btn btn-secondary" data-bs-dismiss="modal" @onclick="Cancel" type="button">Отмена</button>
+                    <button class="btn btn-primary" data-bs-dismiss="modal" @onclick="Save" type="button">Сохранить</button>
                 </div>
             </div>
         </div>

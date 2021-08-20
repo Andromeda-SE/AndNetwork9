@@ -11,7 +11,7 @@ namespace AndNetwork9.Shared
 
         public int MemberId { get; set; }
         [JsonIgnore]
-        public virtual Member Member { get; set; } = null!;
+        public virtual Member? Member { get; set; } = null;
 
         public AwardType Type { get; set; }
 

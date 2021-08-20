@@ -3,34 +3,34 @@
 <AccessRuleEditor Id="WriteRule" Model="WriteRule"></AccessRuleEditor>
 
 <div class="mb-3 row">
-    <label class="col-sm-2 col-form-label">Имя</label>
+    <label class="col-form-label col-sm-2">Имя</label>
     <div class="col-sm-10">
-        <input type="text" class="form-control" @bind="Name">
+        <input @bind="Name" class="form-control" type="text">
     </div>
 </div>
 <div class="mb-3 row">
-    <label class="col-sm-2 col-form-label">Тип</label>
+    <label class="col-form-label col-sm-2">Тип</label>
     <div class="col-sm-10">
-        <select class="form-control form-select" @bind="Type">
-            <option value="@RepoType.Blueprint" selected="">Чертёж</option>
-            <option value="@RepoType.Script" selected="">Скрипт</option>
+        <select @bind="Type" class="form-control form-select">
+            <option selected="" value="@RepoType.Blueprint">Чертёж</option>
+            <option selected="" value="@RepoType.Script">Скрипт</option>
         </select>
     </div>
 </div>
 <div class="mb-3 row">
-    <label class="col-sm-2 col-form-label">Права чтения</label>
+    <label class="col-form-label col-sm-2">Права чтения</label>
     <div class="col-sm-10">
-        <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#ReadRule">Изменить</button>
+        <button class="btn btn-warning" data-bs-target="#ReadRule" data-bs-toggle="modal">Изменить</button>
     </div>
 </div>
 <div class="mb-3 row">
-    <label class="col-sm-2 col-form-label">Права записи</label>
+    <label class="col-form-label col-sm-2">Права записи</label>
     <div class="col-sm-10">
-        <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#WriteRule">Изменить</button>
+        <button class="btn btn-warning" data-bs-target="#WriteRule" data-bs-toggle="modal">Изменить</button>
     </div>
 </div>
 <div class="mb-3 row">
     <div class="col-sm-12">
-        <button disabled="@(string.IsNullOrWhiteSpace(Name))" class="btn btn-primary" @onclick="CreateRepo">Создать</button>
+        <button class="btn btn-primary" disabled="@(string.IsNullOrWhiteSpace(Name))" @onclick="CreateRepo">Создать</button>
     </div>
 </div>

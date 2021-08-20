@@ -21,9 +21,9 @@ else
             {
                 <MarkdownEditor
                     GetterFunc="() => EditedText"
-                    SetterFunc="x => EditedText = x"
                     ResetFunc="() => EditedText = Entity.Description?.Text"
-                    SaveFunc="async _ => await UpdateDescription()">
+                    SaveFunc="async _ => await UpdateDescription()"
+                    SetterFunc="x => EditedText = x">
                 </MarkdownEditor>
             }
             else
@@ -47,11 +47,11 @@ else
             <div class="d-grid gap-2">
                 @if (Entity.Nodes.Any(x => x.Prototype == 0))
                 {
-                    <a target="_blank" class="btn btn-success" type="button" href="@Entity.Nodes.Where(x => x.Prototype == 0).MaxBy(x => x).GetLink()">Скачать последнюю стабильную версию</a>
+                    <a class="btn btn-success" href="@Entity.Nodes.Where(x => x.Prototype == 0).MaxBy(x => x).GetLink()" target="_blank" type="button">Скачать последнюю стабильную версию</a>
                 }
                 @if (Entity.Nodes.Any(x => x.Prototype != 0))
                 {
-                    <a target="_blank" class="btn btn-primary" type="button" href="@Entity.Nodes.Where(x => x.Prototype != 0).MaxBy(x => x).GetLink()">Скачать последний прототип</a>
+                    <a class="btn btn-primary" href="@Entity.Nodes.Where(x => x.Prototype != 0).MaxBy(x => x).GetLink()" target="_blank" type="button">Скачать последний прототип</a>
                 }
             </div>
             <br/>
@@ -65,17 +65,17 @@ else
                 </select>
                 @if (SelectedNode is not null)
                 {
-                    <a target="_blank" class="btn btn-secondary" type="button" href="@SelectedNode.GetLink()">Скачать версию @SelectedNode.Tag</a>
+                    <a class="btn btn-secondary" href="@SelectedNode.GetLink()" target="_blank" type="button">Скачать версию @SelectedNode.Tag</a>
                 }
                 @if (Entity.WriteRule.HasAccess(AuthStateProvider.CurrentMember))
                 {
-                    <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#loader">Загрузить новую версию</button>
+                    <button class="btn btn-warning" data-bs-target="#loader" data-bs-toggle="modal">Загрузить новую версию</button>
                 }
                 @if (Entity.CreatorId == AuthStateProvider.CurrentMember.Id)
                 {
                     <div class="d-grid gap-2 mt-3">
-                        <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#ReadRule">Изменить права чтения</button>
-                        <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#WriteRule">Изменить права записи</button>
+                        <button class="btn btn-info" data-bs-target="#ReadRule" data-bs-toggle="modal" type="button">Изменить права чтения</button>
+                        <button class="btn btn-info" data-bs-target="#WriteRule" data-bs-toggle="modal" type="button">Изменить права записи</button>
                     </div>
                 }
             </div>

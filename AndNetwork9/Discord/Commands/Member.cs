@@ -122,13 +122,15 @@ namespace AndNetwork9.Discord.Commands
             if (member.Rank > Rank.None && member.Awards.Any())
             {
                 text.AppendLine();
-                string awards = string.Join(Environment.NewLine, member.Awards.Aggregate(
-                    new Dictionary<AwardType, int>(Enum.GetValues<AwardType>().Reverse()
-                        .Select(x => new KeyValuePair<AwardType, int>(x, 0))), (counts, award) =>
-                    {
-                        counts[award.Type]++;
-                        return counts;
-                    }).Where(x => x.Value > 0).Select(x => $"{x.Key.GetAwardSymbol()} × {x.Value:D}"));
+                string awards = string.Join(Environment.NewLine,
+                    member.Awards.Aggregate(
+                        new Dictionary<AwardType, int>(Enum.GetValues<AwardType>().Reverse()
+                            .Select(x => new KeyValuePair<AwardType, int>(x, 0))),
+                        (counts, award) =>
+                        {
+                            counts[award.Type]++;
+                            return counts;
+                        }).Where(x => x.Value > 0).Select(x => $"{x.Key.GetAwardSymbol()} × {x.Value:D}"));
                 addField("Награды", member.Awards.Sum(x => (int)x.Type) + Environment.NewLine + awards);
             }
 

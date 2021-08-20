@@ -20,10 +20,7 @@ namespace AndNetwork9.Server.Controllers
     {
         private readonly ClanDataContext _data;
 
-        public VotingController(ClanDataContext data)
-        {
-            _data = data;
-        }
+        public VotingController(ClanDataContext data) => _data = data;
 
         [HttpGet]
         [Authorize]
@@ -33,7 +30,7 @@ namespace AndNetwork9.Server.Controllers
             if (member is null) return Unauthorized();
 
             return Ok(_data.Votings.Where(x =>
-                x.Votes.Any(y => y.MemberId == member.Id && y.Result <= MemberVote.NoVote)));
+                x.Votes.Any(y => y.MemberId == member.Id && y.Result == MemberVote.NoVote)));
         }
 
         [HttpGet("all")]
@@ -44,6 +41,17 @@ namespace AndNetwork9.Server.Controllers
             if (member is null) return Unauthorized();
 
             return Ok(_data.Votings.Where(x => x.HasReadAccess(member)));
+        }
+
+        [HttpGet("active")]
+        [Authorize]
+        public async Task<ActionResult<Voting>> GetActive()
+        {
+            Member? member = await this.GetCurrentMember(_data);
+            if (member is null) return Unauthorized();
+
+            return Ok(_data.Votings.Where(x =>
+                x.HasReadAccess(member) && x.Votes.Any(y => y.Result == MemberVote.NoVote)));
         }
 
         [HttpGet("{id:int}")]
