@@ -364,3 +364,4 @@ FodyWeavers.xsd
 
 # Docker-compose .env file
 .env
+*.DotSettings
