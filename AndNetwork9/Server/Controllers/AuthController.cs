@@ -33,7 +33,7 @@ namespace AndNetwork9.Server.Controllers
         [AllowAnonymous]
         public async Task<ActionResult<IReadOnlyDictionary<string, string>>> Post([FromBody] AuthCredentials value)
         {
-            Member? member = await _data.Members.FirstOrDefaultAsync(x => x.Nickname == value.Nickname);
+            Member? member = await _data.Members.FirstOrDefaultAsync(x => x.Nickname == value.Nickname).ConfigureAwait(false);
             if (member is null
                 || member.PasswordHash is null
                 || !member.PasswordHash.SequenceEqual(value.Password.GetPasswordHash())) return NotFound();
@@ -66,8 +66,8 @@ namespace AndNetwork9.Server.Controllers
             await HttpContext.SignInAsync(
                 CookieAuthenticationDefaults.AuthenticationScheme,
                 new(claimsIdentity),
-                authProperties);
-            await _data.SaveChangesAsync();
+                authProperties).ConfigureAwait(false);
+            await _data.SaveChangesAsync().ConfigureAwait(false);
             return Ok(claims.ToDictionary(x => x.Type, x => x.Value));
         }
 
@@ -75,7 +75,7 @@ namespace AndNetwork9.Server.Controllers
         [AllowAnonymous]
         public async Task<ActionResult<IReadOnlyDictionary<string, string>>> Post(Guid sessionId)
         {
-            AuthSession? session = await _data.Sessions.FindAsync(sessionId);
+            AuthSession? session = await _data.Sessions.FindAsync(sessionId).ConfigureAwait(false);
             if (session is null) return NotFound();
             if (session.ExpireTime is not null && session.ExpireTime <= DateTime.Now) return NotFound();
             if (!Equals(session.Address, HttpContext.Connection.RemoteIpAddress)) return NotFound();
@@ -99,8 +99,8 @@ namespace AndNetwork9.Server.Controllers
             await HttpContext.SignInAsync(
                 CookieAuthenticationDefaults.AuthenticationScheme,
                 new(claimsIdentity),
-                authProperties);
-            await _data.SaveChangesAsync();
+                authProperties).ConfigureAwait(false);
+            await _data.SaveChangesAsync().ConfigureAwait(false);
             return Ok(claims.ToDictionary(x => x.Type, x => x.Value));
         }
 
@@ -111,13 +111,13 @@ namespace AndNetwork9.Server.Controllers
         {
             string? rawValue = ControllerContext.HttpContext.User.FindFirst(AuthExtensions.MEMBER_ID_CLAIM_NAME)?.Value;
             if (rawValue is null) return NotFound();
-            Member? member = await _data.Members.FindAsync(int.Parse(rawValue));
+            Member? member = await _data.Members.FindAsync(int.Parse(rawValue)).ConfigureAwait(false);
             if (member is null) return NotFound();
 
             member.SetPassword(newPassword);
-            await _data.SaveChangesAsync();
-            await DeleteOther();
-            await Delete();
+            await _data.SaveChangesAsync().ConfigureAwait(false);
+            await DeleteOther().ConfigureAwait(false);
+            await Delete().ConfigureAwait(false);
             return Ok();
         }
 
@@ -126,11 +126,11 @@ namespace AndNetwork9.Server.Controllers
         [HttpPut("{id:int}")]
         public async Task<IActionResult> Put(int id, [FromBody] string newPassword)
         {
-            Member? member = await _data.Members.FindAsync(id);
+            Member? member = await _data.Members.FindAsync(id).ConfigureAwait(false);
             if (member is not null)
             {
                 member.SetPassword(newPassword);
-                await _data.SaveChangesAsync();
+                await _data.SaveChangesAsync().ConfigureAwait(false);
                 return Ok();
             }
 
@@ -147,11 +147,11 @@ namespace AndNetwork9.Server.Controllers
             Claim? sessionClaim = ControllerContext.HttpContext.User.FindFirst(AuthExtensions.SESSION_ID_CLAIM_NAME);
             if (sessionClaim is null) return NotFound();
             if (!Guid.TryParse(sessionClaim.Value, out Guid sessionId)) return BadRequest();
-            AuthSession? session = await _data.Sessions.FindAsync(sessionId);
+            AuthSession? session = await _data.Sessions.FindAsync(sessionId).ConfigureAwait(false);
             if (session is null) return NotFound();
             _data.Sessions.Remove(session);
-            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            await _data.SaveChangesAsync();
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme).ConfigureAwait(false);
+            await _data.SaveChangesAsync().ConfigureAwait(false);
             return Ok();
         }
 
@@ -163,11 +163,11 @@ namespace AndNetwork9.Server.Controllers
             Claim? sessionClaim = ControllerContext.HttpContext.User.FindFirst(AuthExtensions.SESSION_ID_CLAIM_NAME);
             if (sessionClaim is null) return NotFound();
             if (!Guid.TryParse(sessionClaim.Value, out Guid sessionId)) return BadRequest();
-            AuthSession? session = await _data.Sessions.FindAsync(sessionId);
+            AuthSession? session = await _data.Sessions.FindAsync(sessionId).ConfigureAwait(false);
             if (session is null) return NotFound();
             _data.Sessions.RemoveRange(_data.Sessions
                 .Where(x => x.SessionId != sessionId && x.Member.Id == session.Member.Id).ToArray());
-            await _data.SaveChangesAsync();
+            await _data.SaveChangesAsync().ConfigureAwait(false);
             return Ok();
         }
     }

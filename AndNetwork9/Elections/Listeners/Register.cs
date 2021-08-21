@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Linq;
 using System.Net;
+using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using AndNetwork9.Shared;
 using AndNetwork9.Shared.Backend;
 using AndNetwork9.Shared.Backend.Elections;
@@ -28,11 +30,12 @@ namespace AndNetwork9.Elections.Listeners
 
         public override async void Run(int memberId)
         {
-            await using AsyncServiceScope scope = _scopeFactory.CreateAsyncScope();
+            AsyncServiceScope scope = _scopeFactory.CreateAsyncScope();
+            await using ConfiguredAsyncDisposable _ = scope.ConfigureAwait(false);
             ClanDataContext data = (ClanDataContext)scope.ServiceProvider.GetService(typeof(ClanDataContext))!;
             if (data is null) throw new ApplicationException();
 
-            Member? member = await data.Members.FindAsync(memberId);
+            Member? member = await data.Members.FindAsync(memberId).ConfigureAwait(false);
 
             if (member is null) throw new FailedCallException(HttpStatusCode.NotFound);
             if (member.Rank < Rank.Assistant || member.Direction <= Direction.None || member.IsSquadCommander)
@@ -41,7 +44,7 @@ namespace AndNetwork9.Elections.Listeners
             Election? election;
             try
             {
-                election = await data.Elections.SingleAsync(x => x.Stage == ElectionStage.Registration);
+                election = await data.Elections.SingleAsync(x => x.Stage == ElectionStage.Registration).ConfigureAwait(false);
             }
             catch (InvalidOperationException)
             {
@@ -60,8 +63,8 @@ namespace AndNetwork9.Elections.Listeners
                 VoterKey = default,
                 Voted = true,
             });
-            await data.SaveChangesAsync();
-            await _rewriteElectionsChannelSender.CallAsync(election);
+            await data.SaveChangesAsync().ConfigureAwait(false);
+            await _rewriteElectionsChannelSender.CallAsync(election).ConfigureAwait(false);
         }
     }
 }

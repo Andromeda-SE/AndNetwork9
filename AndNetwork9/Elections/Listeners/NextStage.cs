@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using AndNetwork9.Shared;
 using AndNetwork9.Shared.Backend;
 using AndNetwork9.Shared.Backend.Elections;
@@ -30,18 +32,19 @@ namespace AndNetwork9.Elections.Listeners
 
         public override async void Run(ElectionStage _)
         {
-            await using AsyncServiceScope scope = _scopeFactory.CreateAsyncScope();
+            AsyncServiceScope scope = _scopeFactory.CreateAsyncScope();
+            await using ConfiguredAsyncDisposable __ = scope.ConfigureAwait(false);
             ClanDataContext data = (ClanDataContext)scope.ServiceProvider.GetService(typeof(ClanDataContext))!;
             if (data is null) throw new ApplicationException();
 
             Election? election =
                 await data.Elections.FirstOrDefaultAsync(x =>
                     // ReSharper disable once MergeIntoPattern
-                    x.Stage > ElectionStage.None && x.Stage < ElectionStage.Ended);
+                    x.Stage > ElectionStage.None && x.Stage < ElectionStage.Ended).ConfigureAwait(false);
 
             if (election is null)
             {
-                EntityEntry<Election> result = await data.Elections.AddAsync(GetNewElections());
+                EntityEntry<Election> result = await data.Elections.AddAsync(GetNewElections()).ConfigureAwait(false);
                 election = result.Entity;
             }
             else
@@ -56,13 +59,13 @@ namespace AndNetwork9.Elections.Listeners
                         break;
                     case ElectionStage.Announcement:
                         EndElection(election, data);
-                        await data.Elections.AddAsync(GetNewElections());
+                        await data.Elections.AddAsync(GetNewElections()).ConfigureAwait(false);
                         break;
                 }
             }
 
-            await data.SaveChangesAsync();
-            await _rewriteElectionsChannelSender.CallAsync(election);
+            await data.SaveChangesAsync().ConfigureAwait(false);
+            await _rewriteElectionsChannelSender.CallAsync(election).ConfigureAwait(false);
         }
 
         private static Election GetNewElections()

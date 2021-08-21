@@ -54,7 +54,7 @@ namespace AndNetwork9.Storage
             };
             filePath = Path.Combine(repoPath, filePath);
             using IRepository repository = new Repository(repoPath);
-            await WriteAndCommit(repository, filePath, fileBytes, node.Description, node);
+            await WriteAndCommit(repository, filePath, fileBytes, node.Description, node).ConfigureAwait(false);
         }
 
         public byte[] GetFile(RepoNode node)
@@ -92,7 +92,7 @@ namespace AndNetwork9.Storage
             if (node is null) throw new ArgumentNullException(nameof(node));
             Signature signature =
                 new(node.Author is null ? ServiceIdentity : node.Author.GetIdentity(), DateTimeOffset.UtcNow);
-            await File.WriteAllBytesAsync(filePath, content, CancellationToken.None);
+            await File.WriteAllBytesAsync(filePath, content, CancellationToken.None).ConfigureAwait(false);
             Commands.Stage(repository, filePath);
             Commit commit = repository.Commit(comment,
                 signature,

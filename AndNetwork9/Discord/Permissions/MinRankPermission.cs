@@ -19,7 +19,7 @@ namespace AndNetwork9.Discord.Permissions
         {
             ClanDataContext data = (ClanDataContext)services.GetService(typeof(ClanDataContext))!;
             if (data is null) throw new ArgumentException("ClanContext is null", nameof(services));
-            Member? member = await data.Members.FirstOrDefaultAsync(x => x.DiscordId == context.User.Id);
+            Member? member = await data.Members.FirstOrDefaultAsync(x => x.DiscordId == context.User.Id).ConfigureAwait(false);
             return member is not null && member.Rank >= _rank
                 ? PreconditionResult.FromSuccess()
                 : PreconditionResult.FromError("Доступ запрещен");

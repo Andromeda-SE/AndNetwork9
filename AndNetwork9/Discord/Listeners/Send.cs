@@ -15,9 +15,9 @@ namespace AndNetwork9.Discord.Listeners
 
         public override async void Run(SendArg arg)
         {
-            RestUser? user = await _bot.Rest.GetUserAsync(arg.DiscordId);
+            RestUser? user = await _bot.Rest.GetUserAsync(arg.DiscordId).ConfigureAwait(false);
             if (user is null) throw new FailedCallException(HttpStatusCode.NotFound);
-            await user.SendMessageAsync(arg.Message);
+            await user.SendMessageAsync(arg.Message).ConfigureAwait(false);
         }
     }
 }

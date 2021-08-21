@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using AndNetwork9.Shared.Backend;
 using AndNetwork9.Shared.Backend.Rabbit;
@@ -27,7 +28,8 @@ namespace AndNetwork9.Storage.Listeners
 
         protected override async Task<Repo> GetResponseAsync(Repo request)
         {
-            await using AsyncServiceScope scope = _scopeFactory.CreateAsyncScope();
+            AsyncServiceScope scope = _scopeFactory.CreateAsyncScope();
+            await using ConfiguredAsyncDisposable _ = scope.ConfigureAwait(false);
             ClanDataContext? data = (ClanDataContext?)scope.ServiceProvider.GetService(typeof(ClanDataContext));
             if (data is null) throw new ApplicationException();
             if (data.Repos.Any(x => x.RepoName == request.RepoName))
@@ -43,14 +45,14 @@ namespace AndNetwork9.Storage.Listeners
                 LastEditTime = null,
                 Text = string.Empty,
             });
-            await data.SaveChangesAsync();
+            await data.SaveChangesAsync().ConfigureAwait(false);
             request.CommentId = comment.Entity.Id;
             EntityEntry<Repo> result = await data.Repos.AddAsync(request with
             {
                 Nodes = new List<RepoNode>(),
                 Creator = null,
-            });
-            await data.SaveChangesAsync();
+            }).ConfigureAwait(false);
+            await data.SaveChangesAsync().ConfigureAwait(false);
             return result.Entity;
         }
     }

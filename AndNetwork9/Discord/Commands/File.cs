@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Net.Http;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using AndNetwork9.Discord.Permissions;
@@ -36,19 +37,19 @@ namespace AndNetwork9.Discord.Commands
                     {
                         MinRank = Rank.Neophyte,
                     },
-                });
-                await Data.SaveChangesAsync();
+                }).ConfigureAwait(false);
+                await Data.SaveChangesAsync().ConfigureAwait(false);
                 text.AppendLine(
                     $"Файл {attachment.Filename} загружен и доступен по идентификатору \"{result.Entity.Id}\"");
             }
 
-            await ReplyAsync(text.ToString());
+            await ReplyAsync(text.ToString()).ConfigureAwait(false);
         }
 
         [Command(nameof(Download))]
         public async Task Download(int fileId)
         {
-            StaticFile? file = await Data.StaticFiles.FindAsync(fileId);
+            StaticFile? file = await Data.StaticFiles.FindAsync(fileId).ConfigureAwait(false);
             if (file is null)
             {
                 await ReplyAsync("Файл не найден").ConfigureAwait(false);
@@ -58,8 +59,9 @@ namespace AndNetwork9.Discord.Commands
             if (!file.ReadRule.HasAccess(GetCaller()))
                 await ReplyAsync("Доступ к файлу запрещен").ConfigureAwait(false);
             using HttpClient http = new();
-            await using Stream fileStream = await http.GetStreamAsync(file.Path);
-            await ReplyFileAsync(fileStream, file.ToString());
+            Stream fileStream = await http.GetStreamAsync(file.Path).ConfigureAwait(false);
+            await using ConfiguredAsyncDisposable _ = fileStream.ConfigureAwait(false);
+            await ReplyFileAsync(fileStream, file.ToString()).ConfigureAwait(false);
         }
     }
 }

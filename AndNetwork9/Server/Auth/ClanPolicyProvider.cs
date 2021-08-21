@@ -24,8 +24,8 @@ namespace AndNetwork9.Server.Auth
             ClanDataContext? data = (ClanDataContext?)scope.ServiceProvider.GetService(typeof(ClanDataContext));
             if (data is null) throw new ApplicationException();
 
-            Member? member = await context.User.GetCurrentMember(data);
-            AuthSession? session = await context.User.GetCurrentSession(data);
+            Member? member = await context.User.GetCurrentMember(data).ConfigureAwait(false);
+            AuthSession? session = await context.User.GetCurrentSession(data).ConfigureAwait(false);
             if (member is null
                 || session is null
                 || session.ExpireTime < DateTime.UtcNow
@@ -64,9 +64,9 @@ namespace AndNetwork9.Server.Auth
             Task.FromResult(
                 new AuthorizationPolicyBuilder(CookieAuthenticationDefaults.AuthenticationScheme)
                     .RequireAuthenticatedUser()
-                    .Build());
+                    .Build()).ConfigureAwait(false);
 
         public async Task<AuthorizationPolicy?> GetFallbackPolicyAsync() =>
-            await Task.FromResult(default(AuthorizationPolicy));
+            await Task.FromResult(default(AuthorizationPolicy)).ConfigureAwait(false);
     }
 }

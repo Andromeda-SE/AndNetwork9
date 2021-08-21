@@ -26,7 +26,7 @@ namespace AndNetwork9.Server.Controllers
         [Authorize]
         public async Task<ActionResult<Voting>> Get()
         {
-            Member? member = await this.GetCurrentMember(_data);
+            Member? member = await this.GetCurrentMember(_data).ConfigureAwait(false);
             if (member is null) return Unauthorized();
 
             return Ok(_data.Votings.Where(x =>
@@ -37,7 +37,7 @@ namespace AndNetwork9.Server.Controllers
         [Authorize]
         public async Task<ActionResult<Voting>> GetAll()
         {
-            Member? member = await this.GetCurrentMember(_data);
+            Member? member = await this.GetCurrentMember(_data).ConfigureAwait(false);
             if (member is null) return Unauthorized();
 
             return Ok(_data.Votings.Where(x => x.HasReadAccess(member)));
@@ -47,7 +47,7 @@ namespace AndNetwork9.Server.Controllers
         [Authorize]
         public async Task<ActionResult<Voting>> GetActive()
         {
-            Member? member = await this.GetCurrentMember(_data);
+            Member? member = await this.GetCurrentMember(_data).ConfigureAwait(false);
             if (member is null) return Unauthorized();
 
             return Ok(_data.Votings.Where(x =>
@@ -58,10 +58,10 @@ namespace AndNetwork9.Server.Controllers
         [Authorize]
         public async Task<ActionResult<Voting>> Get(int id)
         {
-            Member? member = await this.GetCurrentMember(_data);
+            Member? member = await this.GetCurrentMember(_data).ConfigureAwait(false);
             if (member is null) return Unauthorized();
 
-            Voting? voting = await _data.Votings.FindAsync(id);
+            Voting? voting = await _data.Votings.FindAsync(id).ConfigureAwait(false);
             if (voting is null) return NotFound();
             if (!voting.HasReadAccess(member)) return Forbid();
 
@@ -72,7 +72,7 @@ namespace AndNetwork9.Server.Controllers
         [MinRankAuthorize]
         public async Task<ActionResult<Voting>> Post(Voting voting)
         {
-            Member? member = await this.GetCurrentMember(_data);
+            Member? member = await this.GetCurrentMember(_data).ConfigureAwait(false);
             if (member is null) return Unauthorized();
 
             EntityEntry<Voting> result = await _data.Votings.AddAsync(voting with
@@ -90,8 +90,8 @@ namespace AndNetwork9.Server.Controllers
                 }).ToArray(),
                 Result = MemberVote.NoVote,
                 Comments = Array.Empty<Comment>(),
-            });
-            await _data.SaveChangesAsync();
+            }).ConfigureAwait(false);
+            await _data.SaveChangesAsync().ConfigureAwait(false);
             return result.Entity;
         }
 
@@ -99,10 +99,10 @@ namespace AndNetwork9.Server.Controllers
         [MinRankAuthorize]
         public async Task<ActionResult<Comment>> PostComment(int votingId, Comment comment)
         {
-            Member? member = await this.GetCurrentMember(_data);
+            Member? member = await this.GetCurrentMember(_data).ConfigureAwait(false);
             if (member is null) return Unauthorized();
 
-            Voting? voting = await _data.Votings.FindAsync(votingId);
+            Voting? voting = await _data.Votings.FindAsync(votingId).ConfigureAwait(false);
             if (voting is null) return NotFound();
             if (!voting.HasReadAccess(member)) return Forbid();
 
@@ -130,7 +130,7 @@ namespace AndNetwork9.Server.Controllers
             };
             voting.Comments.Add(result);
 
-            await _data.SaveChangesAsync();
+            await _data.SaveChangesAsync().ConfigureAwait(false);
             return Ok(result);
         }
 
@@ -138,10 +138,10 @@ namespace AndNetwork9.Server.Controllers
         [Authorize]
         public async Task<ActionResult<Vote>> Patch(int id, MemberVote memberVote)
         {
-            Member? member = await this.GetCurrentMember(_data);
+            Member? member = await this.GetCurrentMember(_data).ConfigureAwait(false);
             if (member is null) return Unauthorized();
 
-            Voting? voting = await _data.Votings.FindAsync(id);
+            Voting? voting = await _data.Votings.FindAsync(id).ConfigureAwait(false);
             if (voting is null) return NotFound();
             if (voting.EndTime is not null && voting.EndTime < DateTime.UtcNow) return Forbid();
 
@@ -153,7 +153,7 @@ namespace AndNetwork9.Server.Controllers
 
             vote.Result = memberVote;
             vote.VoteTime = DateTime.UtcNow;
-            await _data.SaveChangesAsync();
+            await _data.SaveChangesAsync().ConfigureAwait(false);
             return Ok(vote);
         }
 
@@ -162,10 +162,10 @@ namespace AndNetwork9.Server.Controllers
         public async Task<ActionResult<Voting>> Put(int id, Voting newVoting)
         {
             if (id != newVoting.Id) return BadRequest();
-            Member? member = await this.GetCurrentMember(_data);
+            Member? member = await this.GetCurrentMember(_data).ConfigureAwait(false);
             if (member is null) return Unauthorized();
 
-            Voting? oldVoting = await _data.Votings.FindAsync(id);
+            Voting? oldVoting = await _data.Votings.FindAsync(id).ConfigureAwait(false);
             if (oldVoting is null) return NotFound();
             if (!oldVoting.HasWriteAccess(member)) return Forbid();
 
@@ -180,7 +180,7 @@ namespace AndNetwork9.Server.Controllers
                 Description = newVoting.Description,
             };
             _data.Votings.Update(resultVoting);
-            await _data.SaveChangesAsync();
+            await _data.SaveChangesAsync().ConfigureAwait(false);
             return resultVoting;
         }
     }

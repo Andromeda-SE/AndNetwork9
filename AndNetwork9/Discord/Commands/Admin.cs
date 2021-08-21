@@ -17,8 +17,8 @@ namespace AndNetwork9.Discord.Commands
         [MinRankPermission(Rank.Advisor)]
         public async Task Sync()
         {
-            await Bot.UpdateAsync();
-            await ReplyAsync("Обновление завершено");
+            await Bot.UpdateAsync().ConfigureAwait(false);
+            await ReplyAsync("Обновление завершено").ConfigureAwait(false);
         }
     }
 }

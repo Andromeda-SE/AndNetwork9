@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net;
+using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using AndNetwork9.Shared.Backend;
 using AndNetwork9.Shared.Backend.Rabbit;
 using AndNetwork9.Shared.Backend.Senders.Storage;
@@ -24,7 +26,8 @@ namespace AndNetwork9.Storage.Listeners
 
         public override async void Run(RepoNodeWithData request)
         {
-            await using AsyncServiceScope scope = _scopeFactory.CreateAsyncScope();
+            AsyncServiceScope scope = _scopeFactory.CreateAsyncScope();
+            await using ConfiguredAsyncDisposable _ = scope.ConfigureAwait(false);
             ClanDataContext? data = (ClanDataContext?)scope.ServiceProvider.GetService(typeof(ClanDataContext));
             if (data is null) throw new ApplicationException();
 
@@ -33,17 +36,17 @@ namespace AndNetwork9.Storage.Listeners
                 request.Version,
                 request.Modification,
                 request.Prototype
-            );
+            ).ConfigureAwait(false);
 
             if (node is not null) throw new FailedCallException(HttpStatusCode.Conflict);
-            Repo? repo = await data.Repos.FindAsync(request.RepoId);
+            Repo? repo = await data.Repos.FindAsync(request.RepoId).ConfigureAwait(false);
             if (repo is null) throw new KeyNotFoundException();
             request.Repo = repo;
-            await _repoManager.LoadFile(request.Data, request);
-            await data.RepoNodes.AddAsync(request);
+            await _repoManager.LoadFile(request.Data, request).ConfigureAwait(false);
+            await data.RepoNodes.AddAsync(request).ConfigureAwait(false);
 
 
-            await data.SaveChangesAsync();
+            await data.SaveChangesAsync().ConfigureAwait(false);
         }
     }
 }

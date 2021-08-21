@@ -28,17 +28,17 @@ namespace AndNetwork9.Discord.Commands
         [MinRankPermission(Rank.Advisor)]
         public async Task Dm(int id, string message)
         {
-            Shared.Member? member = await Data.Members.FindAsync(id);
+            Shared.Member? member = await Data.Members.FindAsync(id).ConfigureAwait(false);
             if (member is null)
             {
-                await ReplyAsync("Игрок не найден");
+                await ReplyAsync("Игрок не найден").ConfigureAwait(false);
             }
             else
             {
-                if (await TrySendMessage(message, member))
-                    await ReplyAsync($"Сообщение отправлено игроку <@{member.DiscordId}>");
+                if (await TrySendMessage(message, member).ConfigureAwait(false))
+                    await ReplyAsync($"Сообщение отправлено игроку <@{member.DiscordId}>").ConfigureAwait(false);
                 else
-                    await ReplyAsync($"Ошибка при отправке сообщения игроку <@{member.DiscordId}>");
+                    await ReplyAsync($"Ошибка при отправке сообщения игроку <@{member.DiscordId}>").ConfigureAwait(false);
             }
         }
 
@@ -47,8 +47,8 @@ namespace AndNetwork9.Discord.Commands
         public async Task All(string message)
         {
             await ReplyAsync(
-                (await SendMessages(message, Data.Members.Where(x => x.Rank > Rank.None).AsAsyncEnumerable()))
-                .ToString());
+                (await SendMessages(message, Data.Members.Where(x => x.Rank > Rank.None).AsAsyncEnumerable()).ConfigureAwait(false))
+                .ToString()).ConfigureAwait(false);
         }
 
         [Command(nameof(Online))]
@@ -57,8 +57,8 @@ namespace AndNetwork9.Discord.Commands
         {
             await ReplyAsync((await SendMessages(message,
                     Data.Members.Where(x => x.Rank > Rank.None).AsAsyncEnumerable().Where(x =>
-                        Bot.GetUser(x.DiscordId).Status is > UserStatus.Offline and < UserStatus.DoNotDisturb)))
-                .ToString());
+                        Bot.GetUser(x.DiscordId).Status is > UserStatus.Offline and < UserStatus.DoNotDisturb)).ConfigureAwait(false))
+                .ToString()).ConfigureAwait(false);
         }
 
         [Command(nameof(Direction))]
@@ -66,8 +66,8 @@ namespace AndNetwork9.Discord.Commands
         public async Task Direction(Direction direction, string message)
         {
             await ReplyAsync((await SendMessages(message,
-                    Data.Members.Where(x => x.Rank > Rank.None && x.Direction == direction).AsAsyncEnumerable()))
-                .ToString());
+                    Data.Members.Where(x => x.Rank > Rank.None && x.Direction == direction).AsAsyncEnumerable()).ConfigureAwait(false))
+                .ToString()).ConfigureAwait(false);
         }
 
         [Command(nameof(Reaction))]
@@ -77,14 +77,14 @@ namespace AndNetwork9.Discord.Commands
             SocketTextChannel channel = Bot.GetGuild(Bot.GuildId).GetTextChannel(channelId);
             if (channel is null)
             {
-                await ReplyAsync("Канал не найден");
+                await ReplyAsync("Канал не найден").ConfigureAwait(false);
                 return;
             }
 
-            IMessage message = await channel.GetMessageAsync(messageId);
+            IMessage message = await channel.GetMessageAsync(messageId).ConfigureAwait(false);
             if (message is null)
             {
-                await ReplyAsync("Сообщение не найдено");
+                await ReplyAsync("Сообщение не найдено").ConfigureAwait(false);
                 return;
             }
 
@@ -93,7 +93,7 @@ namespace AndNetwork9.Discord.Commands
                 .Distinct(DiscordIdComparer.Static).ToAsyncEnumerable();
             IAsyncEnumerable<Shared.Member> members = Data.Members.AsAsyncEnumerable()
                 .Join(users, x => x.DiscordId, x => x.Id, (member, _) => member);
-            await ReplyAsync((await SendMessages(text, members)).ToString());
+            await ReplyAsync((await SendMessages(text, members).ConfigureAwait(false)).ToString()).ConfigureAwait(false);
         }
 
         [Command(nameof(NoReaction))]
@@ -103,14 +103,14 @@ namespace AndNetwork9.Discord.Commands
             SocketTextChannel channel = Bot.GetGuild(Bot.GuildId).GetTextChannel(channelId);
             if (channel is null)
             {
-                await ReplyAsync("Канал не найден");
+                await ReplyAsync("Канал не найден").ConfigureAwait(false);
                 return;
             }
 
-            IMessage message = await channel.GetMessageAsync(messageId);
+            IMessage message = await channel.GetMessageAsync(messageId).ConfigureAwait(false);
             if (message is null)
             {
-                await ReplyAsync("Сообщение не найдено");
+                await ReplyAsync("Сообщение не найдено").ConfigureAwait(false);
                 return;
             }
 
@@ -121,7 +121,7 @@ namespace AndNetwork9.Discord.Commands
             IAsyncEnumerable<Shared.Member> members = Data.Members.AsAsyncEnumerable()
                 .Join(users, x => x.DiscordId, x => x.Id, (member, _) => member);
 
-            await ReplyAsync((await SendMessages(text, members)).ToString());
+            await ReplyAsync((await SendMessages(text, members).ConfigureAwait(false)).ToString()).ConfigureAwait(false);
         }
 
         private async Task<StringBuilder> SendMessages(string text, IAsyncEnumerable<Shared.Member> members,
@@ -129,8 +129,8 @@ namespace AndNetwork9.Discord.Commands
         {
             log ??= new();
             log.AppendLine("Отправлены сообщения:");
-            await foreach (Shared.Member member in members)
-                if (await TrySendMessage(text, member)) log.AppendLine($"<@{member.DiscordId}>");
+            await foreach (Shared.Member member in members.ConfigureAwait(false))
+                if (await TrySendMessage(text, member).ConfigureAwait(false)) log.AppendLine($"<@{member.DiscordId}>");
                 else log.AppendLine($"<@{member.DiscordId}> — ошибка");
             return log;
         }
@@ -139,7 +139,7 @@ namespace AndNetwork9.Discord.Commands
         {
             try
             {
-                await Bot.GetUser(member.DiscordId).SendMessageAsync(text);
+                await Bot.GetUser(member.DiscordId).SendMessageAsync(text).ConfigureAwait(false);
                 _logger.LogInformation($"Send message to {member} with id {member.Id}");
                 return true;
             }

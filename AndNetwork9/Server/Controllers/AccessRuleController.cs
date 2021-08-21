@@ -24,7 +24,7 @@ namespace AndNetwork9.Server.Controllers
         [Authorize]
         public async Task<ActionResult<AccessRule>> Get(int id)
         {
-            AccessRule? result = await _data.AccessRules.FindAsync(id);
+            AccessRule? result = await _data.AccessRules.FindAsync(id).ConfigureAwait(false);
             return result is not null ? Ok(result) : NotFound();
         }
 
@@ -32,7 +32,7 @@ namespace AndNetwork9.Server.Controllers
         [Authorize]
         public async Task<ActionResult<IList<Member>>> GetOverrides(int id)
         {
-            AccessRule? result = await _data.AccessRules.FindAsync(id);
+            AccessRule? result = await _data.AccessRules.FindAsync(id).ConfigureAwait(false);
             return result is not null
                 ? Ok(result.AllowedMembers.GetShort())
                 : NotFound();
@@ -45,8 +45,8 @@ namespace AndNetwork9.Server.Controllers
             rule.AllowedMembers = _data.Members.AsEnumerable()
                 .Join(rule.AllowedMembersIds, x => x.Id, x => x, (member, _) => member)
                 .ToArray();
-            EntityEntry<AccessRule> result = await _data.AccessRules.AddAsync(rule with {Id = 0});
-            await _data.SaveChangesAsync();
+            EntityEntry<AccessRule> result = await _data.AccessRules.AddAsync(rule with {Id = 0}).ConfigureAwait(false);
+            await _data.SaveChangesAsync().ConfigureAwait(false);
             return Ok(result.Entity);
         }
     }

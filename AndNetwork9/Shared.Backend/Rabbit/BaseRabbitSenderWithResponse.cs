@@ -53,7 +53,7 @@ namespace AndNetwork9.Shared.Backend.Rabbit
                     Replies.TryRemove(guid, out _);
                     @event?.Dispose();
                 }
-            });
+            }).ConfigureAwait(false);
         }
 
         protected override async void Received(object sender, BasicDeliverEventArgs args)
@@ -63,7 +63,7 @@ namespace AndNetwork9.Shared.Backend.Rabbit
                 Guid guid = Guid.Parse(args.BasicProperties.CorrelationId);
                 Replies.AddOrUpdate(guid, _ => args, (_, _) => args);
                 return Waiting[guid].Set();
-            });
+            }).ConfigureAwait(false);
         }
     }
 }

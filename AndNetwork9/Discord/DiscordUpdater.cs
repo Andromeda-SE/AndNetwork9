@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
+using System.Threading.Tasks;
 using AndNetwork9.Discord.Extensions;
 using AndNetwork9.Shared;
 using AndNetwork9.Shared.Backend;
@@ -38,12 +39,12 @@ namespace AndNetwork9.Discord
         {
             SocketGuild guild = _bot.GetGuild(_bot.GuildId);
 
-            await InitRoles(guild);
+            await InitRoles(guild).ConfigureAwait(false);
 
-            await foreach (Member member in _data.Members.ToAsyncEnumerable()) await UpdateMember(guild, member);
+            await foreach (Member member in _data.Members.ToAsyncEnumerable().ConfigureAwait(false)) await UpdateMember(guild, member).ConfigureAwait(false);
 
-            await foreach (Channel channel in _data.DiscordChannels.ToAsyncEnumerable())
-                await UpdateChannel(guild, channel);
+            await foreach (Channel channel in _data.DiscordChannels.ToAsyncEnumerable().ConfigureAwait(false))
+                await UpdateChannel(guild, channel).ConfigureAwait(false);
         }
 
         private async Task InitRoles(IGuild guild)
@@ -58,7 +59,7 @@ namespace AndNetwork9.Discord
                                    Color.Red,
                                    true,
                                    true,
-                                   RequestOptions.Default);
+                                   RequestOptions.Default).ConfigureAwait(false);
 
             ImmutableDictionary<Direction, IRole>.Builder rolesBuilder =
                 ImmutableDictionary<Direction, IRole>.Empty.ToBuilder();
@@ -71,7 +72,7 @@ namespace AndNetwork9.Discord
                                   department.GetDiscordColor(),
                                   false,
                                   true,
-                                  RequestOptions.Default);
+                                  RequestOptions.Default).ConfigureAwait(false);
                 rolesBuilder.Add(department, role);
             }
 
@@ -80,7 +81,7 @@ namespace AndNetwork9.Discord
             ImmutableDictionary<Squad, IRole>.Builder squadRolesBuilder =
                 ImmutableDictionary<Squad, IRole>.Empty.ToBuilder();
             foreach (Squad squad in await _data.Squads
-                .Where(x => x.DisbandDate <= DateOnly.FromDateTime(DateTime.UtcNow)).ToArrayAsync())
+                .Where(x => x.DisbandDate <= DateOnly.FromDateTime(DateTime.UtcNow)).ToArrayAsync().ConfigureAwait(false))
             {
                 IRole role = squad.DiscordRoleId is null
                     ? await guild.CreateRoleAsync(squad.ToString(),
@@ -88,7 +89,7 @@ namespace AndNetwork9.Discord
                         Color.Default,
                         true,
                         true,
-                        RequestOptions.Default)
+                        RequestOptions.Default).ConfigureAwait(false)
                     : guild.Roles.First(x => x.Id == squad.DiscordRoleId.Value);
                 squadRolesBuilder.Add(squad, role);
             }
@@ -102,7 +103,7 @@ namespace AndNetwork9.Discord
                               null,
                               false,
                               false,
-                              RequestOptions.Default);
+                              RequestOptions.Default).ConfigureAwait(false);
 
             const string defaultRoleName = "Участник клана";
             DefaultRole = roles.FirstOrDefault(x => x.Name == defaultRoleName)
@@ -111,7 +112,7 @@ namespace AndNetwork9.Discord
                               null,
                               false,
                               false,
-                              RequestOptions.Default);
+                              RequestOptions.Default).ConfigureAwait(false);
         }
 
         private async Task UpdateMember(SocketGuild guild, Member member)
@@ -136,20 +137,20 @@ namespace AndNetwork9.Discord
                 validRoles = validRoles.Except(userRoles).ToList();
 
                 invalidRoles.Remove(EveryoneRole);
-                if (invalidRoles.Count > 0) await user.RemoveRolesAsync(invalidRoles);
-                if (validRoles.Count > 0) await user.AddRolesAsync(validRoles);
+                if (invalidRoles.Count > 0) await user.RemoveRolesAsync(invalidRoles).ConfigureAwait(false);
+                if (validRoles.Count > 0) await user.AddRolesAsync(validRoles).ConfigureAwait(false);
 
                 string nickname = member.ToString();
                 if (user.Nickname != nickname)
-                    await user.ModifyAsync(x => x.Nickname = nickname, RequestOptions.Default);
+                    await user.ModifyAsync(x => x.Nickname = nickname, RequestOptions.Default).ConfigureAwait(false);
             }
             else if (!user.IsBot)
             {
                 if (user.Nickname is not null)
                     await user.ModifyAsync(properties => properties.Nickname = Optional<string>.Unspecified,
-                        RequestOptions.Default);
+                        RequestOptions.Default).ConfigureAwait(false);
                 userRoles.Remove(EveryoneRole);
-                if (userRoles.Count > 0) await user.RemoveRolesAsync(userRoles);
+                if (userRoles.Count > 0) await user.RemoveRolesAsync(userRoles).ConfigureAwait(false);
             }
         }
 
@@ -164,7 +165,7 @@ namespace AndNetwork9.Discord
                     ? Optional<ulong?>.Unspecified
                     : new(channel.Category.DiscordId);
                 properties.Name = channel.Name;
-            });
+            }).ConfigureAwait(false);
         }
     }
 }

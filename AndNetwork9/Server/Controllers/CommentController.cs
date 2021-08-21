@@ -22,10 +22,10 @@ namespace AndNetwork9.Server.Controllers
         public async Task<ActionResult<Comment>> Put(int id, Comment comment)
         {
             if (id != comment.Id) return BadRequest();
-            Member? member = await this.GetCurrentMember(_data);
+            Member? member = await this.GetCurrentMember(_data).ConfigureAwait(false);
             if (member is null) return Unauthorized();
 
-            Comment? oldComment = await _data.Comments.FindAsync(id);
+            Comment? oldComment = await _data.Comments.FindAsync(id).ConfigureAwait(false);
             if (oldComment is null) return NotFound();
             if (oldComment.AuthorId != member.Id) return Forbid();
 
@@ -33,7 +33,7 @@ namespace AndNetwork9.Server.Controllers
             oldComment.Text = comment.Text;
             oldComment.Files = comment.Files;
 
-            await _data.SaveChangesAsync();
+            await _data.SaveChangesAsync().ConfigureAwait(false);
             return Ok(oldComment);
         }
     }

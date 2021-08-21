@@ -34,7 +34,7 @@ namespace AndNetwork9.Server.Controllers
         [Authorize]
         public async Task<ActionResult<IEnumerable<Award>>> Get()
         {
-            Member? member = await this.GetCurrentMember(_data);
+            Member? member = await this.GetCurrentMember(_data).ConfigureAwait(false);
             if (member is null) return NotFound();
 
             return Ok(member.Awards.ToArray());
@@ -44,7 +44,7 @@ namespace AndNetwork9.Server.Controllers
         [MinRankAuthorize]
         public async Task<ActionResult<Award>> Get(int id)
         {
-            Member? result = await _data.Members.FindAsync(id);
+            Member? result = await _data.Members.FindAsync(id).ConfigureAwait(false);
             return result is not null ? Ok(result.Awards.ToArray()) : NotFound();
         }
 
@@ -53,7 +53,7 @@ namespace AndNetwork9.Server.Controllers
         public async Task<IActionResult> Post([FromBody] params Award[] awards)
         {
             if (awards.Any(x => x.Type == AwardType.None)) return BadRequest();
-            Member? caller = await this.GetCurrentMember(_data);
+            Member? caller = await this.GetCurrentMember(_data).ConfigureAwait(false);
             if (caller is null) return Unauthorized();
 
             awards = awards.OrderByDescending(x => x.Type).ToArray();
@@ -61,7 +61,7 @@ namespace AndNetwork9.Server.Controllers
             List<Member> members = new(awards.Length);
             foreach (Award award in awards)
             {
-                Member? member = await _data.Members.FindAsync(award.MemberId);
+                Member? member = await _data.Members.FindAsync(award.MemberId).ConfigureAwait(false);
                 if (member is null) return NotFound();
                 if (member.Rank < Rank.Neophyte) return Forbid();
                 if (caller.Rank < Rank.FirstAdvisor && award.Type > AwardType.Bronze) return Forbid();
@@ -91,11 +91,11 @@ namespace AndNetwork9.Server.Controllers
                 text.AppendLine($"Игрок {member.GetDiscordMention()} повышен до ранга «{member.Rank.GetRankName()}»");
                 if (oldRank == Rank.Neophyte)
                     await _sendSender.CallAsync(new(member.DiscordId,
-                        "Похоже, вас повысили! Теперь вы можете изменить свое направление на сайте клана"));
+                        "Похоже, вас повысили! Теперь вы можете изменить свое направление на сайте клана")).ConfigureAwait(false);
             }
 
-            await _data.SaveChangesAsync();
-            await _publishSender.CallAsync(text.ToString());
+            await _data.SaveChangesAsync().ConfigureAwait(false);
+            await _publishSender.CallAsync(text.ToString()).ConfigureAwait(false);
             return Ok(awards);
         }
     }

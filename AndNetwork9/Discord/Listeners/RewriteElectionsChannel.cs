@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading.Tasks;
 using AndNetwork9.Shared.Backend;
 using AndNetwork9.Shared.Backend.Discord.Channels;
 using AndNetwork9.Shared.Backend.Discord.Enums;
@@ -34,20 +36,21 @@ namespace AndNetwork9.Discord.Listeners
 
         public override async void Run(Election request)
         {
-            await using AsyncServiceScope scope = _scopeFactory.CreateAsyncScope();
+            AsyncServiceScope scope = _scopeFactory.CreateAsyncScope();
+            await using ConfiguredAsyncDisposable _ = scope.ConfigureAwait(false);
             ClanDataContext data = (ClanDataContext)scope.ServiceProvider.GetService(typeof(ClanDataContext))!;
             if (data is null) throw new ApplicationException();
 
             int nicknameLength = Math.Max(data.Members.Select(x => x.Nickname.Length).Max(), "Против всех".Length);
             await foreach (Channel channel in data.DiscordChannels
                 .Where(x => x.Type == ChannelType.Text && x.ChannelFlags.HasFlag(ChannelFlags.Elections))
-                .ToAsyncEnumerable())
+                .ToAsyncEnumerable().ConfigureAwait(false))
             {
                 SocketTextChannel discordChannel = _bot.GetGuild(_bot.GuildId).GetTextChannel(channel.DiscordId);
-                IMessage[] messages = (await discordChannel.GetMessagesAsync(5, RequestOptions.Default).ToArrayAsync())
+                IMessage[] messages = (await discordChannel.GetMessagesAsync(5, RequestOptions.Default).ToArrayAsync().ConfigureAwait(false))
                     .SelectMany(x => x).ToArray();
 
-                for (int i = 0; i < 5 - messages.Length; i++) await discordChannel.SendMessageAsync("…");
+                for (int i = 0; i < 5 - messages.Length; i++) await discordChannel.SendMessageAsync("…").ConfigureAwait(false);
 
                 foreach ((IMessage message, Direction direction) in messages.Zip(Enum.GetValues<Direction>()
                     .Where(x => x > Direction.None)))
@@ -59,7 +62,7 @@ namespace AndNetwork9.Discord.Listeners
                                     GetVotingMessage(request.Votings.Single(x => x.Direction == direction),
                                         nicknameLength));
                         },
-                        RequestOptions.Default);
+                        RequestOptions.Default).ConfigureAwait(false);
             }
         }
 

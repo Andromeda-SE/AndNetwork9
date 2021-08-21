@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using AndNetwork9.Server.Auth.Attributes;
 using AndNetwork9.Server.Extensions;
@@ -29,10 +30,10 @@ namespace AndNetwork9.Server.Controllers
         [MinRankAuthorize]
         public async Task<ActionResult> Get(int id)
         {
-            Member? member = await this.GetCurrentMember(_data);
+            Member? member = await this.GetCurrentMember(_data).ConfigureAwait(false);
             if (member is null) return Unauthorized();
 
-            StaticFile? file = await _data.StaticFiles.FindAsync(id);
+            StaticFile? file = await _data.StaticFiles.FindAsync(id).ConfigureAwait(false);
             if (file is null) return NotFound();
             if (!file.ReadRule.HasAccess(member)) return Forbid();
 
@@ -43,14 +44,15 @@ namespace AndNetwork9.Server.Controllers
         [MinRankAuthorize]
         public async Task<ActionResult<StaticFile>> Post(IFormFile file)
         {
-            Member? member = await this.GetCurrentMember(_data);
+            Member? member = await this.GetCurrentMember(_data).ConfigureAwait(false);
             if (member is null) return Unauthorized();
 
             byte[] content = new byte[file.Length];
-            await using Stream stream = new MemoryStream(content);
-            await file.CopyToAsync(stream);
+            Stream stream = new MemoryStream(content);
+            await using ConfiguredAsyncDisposable _ = stream.ConfigureAwait(false);
+            await file.CopyToAsync(stream).ConfigureAwait(false);
 
-            return await _staticFileSender.CallAsync(new(file.FileName, content, member.Id, null))
+            return await _staticFileSender.CallAsync(new(file.FileName, content, member.Id, null)).ConfigureAwait(false)
                    ?? throw new InvalidOperationException();
         }
     }

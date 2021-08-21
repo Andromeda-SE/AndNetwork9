@@ -31,7 +31,7 @@ namespace AndNetwork9.Server.Controllers
         [Authorize]
         public async Task<ActionResult<CouncilElection>> Get()
         {
-            Member? member = await this.GetCurrentMember(_data);
+            Member? member = await this.GetCurrentMember(_data).ConfigureAwait(false);
             if (member is null) return Unauthorized();
 
             return Ok(_data.Elections.Select(x => new {x.Id, x.Stage}));
@@ -41,7 +41,7 @@ namespace AndNetwork9.Server.Controllers
         [Authorize]
         public async Task<ActionResult<CouncilElection>> GetCurrent()
         {
-            Member? member = await this.GetCurrentMember(_data);
+            Member? member = await this.GetCurrentMember(_data).ConfigureAwait(false);
             if (member is null) return Unauthorized();
 
             return Ok((CouncilElection)_data.Elections.Single(x => x.Stage != ElectionStage.Ended));
@@ -51,10 +51,10 @@ namespace AndNetwork9.Server.Controllers
         [MinRankAuthorize]
         public async Task<ActionResult<CouncilElection>> Get(int id)
         {
-            Member? member = await this.GetCurrentMember(_data);
+            Member? member = await this.GetCurrentMember(_data).ConfigureAwait(false);
             if (member is null) return Unauthorized();
 
-            Election? election = await _data.Elections.FindAsync(id);
+            Election? election = await _data.Elections.FindAsync(id).ConfigureAwait(false);
             if (election is null) return NotFound();
 
             return Ok((CouncilElection)election);
@@ -64,7 +64,7 @@ namespace AndNetwork9.Server.Controllers
         [MinRankAuthorize]
         public async Task<ActionResult<CouncilElectionTokenPack>> GetTokens()
         {
-            Member? member = await this.GetCurrentMember(_data);
+            Member? member = await this.GetCurrentMember(_data).ConfigureAwait(false);
             if (member is null) return Unauthorized();
 
             Election election = _data.Elections.Single(x => x.Stage != ElectionStage.Ended);
@@ -89,14 +89,14 @@ namespace AndNetwork9.Server.Controllers
         [MinRankAuthorize]
         public async Task<IActionResult> PostVote(CouncilElectionVote vote)
         {
-            Member? member = await this.GetCurrentMember(_data);
+            Member? member = await this.GetCurrentMember(_data).ConfigureAwait(false);
             if (member is null) return Unauthorized();
             try
             {
                 await _voteSender.CallAsync(new(member.Id,
                     vote.Key,
                     vote.Direction,
-                    vote.Votes.Select(x => new VoteArgNode(x.Key == 0 ? null : x.Key, x.Value)).ToArray()));
+                    vote.Votes.Select(x => new VoteArgNode(x.Key == 0 ? null : x.Key, x.Value)).ToArray())).ConfigureAwait(false);
             }
             catch
             {

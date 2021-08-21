@@ -55,6 +55,6 @@ namespace AndNetwork9.Discord.Commands
             options,
             spoiler,
             allowedMentions,
-            new(Context.Message.Id, Context.Message.Channel.Id));
+            new(Context.Message.Id, Context.Message.Channel.Id)).ConfigureAwait(false);
     }
 }

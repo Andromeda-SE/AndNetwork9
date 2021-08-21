@@ -24,7 +24,7 @@ namespace AndNetwork9.Shared.Backend.Rabbit
                 try
                 {
                     if (request is null) throw new ArgumentException("request is null", nameof(args));
-                    response = await GetResponseAsync(request);
+                    response = await GetResponseAsync(request).ConfigureAwait(false);
                     replyProperties.Headers.Add("Success", true);
                 }
                 catch (Exception e)
@@ -40,7 +40,7 @@ namespace AndNetwork9.Shared.Backend.Rabbit
                     Model.BasicPublish(string.Empty, args.BasicProperties.ReplyTo, replyProperties, result);
                     Model.BasicAck(args.DeliveryTag, false);
                 }
-            });
+            }).ConfigureAwait(false);
         }
 
         protected abstract Task<TResponse> GetResponseAsync(TRequest request);

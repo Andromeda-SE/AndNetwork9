@@ -39,7 +39,7 @@ namespace AndNetwork9.Server.Controllers
         [Authorize]
         public async Task<ActionResult<Member>> Get()
         {
-            Member? member = await this.GetCurrentMember(_data);
+            Member? member = await this.GetCurrentMember(_data).ConfigureAwait(false);
             if (member is null) return Unauthorized();
 
             return Ok(member);
@@ -49,7 +49,7 @@ namespace AndNetwork9.Server.Controllers
         [MinRankAuthorize]
         public async Task<ActionResult<Member>> Get(int id)
         {
-            Member? result = await _data.Members.FindAsync(id);
+            Member? result = await _data.Members.FindAsync(id).ConfigureAwait(false);
             return result is not null ? Ok(result) : NotFound();
         }
 
@@ -57,7 +57,7 @@ namespace AndNetwork9.Server.Controllers
         [MinRankAuthorize(Rank.Advisor)]
         public async Task<ActionResult<Member>> GetComment(int id)
         {
-            Member? result = await _data.Members.FindAsync(id);
+            Member? result = await _data.Members.FindAsync(id).ConfigureAwait(false);
             return result is not null ? Ok(result.Comment) : NotFound();
         }
 
@@ -70,8 +70,8 @@ namespace AndNetwork9.Server.Controllers
                 Id = 0,
                 AccessRulesOverrides = Array.Empty<AccessRule>(),
                 JoinDate = DateOnly.FromDateTime(DateTime.UtcNow),
-            });
-            await _data.SaveChangesAsync();
+            }).ConfigureAwait(false);
+            await _data.SaveChangesAsync().ConfigureAwait(false);
             return Ok(result.Entity);
         }
 
@@ -79,16 +79,16 @@ namespace AndNetwork9.Server.Controllers
         [MinRankAuthorize(Rank.Trainee)]
         public async Task<IActionResult> Patch([FromBody] Direction direction)
         {
-            Member? member = await this.GetCurrentMember(_data);
+            Member? member = await this.GetCurrentMember(_data).ConfigureAwait(false);
             if (member is null) return Unauthorized();
             if (direction <= Direction.None) return UnprocessableEntity();
             if (DateOnly.FromDateTime(DateTime.UtcNow).DayNumber - member.LastDirectionChange.DayNumber
                 < ClanRulesExtensions.MIN_DIRECTION_CHANGE_DAYS) return Forbid();
 
             member.Direction = direction;
-            await _data.SaveChangesAsync();
+            await _data.SaveChangesAsync().ConfigureAwait(false);
             await _publishSender.CallAsync(
-                $"Игрок {member.GetDiscordMention()} сменил направление на «{member.Direction.GetName()}»");
+                $"Игрок {member.GetDiscordMention()} сменил направление на «{member.Direction.GetName()}»").ConfigureAwait(false);
             return Ok();
         }
 
@@ -96,7 +96,7 @@ namespace AndNetwork9.Server.Controllers
         [MinRankAuthorize(Rank.Guest)]
         public async Task<IActionResult> PatchNickname([FromBody] string newNickname)
         {
-            Member? member = await this.GetCurrentMember(_data);
+            Member? member = await this.GetCurrentMember(_data).ConfigureAwait(false);
             if (member is null) return Unauthorized();
             ;
             if (newNickname.Length > 26) return BadRequest();
@@ -104,9 +104,9 @@ namespace AndNetwork9.Server.Controllers
 
             string oldNickname = member.Nickname;
             member.Nickname = newNickname;
-            await _data.SaveChangesAsync();
+            await _data.SaveChangesAsync().ConfigureAwait(false);
             await _publishSender.CallAsync(
-                $"Игрок {member.GetDiscordMention()} сменил никнейм с «{oldNickname}» на «{newNickname}»");
+                $"Игрок {member.GetDiscordMention()} сменил никнейм с «{oldNickname}» на «{newNickname}»").ConfigureAwait(false);
             return Ok();
         }
 
@@ -114,11 +114,11 @@ namespace AndNetwork9.Server.Controllers
         [MinRankAuthorize(Rank.Guest)]
         public async Task<IActionResult> PatchRealname([FromBody] string newRealname)
         {
-            Member? member = await this.GetCurrentMember(_data);
+            Member? member = await this.GetCurrentMember(_data).ConfigureAwait(false);
             if (member is null) return Unauthorized();
 
             member.RealName = string.IsNullOrWhiteSpace(newRealname) ? null : newRealname;
-            await _data.SaveChangesAsync();
+            await _data.SaveChangesAsync().ConfigureAwait(false);
             return Ok();
         }
 
@@ -126,7 +126,7 @@ namespace AndNetwork9.Server.Controllers
         [MinRankAuthorize(Rank.Guest)]
         public async Task<IActionResult> PatchTimezone([FromBody] string newTimezone)
         {
-            Member? member = await this.GetCurrentMember(_data);
+            Member? member = await this.GetCurrentMember(_data).ConfigureAwait(false);
             if (member is null) return Unauthorized();
 
             try
@@ -140,7 +140,7 @@ namespace AndNetwork9.Server.Controllers
             }
 
 
-            await _data.SaveChangesAsync();
+            await _data.SaveChangesAsync().ConfigureAwait(false);
             return Ok();
         }
 
@@ -149,12 +149,12 @@ namespace AndNetwork9.Server.Controllers
         public async Task<IActionResult> Put(int id, [FromBody] Member newMember)
         {
             if (id != newMember.Id) return BadRequest();
-            Member? oldMember = await _data.Members.FindAsync(id);
+            Member? oldMember = await _data.Members.FindAsync(id).ConfigureAwait(false);
             if (oldMember is null) return NotFound();
 
             string? rawValue = ControllerContext.HttpContext.User.FindFirst(AuthExtensions.MEMBER_ID_CLAIM_NAME)?.Value;
             if (rawValue is null) return Unauthorized();
-            Member? caller = await _data.Members.FindAsync(int.Parse(rawValue));
+            Member? caller = await _data.Members.FindAsync(int.Parse(rawValue)).ConfigureAwait(false);
             if (caller is null) return Unauthorized();
 
             Member? resultMember = caller.Rank switch
@@ -186,7 +186,7 @@ namespace AndNetwork9.Server.Controllers
             };
             if (resultMember is null) return Forbid();
             EntityEntry<Member> result = _data.Members.Update(resultMember);
-            await _data.SaveChangesAsync();
+            await _data.SaveChangesAsync().ConfigureAwait(false);
             return Ok(result.Entity);
         }
     }

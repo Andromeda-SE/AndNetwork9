@@ -34,20 +34,20 @@ namespace AndNetwork9.Server.Extensions
 
         internal static async ValueTask<Member?>
             GetCurrentMember(this ControllerBase controller, ClanDataContext data) =>
-            await GetCurrentMember(controller.HttpContext.User, data);
+            await GetCurrentMember(controller.HttpContext.User, data).ConfigureAwait(false);
 
         internal static async ValueTask<Member?> GetCurrentMember(this ClaimsPrincipal user, ClanDataContext data)
         {
             string? rawValue = user.FindFirst(MEMBER_ID_CLAIM_NAME)?.Value;
             if (rawValue is null) return null;
-            return await data.Members.FindAsync(int.Parse(rawValue));
+            return await data.Members.FindAsync(int.Parse(rawValue)).ConfigureAwait(false);
         }
 
         internal static async ValueTask<AuthSession?> GetCurrentSession(this ClaimsPrincipal user, ClanDataContext data)
         {
             string? rawValue = user.FindFirst(SESSION_ID_CLAIM_NAME)?.Value;
             if (rawValue is null) return null;
-            return await data.Sessions.FindAsync(Guid.Parse(rawValue));
+            return await data.Sessions.FindAsync(Guid.Parse(rawValue)).ConfigureAwait(false);
         }
     }
 }

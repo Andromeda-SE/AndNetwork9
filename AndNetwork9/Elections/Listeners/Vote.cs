@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Linq;
 using System.Net;
+using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using AndNetwork9.Shared.Backend;
 using AndNetwork9.Shared.Backend.Elections;
 using AndNetwork9.Shared.Backend.Rabbit;
@@ -28,7 +30,8 @@ namespace AndNetwork9.Elections.Listeners
 
         public override async void Run(VoteArg request)
         {
-            await using AsyncServiceScope scope = _scopeFactory.CreateAsyncScope();
+            AsyncServiceScope scope = _scopeFactory.CreateAsyncScope();
+            await using ConfiguredAsyncDisposable _ = scope.ConfigureAwait(false);
             ClanDataContext data = (ClanDataContext)scope.ServiceProvider.GetService(typeof(ClanDataContext))!;
             if (data is null) throw new ApplicationException();
 
@@ -36,7 +39,7 @@ namespace AndNetwork9.Elections.Listeners
             Election? election;
             try
             {
-                election = await data.Elections.SingleAsync(x => x.Stage == ElectionStage.Registration);
+                election = await data.Elections.SingleAsync(x => x.Stage == ElectionStage.Registration).ConfigureAwait(false);
             }
             catch (InvalidOperationException)
             {
@@ -69,8 +72,8 @@ namespace AndNetwork9.Elections.Listeners
             if (request.Votes.Any(x => x.MemberId is null))
                 voting.AgainstAll += (int)request.Votes.Single(x => x.MemberId is null).Votes;
 
-            await data.SaveChangesAsync();
-            await _rewriteElectionsChannelSender.CallAsync(election);
+            await data.SaveChangesAsync().ConfigureAwait(false);
+            await _rewriteElectionsChannelSender.CallAsync(election).ConfigureAwait(false);
         }
     }
 }
