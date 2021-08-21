@@ -13,6 +13,7 @@ using Discord;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Direction = AndNetwork9.Shared.Enums.Direction;
 using IConnection = RabbitMQ.Client.IConnection;
 
@@ -25,7 +26,7 @@ namespace AndNetwork9.Discord.Listeners
         private readonly ulong _storageId;
 
         public SaveStaticFile(IConnection connection, DiscordBot bot, IConfiguration configuration,
-            IServiceScopeFactory scopeFactory) : base(connection, SaveStaticFileSender.QUEUE_NAME)
+            IServiceScopeFactory scopeFactory, ILogger<SaveStaticFile> logger) : base(connection, SaveStaticFileSender.QUEUE_NAME, logger)
         {
             _bot = bot;
             _scopeFactory = scopeFactory;

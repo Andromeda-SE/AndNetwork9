@@ -7,6 +7,7 @@ using AndNetwork9.Shared.Backend.Rabbit;
 using AndNetwork9.Shared.Backend.Senders.Storage;
 using AndNetwork9.Shared.Storage;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
 
 namespace AndNetwork9.Storage.Listeners
@@ -16,8 +17,8 @@ namespace AndNetwork9.Storage.Listeners
         private readonly RepoManager _repoManager;
         private readonly IServiceScopeFactory _scopeFactory;
 
-        public RepoGetFileListener(IConnection connection, IServiceScopeFactory scopeFactory) : base(connection,
-            RepoGetFileSender.QUEUE_NAME)
+        public RepoGetFileListener(IConnection connection, IServiceScopeFactory scopeFactory, ILogger<RepoGetFileListener> logger) : base(connection,
+            RepoGetFileSender.QUEUE_NAME, logger)
         {
             _scopeFactory = scopeFactory;
             _repoManager = new();

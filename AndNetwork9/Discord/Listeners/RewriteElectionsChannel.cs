@@ -15,6 +15,7 @@ using AndNetwork9.Shared.Extensions;
 using Discord;
 using Discord.WebSocket;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using ChannelType = AndNetwork9.Shared.Backend.Discord.Enums.ChannelType;
 using Direction = AndNetwork9.Shared.Enums.Direction;
 using IConnection = RabbitMQ.Client.IConnection;
@@ -26,15 +27,14 @@ namespace AndNetwork9.Discord.Listeners
         private readonly DiscordBot _bot;
         private readonly IServiceScopeFactory _scopeFactory;
 
-        public RewriteElectionsChannel(IConnection connection, DiscordBot bot, IServiceScopeFactory scopeFactory) :
-            base(connection,
-                RewriteElectionsChannelSender.QUEUE_NAME)
+        public RewriteElectionsChannel(IConnection connection, DiscordBot bot, IServiceScopeFactory scopeFactory, ILogger<RewriteElectionsChannel> logger) :
+            base(connection, RewriteElectionsChannelSender.QUEUE_NAME, logger)
         {
             _bot = bot;
             _scopeFactory = scopeFactory;
         }
 
-        public override async void Run(Election request)
+        public override async Task Run(Election request)
         {
             AsyncServiceScope scope = _scopeFactory.CreateAsyncScope();
             await using ConfiguredAsyncDisposable _ = scope.ConfigureAwait(false);

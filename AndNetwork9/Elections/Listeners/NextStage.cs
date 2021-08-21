@@ -14,7 +14,9 @@ using AndNetwork9.Shared.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
+using Task = System.Threading.Tasks.Task;
 
 namespace AndNetwork9.Elections.Listeners
 {
@@ -24,13 +26,13 @@ namespace AndNetwork9.Elections.Listeners
         private readonly IServiceScopeFactory _scopeFactory;
 
         public NextStage(IConnection connection, IServiceScopeFactory scopeFactory,
-            RewriteElectionsChannelSender rewriteElectionsChannelSender) : base(connection, NextStageSender.QUEUE_NAME)
+            RewriteElectionsChannelSender rewriteElectionsChannelSender, ILogger<NextStage> logger) : base(connection, NextStageSender.QUEUE_NAME, logger)
         {
             _scopeFactory = scopeFactory;
             _rewriteElectionsChannelSender = rewriteElectionsChannelSender;
         }
 
-        public override async void Run(ElectionStage _)
+        public override async Task Run(ElectionStage _)
         {
             AsyncServiceScope scope = _scopeFactory.CreateAsyncScope();
             await using ConfiguredAsyncDisposable __ = scope.ConfigureAwait(false);

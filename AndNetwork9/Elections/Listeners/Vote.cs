@@ -11,6 +11,7 @@ using AndNetwork9.Shared.Backend.Senders.Elections;
 using AndNetwork9.Shared.Enums;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
 
 namespace AndNetwork9.Elections.Listeners
@@ -22,13 +23,14 @@ namespace AndNetwork9.Elections.Listeners
 
         public Vote(IConnection connection,
             IServiceScopeFactory scopeFactory,
-            RewriteElectionsChannelSender rewriteElectionsChannelSender) : base(connection, VoteSender.QUEUE_NAME)
+            RewriteElectionsChannelSender rewriteElectionsChannelSender, 
+            ILogger<Vote> logger) : base(connection, VoteSender.QUEUE_NAME, logger)
         {
             _scopeFactory = scopeFactory;
             _rewriteElectionsChannelSender = rewriteElectionsChannelSender;
         }
 
-        public override async void Run(VoteArg request)
+        public override async Task Run(VoteArg request)
         {
             AsyncServiceScope scope = _scopeFactory.CreateAsyncScope();
             await using ConfiguredAsyncDisposable _ = scope.ConfigureAwait(false);
