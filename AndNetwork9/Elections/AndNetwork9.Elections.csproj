@@ -6,7 +6,7 @@
     <DockerfileContext>..\..</DockerfileContext>
     <Nullable>enable</Nullable>
 	  <LangLevel>preview</LangLevel>
-	  <Platforms>AnyCPU;ARM64</Platforms>
+	  <DisableImplicitNamespaceImports>true</DisableImplicitNamespaceImports>
   </PropertyGroup>
 
   <ItemGroup>
