@@ -2,6 +2,7 @@
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 
@@ -9,7 +10,7 @@ namespace AndNetwork9.Shared.Backend.Rabbit
 {
     public class BaseRabbitSenderWithResponse<TRequest, TResponse> : BaseRabbitSender
     {
-        protected BaseRabbitSenderWithResponse(IConnection connection, string queue) : base(connection, queue) { }
+        protected BaseRabbitSenderWithResponse(IConnection connection, string queue, ILogger<BaseRabbitSenderWithResponse<TRequest, TResponse>> logger) : base(connection, queue, logger) { }
 
         public async Task<TResponse?> CallAsync(TRequest arg)
         {

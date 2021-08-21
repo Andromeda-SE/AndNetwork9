@@ -26,9 +26,9 @@ namespace AndNetwork9.Shared.Backend.Rabbit
                     if (request is null) throw new ArgumentException();
                     try
                     {
-                        Logger.LogInformation($"Run {args.DeliveryTag}");
+                        Logger.LogDebug($"Run {args.DeliveryTag}");
                         await Run(request).ConfigureAwait(true);
-                        Logger.LogInformation($"End run {args.DeliveryTag}");
+                        Logger.LogDebug($"End run {args.DeliveryTag}");
                         replyProperties.Headers.Add("Success", true);
                     }
                     catch (Exception e)
@@ -40,7 +40,13 @@ namespace AndNetwork9.Shared.Backend.Rabbit
                     }
                     finally
                     {
-                        Logger.LogInformation($"Ack {args.DeliveryTag}");
+                        if (args.BasicProperties.ReplyTo is not null)
+                        {
+                            Logger.LogDebug($"Publish {args.DeliveryTag}");
+                            ReadOnlyMemory<byte> result = ReadOnlyMemory<byte>.Empty;
+                            Model.BasicPublish(string.Empty, args.BasicProperties.ReplyTo, replyProperties, result);
+                        }
+                        Logger.LogDebug($"Ack {args.DeliveryTag}");
                         Model.BasicAck(args.DeliveryTag, false);
                         Logger.LogInformation($"Finish {args.DeliveryTag}");
                     }

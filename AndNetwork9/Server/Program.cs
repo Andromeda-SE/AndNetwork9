@@ -13,10 +13,10 @@ namespace AndNetwork9.Server
 
         public static IHostBuilder CreateHostBuilder(string[] args)
         {
-            return Host.CreateDefaultBuilder(args).ConfigureAndNetConsole().ConfigureWebHostDefaults(webBuilder =>
+            return Host.CreateDefaultBuilder(args).ConfigureWebHostDefaults(webBuilder =>
             {
                 webBuilder.UseStartup<Startup>();
-            });
+            }).ConfigureAndNetConsole();
         }
     }
 }

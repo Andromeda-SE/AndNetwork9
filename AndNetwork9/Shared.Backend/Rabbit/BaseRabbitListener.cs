@@ -32,23 +32,23 @@ namespace AndNetwork9.Shared.Backend.Rabbit
 
         public System.Threading.Tasks.Task StartAsync(CancellationToken cancellationToken)
         {
-            Logger.LogInformation("Starting…");
+            Logger.LogDebug("Starting…");
             Model = Connection.CreateModel();
 
             Model.QueueDeclare(QueueName, false, false, false);
             Consumer = new(Model);
             Consumer.Received += Received!;
             Model.BasicConsume(QueueName, false, Consumer);
-            Logger.LogInformation("Started");
+            Logger.LogDebug("Started");
             return System.Threading.Tasks.Task.CompletedTask;
         }
 
         public System.Threading.Tasks.Task StopAsync(CancellationToken cancellationToken)
         {
-            Logger.LogInformation("Stopping…");
+            Logger.LogDebug("Stopping…");
             Consumer.Received -= Received!;
             Model.Dispose();
-            Logger.LogInformation("Stopped");
+            Logger.LogDebug("Stopped");
             return System.Threading.Tasks.Task.CompletedTask;
         }
 

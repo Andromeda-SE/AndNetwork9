@@ -28,9 +28,9 @@ namespace AndNetwork9.Shared.Backend.Rabbit
                     TResponse? response = default;
                     try
                     {
-                        Logger.LogInformation($"Run {args.DeliveryTag}");
+                        Logger.LogDebug($"Run {args.DeliveryTag}");
                         response = await GetResponseAsync(request).ConfigureAwait(true);
-                        Logger.LogInformation($"End run {args.DeliveryTag}");
+                        Logger.LogDebug($"End run {args.DeliveryTag}");
                         replyProperties.Headers.Add("Success", true);
                     }
                     catch (Exception e)
@@ -43,13 +43,13 @@ namespace AndNetwork9.Shared.Backend.Rabbit
                     {
                         if (args.BasicProperties.ReplyTo is not null)
                         {
-                            Logger.LogInformation($"Publish {args.DeliveryTag}");
+                            Logger.LogDebug($"Publish {args.DeliveryTag}");
                             ReadOnlyMemory<byte> result = response is null
                                 ? ReadOnlyMemory<byte>.Empty
                                 : JsonSerializer.SerializeToUtf8Bytes(response, JsonSerializerOptions);
                             Model.BasicPublish(string.Empty, args.BasicProperties.ReplyTo, replyProperties, result);
                         }
-                        Logger.LogInformation($"Ack {args.DeliveryTag}");
+                        Logger.LogDebug($"Ack {args.DeliveryTag}");
                         Model.BasicAck(args.DeliveryTag, false);
                         Logger.LogInformation($"Finish {args.DeliveryTag}");
                     }
