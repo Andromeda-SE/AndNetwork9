@@ -12,7 +12,9 @@ using AndNetwork9.Shared.Backend.Senders.Elections;
 using AndNetwork9.Shared.Enums;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
+using Task = System.Threading.Tasks.Task;
 
 namespace AndNetwork9.Elections.Listeners
 {
@@ -22,13 +24,13 @@ namespace AndNetwork9.Elections.Listeners
         private readonly IServiceScopeFactory _scopeFactory;
 
         public Register(IConnection connection, RewriteElectionsChannelSender rewriteElectionsChannelSender,
-            IServiceScopeFactory scopeFactory) : base(connection, RegisterSender.QUEUE_NAME)
+            IServiceScopeFactory scopeFactory, ILogger<Register> logger) : base(connection, RegisterSender.QUEUE_NAME, logger)
         {
             _rewriteElectionsChannelSender = rewriteElectionsChannelSender;
             _scopeFactory = scopeFactory;
         }
 
-        public override async void Run(int memberId)
+        public override async Task Run(int memberId)
         {
             AsyncServiceScope scope = _scopeFactory.CreateAsyncScope();
             await using ConfiguredAsyncDisposable _ = scope.ConfigureAwait(false);

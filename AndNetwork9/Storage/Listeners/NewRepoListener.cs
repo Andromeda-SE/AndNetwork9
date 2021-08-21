@@ -10,6 +10,7 @@ using AndNetwork9.Shared.Storage;
 using AndNetwork9.Shared.Utility;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
 
 namespace AndNetwork9.Storage.Listeners
@@ -19,8 +20,8 @@ namespace AndNetwork9.Storage.Listeners
         private readonly RepoManager _repoManager;
         private readonly IServiceScopeFactory _scopeFactory;
 
-        public NewRepoListener(IConnection connection, IServiceScopeFactory scopeFactory) : base(connection,
-            NewRepoSender.QUEUE_NAME)
+        public NewRepoListener(IConnection connection, IServiceScopeFactory scopeFactory, ILogger<NewRepoListener> logger) : base(connection,
+            NewRepoSender.QUEUE_NAME, logger)
         {
             _scopeFactory = scopeFactory;
             _repoManager = new();
