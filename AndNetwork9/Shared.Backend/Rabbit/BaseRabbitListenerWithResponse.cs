@@ -19,6 +19,8 @@ namespace AndNetwork9.Shared.Backend.Rabbit
                 try
                 {
                     Logger.LogInformation($"Received {args.DeliveryTag}");
+                    Logger.LogInformation($"Ack {args.DeliveryTag}");
+                    Model.BasicAck(args.DeliveryTag, false);
                     IBasicProperties replyProperties = Model.CreateBasicProperties();
                     replyProperties.Headers = new Dictionary<string, object>();
                     replyProperties.CorrelationId = args.BasicProperties.CorrelationId;
@@ -49,8 +51,6 @@ namespace AndNetwork9.Shared.Backend.Rabbit
                                 : JsonSerializer.SerializeToUtf8Bytes(response, JsonSerializerOptions);
                             Model.BasicPublish(string.Empty, args.BasicProperties.ReplyTo, replyProperties, result);
                         }
-                        Logger.LogInformation($"Ack {args.DeliveryTag}");
-                        Model.BasicAck(args.DeliveryTag, false);
                         Logger.LogInformation($"Finish {args.DeliveryTag}");
                     }
                 }

@@ -17,7 +17,9 @@ namespace AndNetwork9.Shared.Backend.Rabbit
             {
                 try
                 {
-                    Logger.LogInformation($"Received {args.DeliveryTag}");
+                    Logger.LogInformation($"Received {args.DeliveryTag}, CorrelationId = {args.BasicProperties.CorrelationId}");
+                    Logger.LogInformation($"Ack {args.DeliveryTag}");
+                    Model.BasicAck(args.DeliveryTag, false);
                     IBasicProperties replyProperties = Model.CreateBasicProperties();
                     replyProperties.Headers = new Dictionary<string, object>();
                     replyProperties.CorrelationId = args.BasicProperties.CorrelationId;
@@ -40,8 +42,12 @@ namespace AndNetwork9.Shared.Backend.Rabbit
                     }
                     finally
                     {
-                        Logger.LogInformation($"Ack {args.DeliveryTag}");
-                        Model.BasicAck(args.DeliveryTag, false);
+                        if (args.BasicProperties.ReplyTo is not null)
+                        {
+                            Logger.LogInformation($"Publish {args.DeliveryTag}");
+                            ReadOnlyMemory<byte> result = ReadOnlyMemory<byte>.Empty;
+                            Model.BasicPublish(string.Empty, args.BasicProperties.ReplyTo, replyProperties, result);
+                        }
                         Logger.LogInformation($"Finish {args.DeliveryTag}");
                     }
                 }
