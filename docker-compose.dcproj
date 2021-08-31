@@ -19,6 +19,5 @@
     </None>
     <None Include="docker-compose.yml" />
     <None Include=".dockerignore" />
-    <None Include="rabbitmq.conf" />
   </ItemGroup>
 </Project>

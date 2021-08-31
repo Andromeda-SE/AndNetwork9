@@ -365,3 +365,7 @@ FodyWeavers.xsd
 # Docker-compose .env file
 .env
 *.DotSettings
+/data/repos
+/data/postgresql
+/data/grafana
+/data/prometheus/data/data
