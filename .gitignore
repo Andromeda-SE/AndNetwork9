@@ -367,5 +367,4 @@ FodyWeavers.xsd
 *.DotSettings
 /data/repos
 /data/postgresql
-/data/grafana
 /data/prometheus/data/data
