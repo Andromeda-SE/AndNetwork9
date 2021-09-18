@@ -15,7 +15,6 @@ namespace AndNetwork9.Shared.Backend.Rabbit
             WriteIndented = false,
         };
 
-        protected readonly ILogger<BaseRabbitSender> Logger;
         protected readonly EventingBasicConsumer Consumer;
         protected readonly string MethodQueueName;
 
