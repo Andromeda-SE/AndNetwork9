@@ -135,11 +135,11 @@ namespace AndNetwork9.Discord
 
         private Task HandleCommandAsync(SocketMessage messageParam)
         {
-            Task.Run(() => HandleCommand(messageParam));
+            Task.Run(async () => await ProcessCommand(messageParam).ConfigureAwait(false));
             return Task.CompletedTask;
         }
 
-        private async Task HandleCommand(SocketMessage messageParam)
+        private async Task ProcessCommand(SocketMessage messageParam)
         {
             if (messageParam is not SocketUserMessage message) return;
             int argPos = 0;
