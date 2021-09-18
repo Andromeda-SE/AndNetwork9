@@ -37,9 +37,9 @@ namespace AndNetwork9.Discord
                 LogLevel = LogSeverity.Info,
                 DefaultRetryMode = RetryMode.AlwaysRetry,
                 LargeThreshold = 250,
-                RateLimitPrecision = RateLimitPrecision.Millisecond,
                 UseSystemClock = true,
                 AlwaysDownloadUsers = true,
+                ConnectionTimeout = 30000,
             })
         {
             Log += OnLog;
@@ -157,6 +157,9 @@ namespace AndNetwork9.Discord
                 await message.Author.SendMessageAsync(
                     "Ошибка при обработке команды. Обратитесь к первому советнику клана").ConfigureAwait(false);
                 Logger.LogError(e, "Исключение при обработке сообщения от пользователя");
+            }
+            finally
+            {
                 enterTypingState.Dispose();
                 scope.Dispose();
             }

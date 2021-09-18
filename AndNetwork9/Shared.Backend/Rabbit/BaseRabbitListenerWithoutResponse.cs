@@ -17,7 +17,9 @@ namespace AndNetwork9.Shared.Backend.Rabbit
             {
                 try
                 {
-                    Logger.LogInformation($"Received {args.DeliveryTag}");
+                    Logger.LogInformation($"Received {args.DeliveryTag}, CorrelationId = {args.BasicProperties.CorrelationId}");
+                    Logger.LogInformation($"Ack {args.DeliveryTag}");
+                    Model.BasicAck(args.DeliveryTag, false);
                     IBasicProperties replyProperties = Model.CreateBasicProperties();
                     replyProperties.Headers = new Dictionary<string, object>();
                     replyProperties.CorrelationId = args.BasicProperties.CorrelationId;
@@ -26,9 +28,9 @@ namespace AndNetwork9.Shared.Backend.Rabbit
                     if (request is null) throw new ArgumentException();
                     try
                     {
-                        Logger.LogDebug($"Run {args.DeliveryTag}");
+                        Logger.LogInformation($"Run {args.DeliveryTag}");
                         await Run(request).ConfigureAwait(true);
-                        Logger.LogDebug($"End run {args.DeliveryTag}");
+                        Logger.LogInformation($"End run {args.DeliveryTag}");
                         replyProperties.Headers.Add("Success", true);
                     }
                     catch (Exception e)
@@ -42,12 +44,10 @@ namespace AndNetwork9.Shared.Backend.Rabbit
                     {
                         if (args.BasicProperties.ReplyTo is not null)
                         {
-                            Logger.LogDebug($"Publish {args.DeliveryTag}");
+                            Logger.LogInformation($"Publish {args.DeliveryTag}");
                             ReadOnlyMemory<byte> result = ReadOnlyMemory<byte>.Empty;
                             Model.BasicPublish(string.Empty, args.BasicProperties.ReplyTo, replyProperties, result);
                         }
-                        Logger.LogDebug($"Ack {args.DeliveryTag}");
-                        Model.BasicAck(args.DeliveryTag, false);
                         Logger.LogInformation($"Finish {args.DeliveryTag}");
                     }
                 }

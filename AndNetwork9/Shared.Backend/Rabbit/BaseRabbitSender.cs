@@ -25,19 +25,20 @@ namespace AndNetwork9.Shared.Backend.Rabbit
         protected readonly string ReplyQueueName;
 
         protected readonly ConcurrentDictionary<Guid, ManualResetEvent> Waiting = new();
+        protected readonly ILogger<BaseRabbitSender> Logger;
 
         protected BaseRabbitSender(IConnection connection, string queue, ILogger<BaseRabbitSender> logger)
         {
             Logger = logger;
-
+            Logger.LogDebug("Creating…");
             Model = connection.CreateModel();
             MethodQueueName = queue;
-            Logger.LogDebug("Init started…");
+            
             ReplyQueueName = Model.QueueDeclare().QueueName;
-
+            Logger.LogDebug($"Reply queue name = {ReplyQueueName}");
             Consumer = new(Model);
             Consumer.Received += Received!;
-            Logger.LogDebug("Init end. ReplyQueueName == «{0}»", ReplyQueueName);
+            Logger.LogDebug("Sender created");
         }
 
         public void Dispose()

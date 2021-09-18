@@ -1,4 +1,5 @@
 ﻿using AndNetwork9.Shared.Backend.Rabbit;
+using AndNetwork9.Shared.Backend.Senders.Elections;
 using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
 

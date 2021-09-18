@@ -135,7 +135,6 @@ namespace AndNetwork9.Shared.Backend
                         .IsRequired();
 
                     entity.Property(x => x.Votes);
-                    entity.Property(x => x.VoterKey);
                     entity.Property(x => x.Voted);
                     entity.Property(x => x.VotedTime);
                 });

@@ -31,7 +31,7 @@ namespace AndNetwork9.Server.Controllers
         // POST api/<AuthController>
         [HttpPost]
         [AllowAnonymous]
-        public async Task<ActionResult<IReadOnlyDictionary<string, string>>> Post([FromBody] AuthCredentials value)
+        public async Task<IActionResult> Post([FromBody] AuthCredentials value)
         {
             Member? member = await _data.Members.FirstOrDefaultAsync(x => x.Nickname == value.Nickname).ConfigureAwait(false);
             if (member is null
@@ -68,43 +68,9 @@ namespace AndNetwork9.Server.Controllers
                 new(claimsIdentity),
                 authProperties).ConfigureAwait(false);
             await _data.SaveChangesAsync().ConfigureAwait(false);
-            return Ok(claims.ToDictionary(x => x.Type, x => x.Value));
+            return Ok();
         }
 
-        [HttpGet("restore/{sessionId:guid}")]
-        [AllowAnonymous]
-        public async Task<ActionResult<IReadOnlyDictionary<string, string>>> Post(Guid sessionId)
-        {
-            AuthSession? session = await _data.Sessions.FindAsync(sessionId).ConfigureAwait(false);
-            if (session is null) return NotFound();
-            if (session.ExpireTime is not null && session.ExpireTime <= DateTime.Now) return NotFound();
-            if (!Equals(session.Address, HttpContext.Connection.RemoteIpAddress)) return NotFound();
-
-            Member member = session.Member;
-
-
-            List<Claim> claims = new()
-            {
-                new(AuthExtensions.MEMBER_ID_CLAIM_NAME, member.Id.ToString("D", CultureInfo.InvariantCulture)),
-                new(AuthExtensions.SESSION_ID_CLAIM_NAME, session.SessionId.ToString("N")),
-            };
-            ClaimsIdentity claimsIdentity = new(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-            AuthenticationProperties authProperties = new()
-            {
-                AllowRefresh = true,
-                ExpiresUtc = session.ExpireTime,
-                IsPersistent = true,
-                IssuedUtc = session.CreateTime,
-            };
-            await HttpContext.SignInAsync(
-                CookieAuthenticationDefaults.AuthenticationScheme,
-                new(claimsIdentity),
-                authProperties).ConfigureAwait(false);
-            await _data.SaveChangesAsync().ConfigureAwait(false);
-            return Ok(claims.ToDictionary(x => x.Type, x => x.Value));
-        }
-
-        // PUT api/<AuthController>/5
         [HttpPut]
         [MinRankAuthorize]
         public async Task<IActionResult> Put([FromBody] string newPassword)
@@ -121,7 +87,7 @@ namespace AndNetwork9.Server.Controllers
             return Ok();
         }
 
-//#if DEBUG
+#if DEBUG
         // PUT api/<AuthController>/5
         [HttpPut("{id:int}")]
         public async Task<IActionResult> Put(int id, [FromBody] string newPassword)
@@ -137,9 +103,8 @@ namespace AndNetwork9.Server.Controllers
             return NotFound();
         }
 
-//#endif
+#endif
 
-        // DELETE api/<AuthController>/5
         [HttpDelete]
         [Authorize]
         public async Task<IActionResult> Delete()
@@ -155,7 +120,6 @@ namespace AndNetwork9.Server.Controllers
             return Ok();
         }
 
-        // DELETE api/<AuthController>/5
         [HttpDelete("other")]
         [Authorize]
         public async Task<IActionResult> DeleteOther()

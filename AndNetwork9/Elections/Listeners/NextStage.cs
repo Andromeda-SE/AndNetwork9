@@ -95,23 +95,17 @@ namespace AndNetwork9.Elections.Listeners
 
         private static void StartVoting(Election election, ClanDataContext data)
         {
-            Dictionary<int, Guid> keys = data.Members.AsEnumerable()
-                .Where(x => x.Rank > Rank.None && x.Direction > Direction.None)
-                .ToDictionary(x => x.Id, _ => Guid.NewGuid());
-
             foreach (ElectionVoting voting in election.Votings)
             {
                 Member[] candidates = voting.Members.Select(x => x.Member).ToArray();
                 foreach (Member member in data.Members.AsEnumerable()
-                    .Where(x => x.Rank is < Rank.Advisor and > Rank.None)
-                    .Except(candidates).ToArray())
+                    .Where(x => x.Rank > Rank.None).ToArray())
                     voting.Members.Add(new()
                     {
                         Direction = voting.Direction,
                         ElectionId = voting.ElectionId,
                         MemberId = member.Id,
                         Voted = false,
-                        VoterKey = keys[member.Id],
                         Votes = null,
                         Voting = voting,
                         Member = member,
@@ -125,10 +119,10 @@ namespace AndNetwork9.Elections.Listeners
         {
             election.Stage = ElectionStage.Ended;
 
-            foreach (Member oldAdvisor in data.Members.Where(x => x.Rank == Rank.Advisor))
+            foreach (Member oldAdvisor in data.Members.Where(x => x.Rank == Rank.Advisor).ToArray())
                 oldAdvisor.Rank = oldAdvisor.Awards.GetRank();
 
-            foreach (ElectionVoting voting in election.Votings)
+            foreach (ElectionVoting voting in election.Votings.ToArray())
             {
                 Member? winner = voting.GetWinner();
                 if (winner is not null) winner.Rank = Rank.Advisor;

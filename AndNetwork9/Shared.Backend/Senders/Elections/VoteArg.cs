@@ -1,7 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using AndNetwork9.Shared.Enums;
 
 namespace AndNetwork9.Shared.Backend.Senders.Elections
 {
-    public record VoteArg(int MemberId, Guid Key, Direction Direction, VoteArgNode[] Votes);
+    public record VoteArg(int MemberId, Dictionary<Direction, Dictionary<int, uint>> Bulletin);
 }

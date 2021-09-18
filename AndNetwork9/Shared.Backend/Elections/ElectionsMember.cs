@@ -16,7 +16,6 @@ namespace AndNetwork9.Shared.Backend.Elections
         public virtual Member Member { get; set; } = null!;
         public int? Votes { get; set; }
         public DateTime? VotedTime { get; set; }
-        public Guid? VoterKey { get; set; } = Guid.NewGuid();
         public bool Voted { get; set; }
 
         public int CompareTo(ElectionsMember? other)

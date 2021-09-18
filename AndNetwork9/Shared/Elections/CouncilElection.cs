@@ -23,6 +23,6 @@ namespace AndNetwork9.Shared.Elections
 
         public ElectionStage Stage { get; set; }
 
-        public Dictionary<Direction, Dictionary<int, int>> Votes { get; set; } = new();
+        public List<CouncilElectionVote> Votes { get; set; } = new();
     }
 }
