@@ -5,9 +5,6 @@ namespace AndNetwork9.Storage
 {
     public static class Extensions
     {
-        public static Identity GetIdentity(this Member member)
-        {
-            return new(member.ToString(), member.Id.ToString("D"));
-        }
+        public static Identity GetIdentity(this Member member) => new(member.ToString(), member.Id.ToString("D"));
     }
 }

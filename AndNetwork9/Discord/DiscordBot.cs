@@ -11,6 +11,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using File = AndNetwork9.Discord.Commands.File;
+using IResult = Discord.Commands.IResult;
 
 namespace AndNetwork9.Discord
 {
@@ -35,9 +37,9 @@ namespace AndNetwork9.Discord
                 LogLevel = LogSeverity.Info,
                 DefaultRetryMode = RetryMode.AlwaysRetry,
                 LargeThreshold = 250,
-                RateLimitPrecision = RateLimitPrecision.Millisecond,
                 UseSystemClock = true,
                 AlwaysDownloadUsers = true,
+                ConnectionTimeout = 30000,
             })
         {
             Log += OnLog;
@@ -52,18 +54,18 @@ namespace AndNetwork9.Discord
         public async Task StartAsync(CancellationToken cancellationToken)
         {
             UserJoined += OnUserJoined;
-            await LoginAsync(TokenType.Bot, Token);
+            await LoginAsync(TokenType.Bot, Token).ConfigureAwait(false);
             await InstallCommandsAsync().ConfigureAwait(false);
-            await base.StartAsync();
+            await base.StartAsync().ConfigureAwait(false);
             Status = UserStatus.Online;
         }
 
         public async Task StopAsync(CancellationToken cancellationToken)
         {
             Status = UserStatus.Offline;
-            await base.StopAsync();
-            await UninstallCommandsAsync();
-            await LogoutAsync();
+            await base.StopAsync().ConfigureAwait(false);
+            await UninstallCommandsAsync().ConfigureAwait(false);
+            await LogoutAsync().ConfigureAwait(false);
         }
 
         private IDisposable CreateDatabaseConnection(out ClanDataContext data)
@@ -77,7 +79,7 @@ namespace AndNetwork9.Discord
         public async Task UpdateAsync()
         {
             using IDisposable _ = CreateDatabaseConnection(out ClanDataContext data);
-            await new DiscordUpdater(this, data).UpdateAsync();
+            await new DiscordUpdater(this, data).UpdateAsync().ConfigureAwait(false);
         }
 
         private async Task OnLog(LogMessage message)
@@ -86,24 +88,20 @@ namespace AndNetwork9.Discord
             {
                 if (message.Exception is null) Logger.Log(message.Severity.ToLogLevel(), message.Message);
                 else Logger.Log(message.Severity.ToLogLevel(), message.Exception, message.Message);
-            });
+            }).ConfigureAwait(false);
         }
 
-        private Task OnUserJoined(SocketGuildUser user)
-        {
-            return Task.CompletedTask;
-        }
+        private Task OnUserJoined(SocketGuildUser user) => Task.CompletedTask;
 
         public async Task InstallCommandsAsync()
         {
             using IServiceScope scope = ScopeFactory.CreateScope();
-            await _commandService.AddModuleAsync<Admin>(scope.ServiceProvider);
-            await _commandService.AddModuleAsync<Member>(scope.ServiceProvider);
-            await _commandService.AddModuleAsync<Award>(scope.ServiceProvider);
-            await _commandService.AddModuleAsync<Elections>(scope.ServiceProvider);
-            await _commandService.AddModuleAsync<Send>(scope.ServiceProvider);
-            await _commandService.AddModuleAsync<Root>(scope.ServiceProvider);
-            await _commandService.AddModuleAsync<File>(scope.ServiceProvider);
+            await _commandService.AddModuleAsync<Admin>(scope.ServiceProvider).ConfigureAwait(false);
+            await _commandService.AddModuleAsync<Member>(scope.ServiceProvider).ConfigureAwait(false);
+            await _commandService.AddModuleAsync<Elections>(scope.ServiceProvider).ConfigureAwait(false);
+            await _commandService.AddModuleAsync<Send>(scope.ServiceProvider).ConfigureAwait(false);
+            await _commandService.AddModuleAsync<Root>(scope.ServiceProvider).ConfigureAwait(false);
+            await _commandService.AddModuleAsync<File>(scope.ServiceProvider).ConfigureAwait(false);
 
             MessageReceived += HandleCommandAsync;
             _commandService.CommandExecuted += CommandExecuted;
@@ -117,7 +115,7 @@ namespace AndNetwork9.Discord
             {
                 Logger.LogInformation(
                     $"{context.User} sent wrong command \"{message.Content}\": «{result.Error}/{result.ErrorReason}»");
-                await context.Message.ReplyAsync(result.Error?.GetLocalizedString() ?? "Неизвестная ошибка");
+                await context.Message.ReplyAsync(result.Error?.GetLocalizedString() ?? "Неизвестная ошибка").ConfigureAwait(false);
                 if (result is ExecuteResult executeResult)
                     throw executeResult.Exception;
             }
@@ -132,16 +130,16 @@ namespace AndNetwork9.Discord
         public async Task UninstallCommandsAsync()
         {
             MessageReceived -= HandleCommandAsync;
-            foreach (ModuleInfo module in _commandService.Modules) await _commandService.RemoveModuleAsync(module);
+            foreach (ModuleInfo module in _commandService.Modules) await _commandService.RemoveModuleAsync(module).ConfigureAwait(false);
         }
 
         private Task HandleCommandAsync(SocketMessage messageParam)
         {
-            Task.Run(() => HandleCommand(messageParam));
+            Task.Run(async () => await ProcessCommand(messageParam).ConfigureAwait(false));
             return Task.CompletedTask;
         }
 
-        private async Task HandleCommand(SocketMessage messageParam)
+        private async Task ProcessCommand(SocketMessage messageParam)
         {
             if (messageParam is not SocketUserMessage message) return;
             int argPos = 0;
@@ -152,13 +150,16 @@ namespace AndNetwork9.Discord
             DiscordCommandContext context = new(this, message, scope, enterTypingState);
             try
             {
-                await _commandService.ExecuteAsync(context, argPos, scope.ServiceProvider);
+                await _commandService.ExecuteAsync(context, argPos, scope.ServiceProvider).ConfigureAwait(false);
             }
             catch (Exception e)
             {
                 await message.Author.SendMessageAsync(
-                    "Ошибка при обработке команды. Обратитесь к первому советнику клана");
+                    "Ошибка при обработке команды. Обратитесь к первому советнику клана").ConfigureAwait(false);
                 Logger.LogError(e, "Исключение при обработке сообщения от пользователя");
+            }
+            finally
+            {
                 enterTypingState.Dispose();
                 scope.Dispose();
             }
@@ -166,7 +167,7 @@ namespace AndNetwork9.Discord
 
         public new async void Dispose()
         {
-            await StopAsync();
+            await StopAsync().ConfigureAwait(false);
             base.Dispose();
         }
     }

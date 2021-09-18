@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using AndNetwork9.Shared;
 using AndNetwork9.Shared.Backend;
 using AndNetwork9.Shared.Backend.Elections;
@@ -12,7 +14,9 @@ using AndNetwork9.Shared.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
+using Task = System.Threading.Tasks.Task;
 
 namespace AndNetwork9.Elections.Listeners
 {
@@ -22,26 +26,27 @@ namespace AndNetwork9.Elections.Listeners
         private readonly IServiceScopeFactory _scopeFactory;
 
         public NextStage(IConnection connection, IServiceScopeFactory scopeFactory,
-            RewriteElectionsChannelSender rewriteElectionsChannelSender) : base(connection, NextStageSender.QUEUE_NAME)
+            RewriteElectionsChannelSender rewriteElectionsChannelSender, ILogger<NextStage> logger) : base(connection, NextStageSender.QUEUE_NAME, logger)
         {
             _scopeFactory = scopeFactory;
             _rewriteElectionsChannelSender = rewriteElectionsChannelSender;
         }
 
-        public override async void Run(ElectionStage _)
+        public override async Task Run(ElectionStage _)
         {
-            using IServiceScope scope = _scopeFactory.CreateScope();
+            AsyncServiceScope scope = _scopeFactory.CreateAsyncScope();
+            await using ConfiguredAsyncDisposable __ = scope.ConfigureAwait(false);
             ClanDataContext data = (ClanDataContext)scope.ServiceProvider.GetService(typeof(ClanDataContext))!;
             if (data is null) throw new ApplicationException();
 
             Election? election =
                 await data.Elections.FirstOrDefaultAsync(x =>
                     // ReSharper disable once MergeIntoPattern
-                    x.Stage > ElectionStage.None && x.Stage < ElectionStage.Ended);
+                    x.Stage > ElectionStage.None && x.Stage < ElectionStage.Ended).ConfigureAwait(false);
 
             if (election is null)
             {
-                EntityEntry<Election> result = await data.Elections.AddAsync(GetNewElections());
+                EntityEntry<Election> result = await data.Elections.AddAsync(GetNewElections()).ConfigureAwait(false);
                 election = result.Entity;
             }
             else
@@ -56,13 +61,13 @@ namespace AndNetwork9.Elections.Listeners
                         break;
                     case ElectionStage.Announcement:
                         EndElection(election, data);
-                        await data.Elections.AddAsync(GetNewElections());
+                        await data.Elections.AddAsync(GetNewElections()).ConfigureAwait(false);
                         break;
                 }
             }
 
-            await data.SaveChangesAsync();
-            await _rewriteElectionsChannelSender.CallAsync(election);
+            await data.SaveChangesAsync().ConfigureAwait(false);
+            await _rewriteElectionsChannelSender.CallAsync(election).ConfigureAwait(false);
         }
 
         private static Election GetNewElections()
@@ -90,23 +95,17 @@ namespace AndNetwork9.Elections.Listeners
 
         private static void StartVoting(Election election, ClanDataContext data)
         {
-            Dictionary<int, Guid> keys = data.Members.AsEnumerable()
-                .Where(x => x.Rank > Rank.None && x.Direction > Direction.None)
-                .ToDictionary(x => x.Id, _ => Guid.NewGuid());
-
             foreach (ElectionVoting voting in election.Votings)
             {
                 Member[] candidates = voting.Members.Select(x => x.Member).ToArray();
                 foreach (Member member in data.Members.AsEnumerable()
-                    .Where(x => x.Rank is < Rank.Advisor and > Rank.None)
-                    .Except(candidates).ToArray())
+                    .Where(x => x.Rank > Rank.None).ToArray())
                     voting.Members.Add(new()
                     {
                         Direction = voting.Direction,
                         ElectionId = voting.ElectionId,
                         MemberId = member.Id,
                         Voted = false,
-                        VoterKey = keys[member.Id],
                         Votes = null,
                         Voting = voting,
                         Member = member,
@@ -120,10 +119,10 @@ namespace AndNetwork9.Elections.Listeners
         {
             election.Stage = ElectionStage.Ended;
 
-            foreach (Member oldAdvisor in data.Members.Where(x => x.Rank == Rank.Advisor))
+            foreach (Member oldAdvisor in data.Members.Where(x => x.Rank == Rank.Advisor).ToArray())
                 oldAdvisor.Rank = oldAdvisor.Awards.GetRank();
 
-            foreach (ElectionVoting voting in election.Votings)
+            foreach (ElectionVoting voting in election.Votings.ToArray())
             {
                 Member? winner = voting.GetWinner();
                 if (winner is not null) winner.Rank = Rank.Advisor;

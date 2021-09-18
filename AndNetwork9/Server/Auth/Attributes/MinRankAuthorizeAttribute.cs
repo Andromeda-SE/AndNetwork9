@@ -9,19 +9,13 @@ namespace AndNetwork9.Server.Auth.Attributes
     {
         public const string POLICY_PREFIX = "MinRank-";
 
-        public MinRankAuthorizeAttribute(Rank rank = Rank.Neophyte)
-        {
-            Rank = rank;
-        }
+        public MinRankAuthorizeAttribute(Rank rank = Rank.Neophyte) => Rank = rank;
 
         public Rank Rank { get; }
 
         public string PolicyName => $"{POLICY_PREFIX}{Rank:G}";
 
-        public bool Pass(Member member)
-        {
-            return member.Rank >= Rank;
-        }
+        public bool Pass(Member member) => member.Rank >= Rank;
 
         public static bool TryParse(string value, out IAuthorizationRequirement policyName)
         {

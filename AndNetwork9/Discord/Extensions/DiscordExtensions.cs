@@ -68,27 +68,30 @@ namespace AndNetwork9.Discord.Extensions
 
         internal static IEnumerable<Overwrite> ToOverwrites(this Channel channel, DiscordUpdater updater)
         {
-            yield return new Overwrite(updater.EveryoneRole.Id, PermissionTarget.Role,
+            yield return new Overwrite(updater.EveryoneRole.Id,
+                PermissionTarget.Role,
                 channel.EveryonePermissions.ToOverwritePermissions());
-            yield return new Overwrite(updater.DefaultRole.Id, PermissionTarget.Role,
+            yield return new Overwrite(updater.DefaultRole.Id,
+                PermissionTarget.Role,
                 channel.MemberPermissions.ToOverwritePermissions());
-            yield return new Overwrite(updater.AdvisorRole.Id, PermissionTarget.Role,
+            yield return new Overwrite(updater.AdvisorRole.Id,
+                PermissionTarget.Role,
                 channel.AdvisorPermissions.ToOverwritePermissions());
 
             if (channel.Squad is not null)
             {
-                yield return new(updater.SquadsRoles[channel.Squad].Id, PermissionTarget.Role,
+                yield return new(updater.SquadsRoles[channel.Squad].Id,
+                    PermissionTarget.Role,
                     channel.SquadPermissions.ToOverwritePermissions());
                 if (channel.Squad.Commander is not null)
-                    yield return new(channel.Squad.Commander.DiscordId, PermissionTarget.User,
+                    yield return new(channel.Squad.Commander.DiscordId,
+                        PermissionTarget.User,
                         channel.SquadCommanderPermissions.ToOverwritePermissions());
             }
         }
 
         public static OverwritePermissions ToOverwritePermissions(
-            this Shared.Backend.Discord.Enums.Permissions permissionsFlags)
-        {
-            return new((ulong)permissionsFlags, ~(ulong)permissionsFlags);
-        }
+            this Shared.Backend.Discord.Enums.Permissions permissionsFlags) =>
+            new((ulong)permissionsFlags, ~(ulong)permissionsFlags);
     }
 }

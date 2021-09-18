@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Net.Http;
 using AndNetwork9.Client.Services;
+using AndNetwork9.Shared.Utility;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Web;
 
 namespace AndNetwork9.Client.Shared
 {
@@ -15,24 +17,18 @@ namespace AndNetwork9.Client.Shared
         public HttpClient Client { get; set; } = null!;
 
         [Parameter]
-        public string Nickname { get; set; }
-        [Parameter]
-        public string Password { get; set; }
+        public AuthCredentials Credentials { get; set; } = new AuthCredentials(String.Empty, String.Empty);
 
         public bool LoginEnabled { get; set; } = true;
         public bool ErrorLogin { get; set; }
 
         public async void LoginAsync()
         {
-            Console.WriteLine("0");
             LoginEnabled = false;
-            Console.WriteLine("1");
-            ErrorLogin = !await AuthenticationStateProvider.LoginAsync(new(Nickname, Password));
-            Console.WriteLine("2");
+            ErrorLogin = !await AuthenticationStateProvider.LoginAsync(Credentials)
+                .WaitAsync(TimeSpan.FromSeconds(30)).ConfigureAwait(true);
             if (!ErrorLogin) NavigationManager.NavigateTo("/", true);
-            Console.WriteLine("3");
             LoginEnabled = true;
-            Console.WriteLine("4");
             StateHasChanged();
         }
     }

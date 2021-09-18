@@ -1,7 +1,7 @@
+using System;
 using System.Net.Http;
 using System.Threading.Tasks;
 using AndNetwork9.Client.Services;
-using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.DependencyInjection;
@@ -13,13 +13,14 @@ namespace AndNetwork9.Client
         public static async Task Main(string[] args)
         {
             WebAssemblyHostBuilder builder = WebAssemblyHostBuilder.CreateDefault(args);
-            builder.RootComponents.Add<App>("#app");
-
-            builder.Services.AddBlazoredLocalStorage();
+            builder.RootComponents.Add<AndNetwork9.Client.App>("#app");
 
             builder.Services.AddScoped(sp => new HttpClient
             {
                 BaseAddress = new(builder.HostEnvironment.BaseAddress),
+                DefaultRequestVersion = new Version(3, 0),
+                Timeout = TimeSpan.FromSeconds(30),
+                DefaultVersionPolicy = HttpVersionPolicy.RequestVersionOrHigher,
             });
 
             builder.Services.AddScoped<AuthStateProvider>();

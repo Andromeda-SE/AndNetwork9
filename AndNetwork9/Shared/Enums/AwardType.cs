@@ -3,9 +3,11 @@
     public enum AwardType
     {
         None,
-        Bronze = 1,
+        Copper = 1,
+        Bronze = 2,
         Silver = 5,
         Gold = 15,
-        Hero = 100,
+        Sapphire = 25,
+        Hero = 50,
     }
 }

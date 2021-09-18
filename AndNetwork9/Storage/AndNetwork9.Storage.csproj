@@ -7,15 +7,23 @@
     <UserSecretsId>bfc91753-ea9f-4f85-8efb-f39550697ddf</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     <DockerfileContext>..\..</DockerfileContext>
+	  <LangLevel>preview</LangLevel>
+	  <DisableImplicitNamespaceImports>true</DisableImplicitNamespaceImports>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="LibGit2Sharp" Version="0.27.0-preview-0100" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="6.0.0-preview.5.21301.5" />
-    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.10.14" />
+    <PackageReference Include="LibGit2Sharp" Version="0.27.0-preview-0119" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="6.0.0-rc.1.21451.13" />
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.11.1" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Shared.Backend\AndNetwork9.Shared.Backend.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Npgsql.EntityFrameworkCore.PostgreSQL">
+      <HintPath>..\Shared.Backend\Npgsql.EntityFrameworkCore.PostgreSQL.dll</HintPath>
+    </Reference>
   </ItemGroup>
 </Project>

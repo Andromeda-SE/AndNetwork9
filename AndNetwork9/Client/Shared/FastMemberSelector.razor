@@ -1,0 +1,208 @@
+﻿<div class="modal fade" id="@Id" tabindex="-1">
+<div class="modal-dialog">
+<div class="modal-content">
+<div class="modal-header">
+    <h5 class="modal-title">Изменить список учаcтников…</h5>
+    <button class="btn-close" data-bs-dismiss="modal" type="button"></button>
+</div>
+<div class="modal-body">
+    <div class="d-grid table-responsive">
+        <table class="table table-sm">
+            <tbody>
+            @foreach (Member member in Members)
+            {
+                <tr>
+                    <td>
+                        <a href="@member.GetLink()" target="_blank">@member.ToString()</a>
+                    </td>
+                    <td class="align-middle">
+                        <button class="btn btn-danger btn-sm" @onclick="e => Members.Remove(member)" type="button">
+                            <i class="bi bi-dash-lg"/>
+                        </button>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+
+
+    <div class="mb-3 row">
+        <label class="col-form-label">Добавить игроков…</label>
+        <div class="">
+            <select @bind="SelectedEditType" class="form-control form-control-sm form-select">
+                @foreach (FastEditType editType in Enum.GetValues<FastEditType>())
+                {
+                    <option value="@editType">@editType.GetName()</option>
+                }
+            </select>
+        </div>
+    </div>
+    <div class="mb-1 row">
+        @switch (SelectedEditType)
+        {
+            case FastEditType.One:
+                @if (AllMembers is not null)
+                {
+                    <div class="mb-1 row">
+                        <div class="col-sm-10">
+                            <select @bind="SelectedMemberId" class="form-control form-control-sm form-select">
+                                @foreach (Member member in AllMembers)
+                                {
+                                    <option value="@member.Id">@member.ToString()</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col-sm-2 d-flex justify-content-center">
+                            <button class="btn btn-sm btn-success m-1" disabled="@(SelectedMember is null || Members.Any(x => x.Id == SelectedMemberId))" @onclick="() => Members.Add(SelectedMember)" type="button">
+                                <i class="bi bi-plus-lg"/>
+                            </button>
+                            <button class="btn btn-danger btn-sm m-1" disabled="@(SelectedMember is null || Members.All(x => x.Id != SelectedMemberId))" @onclick="() => Members.Remove(SelectedMember)" type="button">
+                                <i class="bi bi-dash-lg"/>
+                            </button>
+                        </div>
+                    </div>
+                }
+                break;
+            case FastEditType.Squad:
+                @if (AllSquads is not null)
+                {
+                    <div class="mb-1 row">
+                        <div class="col-sm-10">
+                            <select @bind="SelectedSquadId" class="form-control form-control-sm form-select">
+                                @foreach (Squad squad in AllSquads)
+                                {
+                                    <option value="@squad.Number">@squad.ToString()</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col-sm-2 d-flex justify-content-center">
+                            <button class="btn btn-sm btn-success m-1"
+                                    disabled="@(SelectedSquad is null || !SelectedSquad.Members.Except(Members).Any())"
+                                    @onclick="() => AddMembers(SelectedSquad.Members.Except(Members))"
+                                    type="button">
+                                <i class="bi bi-plus-lg"/>
+                            </button>
+                            <button class="btn btn-danger btn-sm m-1"
+                                    disabled="@(SelectedSquad is null || !SelectedSquad.Members.Intersect(Members).Any())"
+                                    @onclick="() => RemoveMembers(SelectedSquad.Members.Intersect(Members))"
+                                    type="button">
+                                <i class="bi bi-dash-lg"/>
+                            </button>
+                        </div>
+                    </div>
+                }
+                break;
+            case FastEditType.Direction:
+                <div class="mb-1 row">
+                    <div class="col-sm-10">
+                        <select @bind="SelectedDirection" class="form-control form-control-sm form-select">
+                            @foreach (Direction direction in Enum.GetValues<Direction>())
+                            {
+                                <option value="@direction">@direction.GetName()</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col-sm-2 d-flex justify-content-center">
+                        <button class="btn btn-sm btn-success m-1"
+                                disabled="@(!AllMembers.Where(x => x.Direction == SelectedDirection).Except(Members).Any())"
+                                @onclick="() => AddMembers(AllMembers.Where(x => x.Direction == SelectedDirection).Except(Members))"
+                                type="button">
+                            <i class="bi bi-plus-lg"/>
+                        </button>
+                        <button class="btn btn-danger btn-sm m-1"
+                                disabled="@(!AllMembers.Where(x => x.Direction == SelectedDirection).Intersect(Members).Any())"
+                                @onclick="() => RemoveMembers(AllMembers.Where(x => x.Direction == SelectedDirection).Intersect(Members))"
+                                type="button">
+                            <i class="bi bi-dash-lg"/>
+                        </button>
+                    </div>
+                </div>
+                break;
+            case FastEditType.VoteMembers:
+                <p>Выбор не реализован</p>
+                break;
+            case FastEditType.VoteVoted:
+                <p>Выбор не реализован</p>
+                break;
+            case FastEditType.SquadCommanders:
+                <div class="mb-1 row">
+                    <div class="col-sm-10">
+                        <select class="form-control form-control-sm form-select" disabled>
+                            <option>@FastEditType.SquadCommanders.GetName()</option>
+                        </select>
+                    </div>
+                    <div class="col-sm-2 d-flex justify-content-center">
+                        <button class="btn btn-sm btn-success m-1"
+                                disabled="@(!AllMembers.Where(x => x.IsSquadCommander).Except(Members).Any())"
+                                @onclick="() => AddMembers(AllMembers.Where(x => x.IsSquadCommander).Except(Members))"
+                                type="button">
+                            <i class="bi bi-plus-lg"/>
+                        </button>
+                        <button class="btn btn-danger btn-sm m-1"
+                                disabled="@(!AllMembers.Where(x => x.IsSquadCommander).Intersect(Members).Any())"
+                                @onclick="() => RemoveMembers(AllMembers.Where(x => x.IsSquadCommander).Intersect(Members))"
+                                type="button">
+                            <i class="bi bi-dash-lg"/>
+                        </button>
+                    </div>
+                </div>
+                break;
+            case FastEditType.Advisors:
+                <div class="mb-1 row">
+                    <div class="col-sm-10">
+                        <select class="form-control form-control-sm form-select" disabled>
+                            <option>@FastEditType.Advisors.GetName()</option>
+                        </select>
+                    </div>
+                    <div class="col-sm-2 d-flex justify-content-center">
+                        <button class="btn btn-sm btn-success m-1"
+                                disabled="@(!AllMembers.Where(x => x.Rank >= Rank.Advisor).Except(Members).Any())"
+                                @onclick="() => AddMembers(AllMembers.Where(x => x.Rank >= Rank.Advisor).Except(Members))"
+                                type="button">
+                            <i class="bi bi-plus-lg"/>
+                        </button>
+                        <button class="btn btn-danger btn-sm m-1"
+                                disabled="@(!AllMembers.Where(x => x.Rank >= Rank.Advisor).Intersect(Members).Any())"
+                                @onclick="() => RemoveMembers(AllMembers.Where(x => x.Rank >= Rank.Advisor).Intersect(Members))"
+                                type="button">
+                            <i class="bi bi-dash-lg"/>
+                        </button>
+                    </div>
+                </div>
+                break;
+            case FastEditType.All:
+                <div class="mb-1 row">
+                    <div class="col-sm-10">
+                        <select class="form-control form-control-sm form-select" disabled>
+                            <option>@FastEditType.All.GetName()</option>
+                        </select>
+                    </div>
+                    <div class="col-sm-2 d-flex justify-content-center">
+                        <button class="btn btn-sm btn-success m-1"
+                                disabled="@(!AllMembers.Except(Members).Any())"
+                                @onclick="() => AddMembers(AllMembers.Except(Members))"
+                                type="button">
+                            <i class="bi bi-plus-lg"/>
+                        </button>
+                        <button class="btn btn-danger btn-sm m-1"
+                                disabled="@(!AllMembers.Intersect(Members).Any())"
+                                @onclick="() => RemoveMembers(AllMembers.Intersect(Members))"
+                                type="button">
+                            <i class="bi bi-dash-lg"/>
+                        </button>
+                    </div>
+                </div>
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
+        }
+    </div>
+</div>
+<div class="modal-footer">
+    <button class="btn btn-secondary" data-bs-dismiss="modal" type="button">Отмена</button>
+    <button class="btn btn-primary" data-bs-dismiss="modal" @onclick="Update" type="button">Сохранить</button>
+</div>
+</div>
+</div>
+</div>

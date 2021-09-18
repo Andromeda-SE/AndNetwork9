@@ -27,25 +27,31 @@ namespace AndNetwork9.Shared.Backend.Elections
 
         public virtual IList<ElectionVoting> Votings { get; set; } = new List<ElectionVoting>();
 
-        public static explicit operator CouncilElection(Election election)
+        public  CouncilElection GetCouncilElection(Member member)
         {
+            List<CouncilElectionVote>? votes = this.Votings.Select(x => new CouncilElectionVote()
+            {
+                Direction = x.Direction,
+                Votes = x.Members.Where(y => y.Votes is not null).ToDictionary(y => y.MemberId, y => (uint)y.Votes!),
+            }).ToList();
+            foreach ((CouncilElectionVote councilElectionVote, ElectionVoting electionVoting) in
+                votes.Join(this.Votings, x => x.Direction, x => x.Direction, (vote, voting) => (vote, voting)))
+            {
+                councilElectionVote.Votes.Add(0, (uint)electionVoting.AgainstAll);
+                councilElectionVote.VoteAllowed = electionVoting.Members.Any(x => x.MemberId == member.Id && !x.Voted);
+            }
             return new()
             {
-                Id = election.Id,
-                RegistrationDate = election.RegistrationDate,
-                VoteDate = election.VoteDate,
-                AnnouncementDate = election.AnnouncementDate,
-                StartDate = election.StartDate,
-                EndDate = election.EndDate,
+                Id = this.Id,
+                RegistrationDate = this.RegistrationDate,
+                VoteDate = this.VoteDate,
+                AnnouncementDate = this.AnnouncementDate,
+                StartDate = this.StartDate,
+                EndDate = this.EndDate,
 
-                Stage = election.Stage,
+                Stage = this.Stage,
 
-                Votes = election.Votings.ToDictionary(x => x.Direction, x => x.Members.Where(y => y.Votes is not null)
-                    .Append(new()
-                    {
-                        MemberId = 0,
-                        Votes = x.AgainstAll,
-                    }).ToDictionary(y => y.MemberId, y => y.Votes ?? throw new ArgumentException())),
+                Votes = votes,
             };
         }
     }

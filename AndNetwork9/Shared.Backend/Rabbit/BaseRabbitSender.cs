@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.Text.Json;
 using System.Threading;
+using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 
@@ -23,15 +24,20 @@ namespace AndNetwork9.Shared.Backend.Rabbit
         protected readonly string ReplyQueueName;
 
         protected readonly ConcurrentDictionary<Guid, ManualResetEvent> Waiting = new();
+        protected readonly ILogger<BaseRabbitSender> Logger;
 
-        protected BaseRabbitSender(IConnection connection, string queue)
+        protected BaseRabbitSender(IConnection connection, string queue, ILogger<BaseRabbitSender> logger)
         {
+            Logger = logger;
+            Logger.LogDebug("Creating…");
             Model = connection.CreateModel();
             MethodQueueName = queue;
+            
             ReplyQueueName = Model.QueueDeclare().QueueName;
-
+            Logger.LogDebug($"Reply queue name = {ReplyQueueName}");
             Consumer = new(Model);
             Consumer.Received += Received!;
+            Logger.LogDebug("Sender created");
         }
 
         public void Dispose()

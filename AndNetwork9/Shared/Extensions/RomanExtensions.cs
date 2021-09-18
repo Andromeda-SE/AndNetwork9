@@ -6,10 +6,7 @@ namespace AndNetwork9.Shared.Extensions
 {
     public static class RomanExtensions
     {
-        public static string ToRoman(this in uint number)
-        {
-            return ((int)number).ToRoman();
-        }
+        public static string ToRoman(this in uint number) => ((int)number).ToRoman();
 
         public static string ToRoman(this in int number)
         {

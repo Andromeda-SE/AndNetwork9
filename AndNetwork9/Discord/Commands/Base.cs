@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -39,20 +40,24 @@ namespace AndNetwork9.Discord.Commands
             return Data.Members.First(x => x.DiscordId == Context.User.Id);
         }
 
+
         protected override async Task<IUserMessage> ReplyAsync(string? message = null, bool isTts = false,
             Embed? embed = null, RequestOptions? options = null, AllowedMentions? allowedMentions = null,
-            MessageReference? messageReference = null)
-        {
-            return await Context.Message.ReplyAsync(message, isTts, embed, allowedMentions, options)
-                .ConfigureAwait(false);
-        }
+            MessageReference? messageReference = null,
+            MessageComponent component = null) => await Context.Message
+            .ReplyAsync(message, isTts, embed, allowedMentions, options)
+            .ConfigureAwait(false);
 
         protected async Task<IUserMessage> ReplyFileAsync(Stream stream, string fileName, string? messageText = null,
             bool isTts = false, Embed? embed = null, RequestOptions? options = null, bool spoiler = false,
-            AllowedMentions? allowedMentions = null)
-        {
-            return await Context.Message.Channel.SendFileAsync(stream, fileName, messageText, isTts, embed, options,
-                spoiler, allowedMentions, new(Context.Message.Id, Context.Message.Channel.Id));
-        }
+            AllowedMentions? allowedMentions = null) => await Context.Message.Channel.SendFileAsync(stream,
+            fileName,
+            messageText,
+            isTts,
+            embed,
+            options,
+            spoiler,
+            allowedMentions,
+            new(Context.Message.Id, Context.Message.Channel.Id)).ConfigureAwait(false);
     }
 }

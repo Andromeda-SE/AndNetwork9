@@ -11,7 +11,7 @@ using AndNetwork9.Shared.Votings;
 
 namespace AndNetwork9.Shared
 {
-    public record Member : IComparable<Member>, IEquatable<Member?>, IId
+    public record Member : IComparable<Member>, IEquatable<Member?>, IId, IComparable
     {
         public ulong SteamId { get; set; }
         public ulong DiscordId { get; set; }
@@ -71,6 +71,14 @@ namespace AndNetwork9.Shared
         [JsonIgnore]
         public virtual IList<Squad> PendingSquadMembership { get; set; } = new List<Squad>();
 
+        public int CompareTo(object? obj)
+        {
+            if (ReferenceEquals(this, obj)) return 0;
+            if (obj is null) return 1;
+            if (obj is not Member member) throw new ArgumentException();
+            return CompareTo(member);
+        }
+
         public int CompareTo(Member? other)
         {
             if (ReferenceEquals(this, other)) return 0;
@@ -101,24 +109,12 @@ namespace AndNetwork9.Shared
             return result;
         }
 
-        public override int GetHashCode()
-        {
-            return Id;
-        }
+        public override int GetHashCode() => Id;
 
-        public string GetDiscordMention()
-        {
-            return $"<@{DiscordId:D}>";
-        }
+        public string GetDiscordMention() => $"<@{DiscordId:D}>";
 
-        public string GetSteamLink()
-        {
-            return $"http://steamcommunity.com/profiles/{SteamId:D}";
-        }
+        public string GetSteamLink() => $"http://steamcommunity.com/profiles/{SteamId:D}";
 
-        public string GetVkLink()
-        {
-            return $"http://vk.com/id{VkId:D}";
-        }
+        public string GetVkLink() => $"http://vk.com/id{VkId:D}";
     }
 }

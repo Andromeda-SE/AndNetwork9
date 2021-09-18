@@ -1,63 +1,61 @@
 ﻿@page "/Member/{SelectedKeyRaw?}"
 @attribute [Authorize]
+@inherits ElementPageBase<Member>
 
 <BaseBodyWithAside Title="Игроки">
     <Main>
-        @if (Members is null)
+        @if (Entities is null)
         {
-            <div class="d-flex justify-content-center">
-                <div class="spinner-border" role="status">
-                    <span class="visually-hidden">Загрузка...</span>
-                </div>
-            </div>
+            <LoadingSpinner/>
         }
         else
         {
-            <Table TItem="AndNetwork9.Shared.Member" Source="@Members" Columns="ColumnDefinitions" SelectionChanged="SelectionChanged" InitialSort="(0, true)"></Table>
+            <Table Columns="ColumnDefinitions" InitialSort="(0, true)" SelectionChanged="SelectionChanged" Source="@Entities" TItem="AndNetwork9.Shared.Member"></Table>
         }
     </Main>
     <Aside>
-        @if (SelectedMember is null)
+        @if (SelectedEntity is null)
         {
             <p class="small">Игрок не выбран</p>
         }
         else
         {
-            <h5>@SelectedMember.Nickname</h5>
-            @if (SelectedMember.RealName is not null)
+            <h5>@SelectedEntity.Nickname</h5>
+            @if (SelectedEntity.RealName is not null)
             {
                 <b>Имя: </b>
-                @SelectedMember.RealName
+                @SelectedEntity.RealName
                 <br/>
             }
-            @if (SelectedMember.TimeZone is not null)
+            @if (SelectedEntity.TimeZone is not null)
             {
                 <b>Текущее время: </b>
-                @TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, SelectedMember.TimeZone)
+                @TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, SelectedEntity.TimeZone)
                 <br/>
             }
             <b>Ранг: </b>
-            @SelectedMember.Rank.GetRankName()
+            @SelectedEntity.Rank.GetRankName()
             <br/>
             <b>Направление: </b>
-            @SelectedMember.Direction.GetName()
+            @SelectedEntity.Direction.GetName()
             <br/>
             <b>Steam: </b>
-            <a href="@SelectedMember.GetSteamLink()">Steam</a>
+            <a href="@SelectedEntity.GetSteamLink()">Steam</a>
             <br/>
-            @if (SelectedMember.VkId is not null)
+            @if (SelectedEntity.VkId is not null)
             {
                 <b>ВК: </b>
-                <a href="@SelectedMember.GetVkLink()">ВК</a>
+                <a href="@SelectedEntity.GetVkLink()">ВК</a>
                 <br/>
             }
-            @if (SelectedMember.SquadNumber is not null)
+            @if (SelectedEntity.SquadNumber is not null)
             {
                 <b>Отряд: </b>
-                <a class="@(SelectedMember.IsSquadCommander ? "fw-bolder" : "")" href="squad/@(SelectedMember.SquadNumber?.ToString("D"))">@SelectedMember.Squad?.ToString()</a>
+                <a class="@(SelectedEntity.IsSquadCommander ? "fw-bolder" : "")" href="squad/@(SelectedEntity.SquadNumber?.ToString("D"))">@SelectedEntity.Squad?.ToString()</a>
                 <br/>
             }
             <b>Награды: </b>
+            <small>Счет: @SelectedEntity.Awards.Sum(x => (int)x.Type)</small>
             <table class="table">
                 <thead>
                 <tr>
@@ -67,7 +65,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                @foreach (Award award in SelectedMember.Awards.OrderByDescending(x => x.Type))
+                @foreach (Award award in SelectedEntity.Awards.OrderByDescending(x => x.Type))
                 {
                     <tr>
                         <td>@award.Type.GetAwardSymbol()</td>

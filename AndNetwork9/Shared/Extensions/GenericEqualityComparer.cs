@@ -7,10 +7,7 @@ namespace AndNetwork9.Shared.Extensions
     {
         private readonly Func<T, IEquatable<TArg>> _delegate;
 
-        public GenericEqualityComparer(Func<T, IEquatable<TArg>> @delegate)
-        {
-            _delegate = @delegate;
-        }
+        public GenericEqualityComparer(Func<T, IEquatable<TArg>> @delegate) => _delegate = @delegate;
 
 
         public bool Equals(T? x, T? y)
@@ -20,9 +17,6 @@ namespace AndNetwork9.Shared.Extensions
             return _delegate(x).Equals(y);
         }
 
-        public int GetHashCode(T obj)
-        {
-            return _delegate(obj).GetHashCode();
-        }
+        public int GetHashCode(T obj) => _delegate(obj).GetHashCode();
     }
 }

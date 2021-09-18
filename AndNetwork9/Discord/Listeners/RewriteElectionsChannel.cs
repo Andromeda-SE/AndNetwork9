@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading.Tasks;
 using AndNetwork9.Shared.Backend;
 using AndNetwork9.Shared.Backend.Discord.Channels;
 using AndNetwork9.Shared.Backend.Discord.Enums;
@@ -13,6 +15,7 @@ using AndNetwork9.Shared.Extensions;
 using Discord;
 using Discord.WebSocket;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using ChannelType = AndNetwork9.Shared.Backend.Discord.Enums.ChannelType;
 using Direction = AndNetwork9.Shared.Enums.Direction;
 using IConnection = RabbitMQ.Client.IConnection;
@@ -24,42 +27,52 @@ namespace AndNetwork9.Discord.Listeners
         private readonly DiscordBot _bot;
         private readonly IServiceScopeFactory _scopeFactory;
 
-        public RewriteElectionsChannel(IConnection connection, DiscordBot bot, IServiceScopeFactory scopeFactory) :
-            base(connection,
-                RewriteElectionsChannelSender.QUEUE_NAME)
+        public RewriteElectionsChannel(IConnection connection, DiscordBot bot, IServiceScopeFactory scopeFactory, ILogger<RewriteElectionsChannel> logger) :
+            base(connection, RewriteElectionsChannelSender.QUEUE_NAME, logger)
         {
             _bot = bot;
             _scopeFactory = scopeFactory;
         }
 
-        public override async void Run(Election request)
+        public override Task Run(Election request)
         {
-            using IServiceScope scope = _scopeFactory.CreateScope();
-            ClanDataContext data = (ClanDataContext)scope.ServiceProvider.GetService(typeof(ClanDataContext))!;
-            if (data is null) throw new ApplicationException();
+            Process(request);
+            return Task.CompletedTask;
+        }
 
-            int nicknameLength = Math.Max(data.Members.Select(x => x.Nickname.Length).Max(), "Против всех".Length);
-            await foreach (Channel channel in data.DiscordChannels
-                .Where(x => x.Type == ChannelType.Text && x.ChannelFlags.HasFlag(ChannelFlags.Elections))
-                .ToAsyncEnumerable())
+        private void Process(Election request)
+        {
+            Task.Run(async () =>
             {
-                SocketTextChannel discordChannel = _bot.GetGuild(_bot.GuildId).GetTextChannel(channel.DiscordId);
-                IMessage[] messages = (await discordChannel.GetMessagesAsync(5, RequestOptions.Default).ToArrayAsync())
-                    .SelectMany(x => x).ToArray();
+                AsyncServiceScope scope = _scopeFactory.CreateAsyncScope();
+                await using ConfiguredAsyncDisposable _ = scope.ConfigureAwait(false);
+                ClanDataContext data = (ClanDataContext)scope.ServiceProvider.GetService(typeof(ClanDataContext))!;
+                if (data is null) throw new ApplicationException();
 
-                for (int i = 0; i < 5 - messages.Length; i++) await discordChannel.SendMessageAsync("…");
+                int nicknameLength = Math.Max(data.Members.Select(x => x.Nickname.Length).Max(), "Против всех".Length);
+                await foreach (Channel channel in data.DiscordChannels
+                    .Where(x => x.Type == ChannelType.Text && x.ChannelFlags.HasFlag(ChannelFlags.Elections))
+                    .ToAsyncEnumerable().ConfigureAwait(false))
+                {
+                    SocketTextChannel discordChannel = _bot.GetGuild(_bot.GuildId).GetTextChannel(channel.DiscordId);
+                    IMessage[] messages = (await discordChannel.GetMessagesAsync(5, RequestOptions.Default).ToArrayAsync().ConfigureAwait(false))
+                        .SelectMany(x => x).ToArray();
 
-                foreach ((IMessage message, Direction direction) in messages.Zip(Enum.GetValues<Direction>()
-                    .Where(x => x > Direction.None)))
-                    await discordChannel.ModifyMessageAsync(message.Id,
-                        properties =>
-                        {
-                            properties.Content =
-                                new(
-                                    GetVotingMessage(request.Votings.Single(x => x.Direction == direction),
-                                        nicknameLength));
-                        }, RequestOptions.Default);
-            }
+                    for (int i = 0; i < 5 - messages.Length; i++) await discordChannel.SendMessageAsync("…").ConfigureAwait(false);
+
+                    foreach ((IMessage message, Direction direction) in messages.Zip(Enum.GetValues<Direction>()
+                        .Where(x => x > Direction.None)))
+                        await discordChannel.ModifyMessageAsync(message.Id,
+                            properties =>
+                            {
+                                properties.Content =
+                                    new(
+                                        GetVotingMessage(request.Votings.Single(x => x.Direction == direction),
+                                            nicknameLength));
+                            },
+                            RequestOptions.Default).ConfigureAwait(false);
+                }
+            });
         }
 
         private static string GetVotingMessage(ElectionVoting voting, int nicknameLength)
@@ -71,7 +84,9 @@ namespace AndNetwork9.Discord.Listeners
 
             int totalVoters = voting.Members.Count(x => x.Votes is null);
             int currentVoters = voting.Members.Count(x => x.Votes is null && x.Voted);
-            text.AppendFormat("Явка: {0:D}/{1:D}\t({2:P0})", currentVoters, totalVoters,
+            text.AppendFormat("Явка: {0:D}/{1:D}\t({2:P0})",
+                currentVoters,
+                totalVoters,
                 totalVoters == 0 ? "--- %" : (double)currentVoters / totalVoters);
             text.AppendLine();
 
@@ -94,7 +109,6 @@ namespace AndNetwork9.Discord.Listeners
                 Voted = true,
                 MemberId = 0,
                 ElectionId = voting.ElectionId,
-                VoterKey = Guid.Empty,
                 Member = new()
                 {
                     Nickname = "Против всех",
@@ -112,7 +126,7 @@ namespace AndNetwork9.Discord.Listeners
             string GetElectionsMemberString(ElectionsMember electionsMember)
             {
                 StringBuilder stringText = new(64);
-                string? rankIcon = electionsMember.Member.Rank.GetAsciiRankIcon();
+                string? rankIcon = electionsMember.Member.Rank.GetRankIcon();
                 string rank = rankIcon is null ? string.Empty : $"[{rankIcon}]";
                 stringText.Append(rank);
                 stringText.Append(' ', rankLength - rank.Length + 1);
@@ -121,7 +135,8 @@ namespace AndNetwork9.Discord.Listeners
                 stringText.Append(' ', nicknameLength - electionsMember.Member.Nickname.Length + 1);
 
                 double percent = electionsMember.Votes.GetValueOrDefault(0) / (double)totalVotes;
-                int filledCount = (int)Math.Round(barLength * (double.IsNaN(percent) ? 0 : percent), 0,
+                int filledCount = (int)Math.Round(barLength * (double.IsNaN(percent) ? 0 : percent),
+                    0,
                     MidpointRounding.ToEven);
                 int emptyCount = barLength - filledCount;
                 stringText.Append('[');

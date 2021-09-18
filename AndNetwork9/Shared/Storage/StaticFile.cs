@@ -22,9 +22,6 @@ namespace AndNetwork9.Shared.Storage
         public virtual IList<Task> Tasks { get; set; } = null!;
 
 
-        public override string ToString()
-        {
-            return string.IsNullOrWhiteSpace(Extension) ? Name : $"{Name}.{Extension}";
-        }
+        public override string ToString() => string.IsNullOrWhiteSpace(Extension) ? Name : $"{Name}.{Extension}";
     }
 }

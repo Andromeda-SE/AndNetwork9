@@ -16,10 +16,7 @@ namespace AndNetwork9.Server.Auth
     {
         private readonly IServiceScopeFactory _scopeFactory;
 
-        public ClanPolicyProvider(IServiceScopeFactory scopeFactory)
-        {
-            _scopeFactory = scopeFactory;
-        }
+        public ClanPolicyProvider(IServiceScopeFactory scopeFactory) => _scopeFactory = scopeFactory;
 
         public async Task HandleAsync(AuthorizationHandlerContext context)
         {
@@ -27,8 +24,8 @@ namespace AndNetwork9.Server.Auth
             ClanDataContext? data = (ClanDataContext?)scope.ServiceProvider.GetService(typeof(ClanDataContext));
             if (data is null) throw new ApplicationException();
 
-            Member? member = await context.User.GetCurrentMember(data);
-            AuthSession? session = await context.User.GetCurrentSession(data);
+            Member? member = await context.User.GetCurrentMember(data).ConfigureAwait(false);
+            AuthSession? session = await context.User.GetCurrentSession(data).ConfigureAwait(false);
             if (member is null
                 || session is null
                 || session.ExpireTime < DateTime.UtcNow
@@ -63,18 +60,13 @@ namespace AndNetwork9.Server.Auth
             return Task.FromResult(builder.Build())!;
         }
 
-        public async Task<AuthorizationPolicy> GetDefaultPolicyAsync()
-        {
-            return await
-                Task.FromResult(
-                    new AuthorizationPolicyBuilder(CookieAuthenticationDefaults.AuthenticationScheme)
-                        .RequireAuthenticatedUser()
-                        .Build());
-        }
+        public async Task<AuthorizationPolicy> GetDefaultPolicyAsync() => await
+            Task.FromResult(
+                new AuthorizationPolicyBuilder(CookieAuthenticationDefaults.AuthenticationScheme)
+                    .RequireAuthenticatedUser()
+                    .Build()).ConfigureAwait(false);
 
-        public async Task<AuthorizationPolicy?> GetFallbackPolicyAsync()
-        {
-            return await Task.FromResult(default(AuthorizationPolicy));
-        }
+        public async Task<AuthorizationPolicy?> GetFallbackPolicyAsync() =>
+            await Task.FromResult(default(AuthorizationPolicy)).ConfigureAwait(false);
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -41,16 +42,18 @@ namespace AndNetwork9.Server
             Stream responseStream = httpContext.Response.Body;
             if (selectedEncoding.CodePage == Encoding.UTF8.CodePage)
             {
-                await JsonSerializer.SerializeAsync(responseStream, context.Object, type, SerializerOptions);
-                await responseStream.FlushAsync();
+                await JsonSerializer.SerializeAsync(responseStream, context.Object, type, SerializerOptions).ConfigureAwait(false);
+                await responseStream.FlushAsync().ConfigureAwait(false);
             }
             else
             {
-                await using Stream stream = Encoding.CreateTranscodingStream(httpContext.Response.Body,
+                Stream stream = Encoding.CreateTranscodingStream(httpContext.Response.Body,
                     selectedEncoding,
-                    Encoding.UTF8, true);
-                await JsonSerializer.SerializeAsync(stream, context.Object, type, SerializerOptions);
-                await stream.FlushAsync();
+                    Encoding.UTF8,
+                    true);
+                await using ConfiguredAsyncDisposable _ = stream.ConfigureAwait(false);
+                await JsonSerializer.SerializeAsync(stream, context.Object, type, SerializerOptions).ConfigureAwait(false);
+                await stream.FlushAsync().ConfigureAwait(false);
             }
         }
     }

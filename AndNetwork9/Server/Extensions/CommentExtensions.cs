@@ -23,7 +23,7 @@ namespace AndNetwork9.Server.Extensions
             };
             if (comment.ParentId is not null)
             {
-                comment.Parent = await data.Comments.FindAsync(comment.ParentId);
+                comment.Parent = await data.Comments.FindAsync(comment.ParentId).ConfigureAwait(false);
                 if (comment.Parent is null) throw new ArgumentException();
             }
             else
@@ -31,7 +31,7 @@ namespace AndNetwork9.Server.Extensions
                 comment.Parent = null;
             }
 
-            EntityEntry<Comment> result = await data.Comments.AddAsync(comment);
+            EntityEntry<Comment> result = await data.Comments.AddAsync(comment).ConfigureAwait(false);
             return result.Entity;
         }
     }

@@ -1,16 +1,14 @@
 ﻿<div class="d-flex justify-content-center">
     <div style="max-width: 300px">
-        <form>
-            <div class="mb-3">
-                <label for="loginInput" class="form-label">Никнейм</label>
-                <input type="email" class="form-control" id="loginInput" @bind="Nickname">
-            </div>
-            <div class="mb-3">
-                <label for="passwordInput" class="form-label">Пароль</label>
-                <input type="password" class="form-control" id="passwordInput" @bind="Password">
-            </div>
-            <div class="text-danger form-text" hidden="@(!ErrorLogin)">Неверный логин или пароль</div>
-            <button type="submit" class="btn btn-primary" disabled="@(!LoginEnabled)" @onclick="LoginAsync">Войти</button>
-        </form>
+        <EditForm autocomplete="on" Model="Credentials">
+            <label class="form-label mt-3">Никнейм</label>
+            <InputText @bind-Value="Credentials.Nickname" class="form-control" type="text"/>
+
+            <label class="form-label mt-3">Пароль</label>
+            <InputText @bind-Value="Credentials.Password" class="form-control" type="password"/>
+
+            <div class="form-text text-danger mt-3" hidden="@(!ErrorLogin)">Неверный логин или пароль</div>
+            <button class="btn btn-primary mt-3" disabled="@(!LoginEnabled)" @onclick="LoginAsync" type="submit">Войти</button>
+        </EditForm>
     </div>
 </div>

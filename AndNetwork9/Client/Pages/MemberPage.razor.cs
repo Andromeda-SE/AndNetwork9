@@ -1,36 +1,15 @@
-﻿using System.Net.Http;
+﻿using System;
 using System.Net.Http.Json;
 using AndNetwork9.Client.Shared;
 using AndNetwork9.Client.Utility;
 using AndNetwork9.Shared;
 using AndNetwork9.Shared.Extensions;
-using Microsoft.AspNetCore.Components;
 
 namespace AndNetwork9.Client.Pages
 {
-    public partial class MemberPage
+    public partial class MemberPage : ElementPageBase<Member>
     {
-        public Member[] Members { get; set; }
-
-        [Parameter]
-        public string SelectedKeyRaw
-        {
-            get => SelectedMember.Id.ToString("D");
-            set
-            {
-                if (!string.IsNullOrWhiteSpace(value) && int.TryParse(value, out int key))
-                    SetNewMember(key);
-                else
-                    SetNewMember(null);
-            }
-        }
-
-        [Inject]
-        public HttpClient Client { get; set; }
-        [Inject]
-        public NavigationManager NavigationManager { get; set; }
-        public Member SelectedMember { get; private set; }
-        public ColumnDefinition[] ColumnDefinitions { get; } =
+        public override ColumnDefinition[] ColumnDefinitions { get; } =
         {
             new("Ранг",
                 x => x.Rank,
@@ -50,7 +29,8 @@ namespace AndNetwork9.Client.Pages
             new("Направление",
                 x => x.Direction,
                 x => ClanRulesExtensions.GetName(x.Direction),
-                _ => false, (SortType.Default, true)),
+                _ => false,
+                (SortType.Default, true)),
             new("Отряд",
                 x => x.SquadNumber,
                 x => x.SquadNumber is not null ? RomanExtensions.ToRoman(x.SquadNumber) : "—",
@@ -58,15 +38,16 @@ namespace AndNetwork9.Client.Pages
                 (SortType.Numeric, false)),
         };
 
-        private async void SetNewMember(int? value)
+        protected override async void SetNewEntity(int? value)
         {
-            SelectedMember = value is null ? null : await Client.GetFromJsonAsync<Member>($"api/Member/{value}");
-            if (SelectedMember is not null)
+            Console.WriteLine(value?.ToString() ?? "null");
+            SelectedEntity = value is null ? null : await Client.GetFromJsonAsync<Member>($"api/Member/{value}");
+            if (SelectedEntity is not null)
             {
-                SelectedMember.Awards = await Client.GetFromJsonAsync<Award[]>($"api/Award/{value}");
-                SelectedMember.Squad = SelectedMember.SquadNumber is null
+                SelectedEntity.Awards = (await Client.GetFromJsonAsync<Award[]>($"api/Award/{value}"))!;
+                SelectedEntity.Squad = SelectedEntity.SquadNumber is null
                     ? null
-                    : await Client.GetFromJsonAsync<Squad>($"api/squad/{SelectedMember.SquadNumber}");
+                    : await Client.GetFromJsonAsync<Squad>($"api/squad/{SelectedEntity.SquadNumber}");
             }
 
             StateHasChanged();
@@ -74,7 +55,7 @@ namespace AndNetwork9.Client.Pages
 
         protected override async System.Threading.Tasks.Task OnInitializedAsync()
         {
-            Members = await Client.GetFromJsonAsync<Member[]>("api/member/all");
+            Entities = await Client.GetFromJsonAsync<Member[]>("api/member/all");
         }
 
         private void SelectionChanged(int? value)

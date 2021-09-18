@@ -28,8 +28,8 @@ namespace AndNetwork9.Discord.Commands
         [MinRankPermission(Rank.FirstAdvisor)]
         public async Task NextStage()
         {
-            await _nextStageSender.CallAsync(ElectionStage.None);
-            await ReplyAsync("Стадия пройдена");
+            await _nextStageSender.CallAsync(ElectionStage.None).ConfigureAwait(false);
+            await ReplyAsync("Стадия пройдена").ConfigureAwait(false);
         }
 
         [Command(nameof(Register))]
@@ -40,7 +40,7 @@ namespace AndNetwork9.Discord.Commands
         {
             try
             {
-                await _registerSender.CallAsync(id);
+                await _registerSender.CallAsync(id).ConfigureAwait(false);
             }
             catch (FailedCallException e)
             {
@@ -51,10 +51,10 @@ namespace AndNetwork9.Discord.Commands
                     HttpStatusCode.Gone => "На данный момент регистрация на выборы невозможна",
                     HttpStatusCode.AlreadyReported => "Игрок уже зарегистрирован",
                     _ => "Ошибка при выполнении команды",
-                });
+                }).ConfigureAwait(false);
             }
 
-            await ReplyAsync("Игрок зарегистрирован");
+            await ReplyAsync("Игрок зарегистрирован").ConfigureAwait(false);
         }
 
         [Command(nameof(Register))]
@@ -63,8 +63,8 @@ namespace AndNetwork9.Discord.Commands
         [MinRankPermission(Rank.Assistant)]
         public async Task Register()
         {
-            Shared.Member member = await Data.Members.FirstAsync(x => x.DiscordId == Context.Message.Author.Id);
-            await Register(member.Id);
+            Shared.Member member = await Data.Members.FirstAsync(x => x.DiscordId == Context.Message.Author.Id).ConfigureAwait(false);
+            await Register(member.Id).ConfigureAwait(false);
         }
     }
 }

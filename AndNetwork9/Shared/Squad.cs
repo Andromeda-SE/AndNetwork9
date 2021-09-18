@@ -4,10 +4,11 @@ using System.Linq;
 using System.Text.Json.Serialization;
 using AndNetwork9.Shared.Converters;
 using AndNetwork9.Shared.Extensions;
+using AndNetwork9.Shared.Interfaces;
 
 namespace AndNetwork9.Shared
 {
-    public record Squad
+    public record Squad : IId
     {
         public int Number { get; set; }
         public string? Name { get; set; }
@@ -33,9 +34,9 @@ namespace AndNetwork9.Shared
         [JsonIgnore]
         public string? Comment { get; set; }
 
-        public override string ToString()
-        {
-            return (Name is null ? Number.ToRoman() : Number.ToRoman() + " " + Name) + " отряд";
-        }
+        int IId.Id => Number;
+
+        public override string ToString() =>
+            (Name is null ? Number.ToRoman() : Number.ToRoman() + " " + Name) + " отряд";
     }
 }

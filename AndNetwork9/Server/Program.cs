@@ -1,5 +1,7 @@
-﻿using AndNetwork9.Shared.Backend.Extensions;
+﻿using System.Net;
+using AndNetwork9.Shared.Backend.Extensions;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.Hosting;
 
 namespace AndNetwork9.Server
@@ -13,10 +15,10 @@ namespace AndNetwork9.Server
 
         public static IHostBuilder CreateHostBuilder(string[] args)
         {
-            return Host.CreateDefaultBuilder(args).ConfigureAndNetConsole().ConfigureWebHostDefaults(webBuilder =>
+            return Host.CreateDefaultBuilder(args).ConfigureWebHostDefaults(webBuilder =>
             {
                 webBuilder.UseStartup<Startup>();
-            });
+            }).ConfigureAndNetConsole();
         }
     }
 }

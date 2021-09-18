@@ -15,10 +15,17 @@ namespace AndNetwork9.Shared.Backend.Extensions
                 {
                     options.IncludeScopes = true;
                     options.SingleLine = false;
-                    options.TimestampFormat = "[yy/MM/dd HH:mm:ss.ff]\t";
+                    options.TimestampFormat = "[yy/MM/dd HH:mm:ss.fff]\t";
                     options.ColorBehavior = LoggerColorBehavior.Enabled;
                     options.UseUtcTimestamp = true;
                 });
+                logging.SetMinimumLevel(
+#if DEBUG
+LogLevel.Debug
+#else 
+LogLevel.Information
+#endif
+);
             });
         }
     }

@@ -1,37 +1,6 @@
 ﻿@page "/"
-@using TaskStatus = AndNetwork9.Shared.Enums.TaskStatus
+@using AndNetwork9.Shared.Utility
 @attribute [Authorize]
 
 
-<BaseBodyWithAside Title="Test">
-    <Main>
-        Главный блок
-    </Main>
-    <Aside>
-        <TaskShortCard Task="TestTask"></TaskShortCard>
-    </Aside>
-    <Footer>
-        Нижний блок
-    </Footer>
-</BaseBodyWithAside>
-
-@code {
-
-    [Parameter]
-    public AndNetwork9.Shared.Task TestTask { get; set; } = new()
-    {
-        Id = 1,
-        Title = "Тестовая задача",
-        Status = TaskStatus.InProgress,
-        Reporter = null,
-        Assignee = new()
-        {
-            Id = 1,
-            Nickname = "MoryakSPb",
-            RealName = "Александр",
-            Rank = Rank.Defender,
-            Direction = Direction.Training,
-        },
-        Description = "Необходимо создать **систему**, которой будет заменет бот",
-    };
-}
+<AccessRuleEditor Id="#testEditor" Model="new AccessRule()" RuleUpdated="rule => Console.WriteLine(rule.Id)"></AccessRuleEditor>

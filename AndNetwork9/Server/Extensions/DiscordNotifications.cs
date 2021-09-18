@@ -13,13 +13,13 @@ namespace AndNetwork9.Server.Extensions
     {
         public static void Send(this SendSender sender, IEnumerable<Member> recipients, string message)
         {
-            Task.WaitAll(recipients.Select(watcher => Task.Run(async () => await sender.Send(watcher, message)))
+            Task.WaitAll(recipients.Select(watcher => Task.Run(async () => await sender.Send(watcher, message).ConfigureAwait(false)))
                 .ToArray());
         }
 
         public static async Task Send(this SendSender sender, Member recipient, string message)
         {
-            await sender.CallAsync(new(recipient.DiscordId, message));
+            await sender.CallAsync(new(recipient.DiscordId, message)).ConfigureAwait(false);
         }
 
         public static void NewAssignee(this SendSender sender, Shared.Task task)

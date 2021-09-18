@@ -21,7 +21,7 @@ namespace AndNetwork9.Discord.Commands
         [Command(nameof(Set))]
         public async Task Set(string property, [Remainder] string value)
         {
-            Shared.Member? member = await Data.Members.FirstOrDefaultAsync(x => x.DiscordId == Context.User.Id);
+            Shared.Member? member = await Data.Members.FirstOrDefaultAsync(x => x.DiscordId == Context.User.Id).ConfigureAwait(false);
             if (member is null)
             {
                 await ReplyAsync("Участник не найден").ConfigureAwait(false);
@@ -55,7 +55,7 @@ namespace AndNetwork9.Discord.Commands
                     return;
             }
 
-            await Data.SaveChangesAsync();
+            await Data.SaveChangesAsync().ConfigureAwait(false);
             await ReplyAsync($"Поле {property} изменено на {value}").ConfigureAwait(false);
         }
 
@@ -64,7 +64,7 @@ namespace AndNetwork9.Discord.Commands
         [Priority(1)]
         public async Task Info()
         {
-            Shared.Member? member = await Data.Members.FirstOrDefaultAsync(x => x.DiscordId == Context.User.Id);
+            Shared.Member? member = await Data.Members.FirstOrDefaultAsync(x => x.DiscordId == Context.User.Id).ConfigureAwait(false);
             await Get(member).ConfigureAwait(true);
         }
 
@@ -73,7 +73,7 @@ namespace AndNetwork9.Discord.Commands
         [Priority(2)]
         public async Task Info(int id)
         {
-            Shared.Member? member = await Data.Members.FindAsync(id);
+            Shared.Member? member = await Data.Members.FindAsync(id).ConfigureAwait(false);
             await Get(member).ConfigureAwait(true);
         }
 
@@ -122,13 +122,15 @@ namespace AndNetwork9.Discord.Commands
             if (member.Rank > Rank.None && member.Awards.Any())
             {
                 text.AppendLine();
-                string awards = string.Join(Environment.NewLine, member.Awards.Aggregate(
-                    new Dictionary<AwardType, int>(Enum.GetValues<AwardType>().Reverse()
-                        .Select(x => new KeyValuePair<AwardType, int>(x, 0))), (counts, award) =>
-                    {
-                        counts[award.Type]++;
-                        return counts;
-                    }).Where(x => x.Value > 0).Select(x => $"{x.Key.GetAwardSymbol()} × {x.Value:D}"));
+                string awards = string.Join(Environment.NewLine,
+                    member.Awards.Aggregate(
+                        new Dictionary<AwardType, int>(Enum.GetValues<AwardType>().Reverse()
+                            .Select(x => new KeyValuePair<AwardType, int>(x, 0))),
+                        (counts, award) =>
+                        {
+                            counts[award.Type]++;
+                            return counts;
+                        }).Where(x => x.Value > 0).Select(x => $"{x.Key.GetAwardSymbol()} × {x.Value:D}"));
                 addField("Награды", member.Awards.Sum(x => (int)x.Type) + Environment.NewLine + awards);
             }
 
@@ -148,7 +150,7 @@ namespace AndNetwork9.Discord.Commands
                         .ToString("G", RussianCulture));
             }
 
-            await ReplyAsync(text.ToString());
+            await ReplyAsync(text.ToString()).ConfigureAwait(false);
 
             void addField(string type, string? value)
             {

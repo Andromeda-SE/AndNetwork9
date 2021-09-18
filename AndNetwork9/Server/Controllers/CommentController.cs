@@ -9,36 +9,32 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace AndNetwork9.Server.Controllers
 {
+    [Route("api/[controller]")]
+    [ApiController]
     public class CommentController : ControllerBase
     {
         private readonly ClanDataContext _data;
 
-        public CommentController(ClanDataContext data)
-        {
-            _data = data;
-        }
+        public CommentController(ClanDataContext data) => _data = data;
 
-        [HttpPut]
+        [HttpPut("{id:int}")]
         [Authorize]
         public async Task<ActionResult<Comment>> Put(int id, Comment comment)
         {
             if (id != comment.Id) return BadRequest();
-            Member? member = await this.GetCurrentMember(_data);
+            Member? member = await this.GetCurrentMember(_data).ConfigureAwait(false);
             if (member is null) return Unauthorized();
 
-            Comment? oldComment = await _data.Comments.FindAsync(id);
+            Comment? oldComment = await _data.Comments.FindAsync(id).ConfigureAwait(false);
             if (oldComment is null) return NotFound();
             if (oldComment.AuthorId != member.Id) return Forbid();
 
-            Comment resultComment = oldComment with
-            {
-                LastEditTime = DateTime.UtcNow,
-                Text = comment.Text,
-                Files = comment.Files,
-            };
-            _data.Comments.Update(resultComment);
-            await _data.SaveChangesAsync();
-            return Ok(resultComment);
+            oldComment.LastEditTime = DateTime.UtcNow;
+            oldComment.Text = comment.Text;
+            oldComment.Files = comment.Files;
+
+            await _data.SaveChangesAsync().ConfigureAwait(false);
+            return Ok(oldComment);
         }
     }
 }

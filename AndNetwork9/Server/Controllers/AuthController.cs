@@ -26,17 +26,14 @@ namespace AndNetwork9.Server.Controllers
     {
         private readonly ClanDataContext _data;
 
-        public AuthController(ClanDataContext data)
-        {
-            _data = data;
-        }
+        public AuthController(ClanDataContext data) => _data = data;
 
         // POST api/<AuthController>
         [HttpPost]
         [AllowAnonymous]
-        public async Task<ActionResult<IReadOnlyDictionary<string, string>>> Post([FromBody] AuthCredentials value)
+        public async Task<IActionResult> Post([FromBody] AuthCredentials value)
         {
-            Member? member = await _data.Members.FirstOrDefaultAsync(x => x.Nickname == value.Nickname);
+            Member? member = await _data.Members.FirstOrDefaultAsync(x => x.Nickname == value.Nickname).ConfigureAwait(false);
             if (member is null
                 || member.PasswordHash is null
                 || !member.PasswordHash.SequenceEqual(value.Password.GetPasswordHash())) return NotFound();
@@ -69,68 +66,37 @@ namespace AndNetwork9.Server.Controllers
             await HttpContext.SignInAsync(
                 CookieAuthenticationDefaults.AuthenticationScheme,
                 new(claimsIdentity),
-                authProperties);
-            await _data.SaveChangesAsync();
-            return Ok(claims.ToDictionary(x => x.Type, x => x.Value));
+                authProperties).ConfigureAwait(false);
+            await _data.SaveChangesAsync().ConfigureAwait(false);
+            return Ok();
         }
 
-        [HttpGet("restore/{sessionId:guid}")]
-        [AllowAnonymous]
-        public async Task<ActionResult<IReadOnlyDictionary<string, string>>> Post(Guid sessionId)
-        {
-            AuthSession? session = await _data.Sessions.FindAsync(sessionId);
-            if (session is null) return NotFound();
-            if (session.ExpireTime is not null && session.ExpireTime <= DateTime.Now) return NotFound();
-            if (!Equals(session.Address, HttpContext.Connection.RemoteIpAddress)) return NotFound();
-
-            Member member = session.Member;
-
-
-            List<Claim> claims = new()
-            {
-                new(AuthExtensions.MEMBER_ID_CLAIM_NAME, member.Id.ToString("D", CultureInfo.InvariantCulture)),
-                new(AuthExtensions.SESSION_ID_CLAIM_NAME, session.SessionId.ToString("N")),
-            };
-            ClaimsIdentity claimsIdentity = new(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-            AuthenticationProperties authProperties = new()
-            {
-                AllowRefresh = true,
-                ExpiresUtc = session.ExpireTime,
-                IsPersistent = true,
-                IssuedUtc = session.CreateTime,
-            };
-            await HttpContext.SignInAsync(
-                CookieAuthenticationDefaults.AuthenticationScheme,
-                new(claimsIdentity),
-                authProperties);
-            await _data.SaveChangesAsync();
-            return Ok(claims.ToDictionary(x => x.Type, x => x.Value));
-        }
-
-        // PUT api/<AuthController>/5
         [HttpPut]
         [MinRankAuthorize]
         public async Task<IActionResult> Put([FromBody] string newPassword)
         {
             string? rawValue = ControllerContext.HttpContext.User.FindFirst(AuthExtensions.MEMBER_ID_CLAIM_NAME)?.Value;
             if (rawValue is null) return NotFound();
-            Member? member = await _data.Members.FindAsync(int.Parse(rawValue));
+            Member? member = await _data.Members.FindAsync(int.Parse(rawValue)).ConfigureAwait(false);
             if (member is null) return NotFound();
 
             member.SetPassword(newPassword);
-            await _data.SaveChangesAsync();
+            await _data.SaveChangesAsync().ConfigureAwait(false);
+            await DeleteOther().ConfigureAwait(false);
+            await Delete().ConfigureAwait(false);
             return Ok();
         }
+
 #if DEBUG
         // PUT api/<AuthController>/5
         [HttpPut("{id:int}")]
         public async Task<IActionResult> Put(int id, [FromBody] string newPassword)
         {
-            Member? member = await _data.Members.FindAsync(id);
+            Member? member = await _data.Members.FindAsync(id).ConfigureAwait(false);
             if (member is not null)
             {
                 member.SetPassword(newPassword);
-                await _data.SaveChangesAsync();
+                await _data.SaveChangesAsync().ConfigureAwait(false);
                 return Ok();
             }
 
@@ -139,7 +105,6 @@ namespace AndNetwork9.Server.Controllers
 
 #endif
 
-        // DELETE api/<AuthController>/5
         [HttpDelete]
         [Authorize]
         public async Task<IActionResult> Delete()
@@ -147,15 +112,14 @@ namespace AndNetwork9.Server.Controllers
             Claim? sessionClaim = ControllerContext.HttpContext.User.FindFirst(AuthExtensions.SESSION_ID_CLAIM_NAME);
             if (sessionClaim is null) return NotFound();
             if (!Guid.TryParse(sessionClaim.Value, out Guid sessionId)) return BadRequest();
-            AuthSession? session = await _data.Sessions.FindAsync(sessionId);
+            AuthSession? session = await _data.Sessions.FindAsync(sessionId).ConfigureAwait(false);
             if (session is null) return NotFound();
             _data.Sessions.Remove(session);
-            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            await _data.SaveChangesAsync();
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme).ConfigureAwait(false);
+            await _data.SaveChangesAsync().ConfigureAwait(false);
             return Ok();
         }
 
-        // DELETE api/<AuthController>/5
         [HttpDelete("other")]
         [Authorize]
         public async Task<IActionResult> DeleteOther()
@@ -163,11 +127,11 @@ namespace AndNetwork9.Server.Controllers
             Claim? sessionClaim = ControllerContext.HttpContext.User.FindFirst(AuthExtensions.SESSION_ID_CLAIM_NAME);
             if (sessionClaim is null) return NotFound();
             if (!Guid.TryParse(sessionClaim.Value, out Guid sessionId)) return BadRequest();
-            AuthSession? session = await _data.Sessions.FindAsync(sessionId);
+            AuthSession? session = await _data.Sessions.FindAsync(sessionId).ConfigureAwait(false);
             if (session is null) return NotFound();
             _data.Sessions.RemoveRange(_data.Sessions
                 .Where(x => x.SessionId != sessionId && x.Member.Id == session.Member.Id).ToArray());
-            await _data.SaveChangesAsync();
+            await _data.SaveChangesAsync().ConfigureAwait(false);
             return Ok();
         }
     }

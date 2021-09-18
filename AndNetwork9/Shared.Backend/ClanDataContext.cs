@@ -9,6 +9,7 @@ using AndNetwork9.Shared.Utility;
 using AndNetwork9.Shared.Votings;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
+using TaskStatus = AndNetwork9.Shared.Enums.TaskStatus;
 
 namespace AndNetwork9.Shared.Backend
 {
@@ -134,7 +135,6 @@ namespace AndNetwork9.Shared.Backend
                         .IsRequired();
 
                     entity.Property(x => x.Votes);
-                    entity.Property(x => x.VoterKey);
                     entity.Property(x => x.Voted);
                     entity.Property(x => x.VotedTime);
                 });
@@ -147,6 +147,7 @@ namespace AndNetwork9.Shared.Backend
                     entity.HasKey(x => x.Id);
                     entity.Property(x => x.Name).IsRequired(false);
 
+                    entity.Ignore(x => x.AllowedMembersIds);
                     entity.Property(x => x.Directions);
                     entity.Property(x => x.MinRank).IsRequired();
                     entity.HasOne(x => x.Squad).WithMany().HasForeignKey(x => x.SquadId).IsRequired(false);

@@ -1,0 +1,63 @@
+﻿@page "/Squad/{SelectedKeyRaw?}"
+@attribute [Authorize]
+@inherits ElementPageBase<Squad>
+
+<BaseBodyWithAside Title="Отряды">
+    <Main>
+        @if (Entities is null)
+        {
+            <div class="d-flex justify-content-center">
+                <div class="spinner-border" role="status">
+                    <span class="visually-hidden">Загрузка...</span>
+                </div>
+            </div>
+        }
+        else
+        {
+            <Table Columns="ColumnDefinitions" InitialSort="(0, true)" SelectionChanged="SelectionChanged" Source="@Entities" TItem="AndNetwork9.Shared.Squad"></Table>
+        }
+    </Main>
+    <Aside>
+        @if (SelectedEntity is null)
+        {
+            <p class="small">Отряд не выбран</p>
+        }
+        else
+        {
+            <h5>@SelectedEntity.ToString()</h5>
+
+            <b>Номер: </b>
+            @SelectedEntity.Number.ToRoman()
+            <br/>
+            @if (SelectedEntity.Commander is not null)
+            {
+                <b>Командир: </b>
+                <a href="@SelectedEntity.Commander.GetLink()">@SelectedEntity.Commander.ToString()</a>
+                <br/>
+            }
+            @if (SelectedEntity.Description is not null)
+            {
+                <b>Описание: </b>
+                <br/>
+                @SelectedEntity.Description.FromMarkdown()
+                <br/>
+            }
+            <b>Игроки: </b>
+            <table class="table">
+                <tbody>
+                @foreach (Member member in SelectedEntity.Members)
+                {
+                    <tr>
+                        <td>
+                            <a href="@member.GetLink()">@member.ToString()</a>
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        }
+    </Aside>
+    <Footer>
+
+    </Footer>
+</BaseBodyWithAside>

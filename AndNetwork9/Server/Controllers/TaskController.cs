@@ -34,10 +34,10 @@ namespace AndNetwork9.Server.Controllers
         [Authorize]
         public async System.Threading.Tasks.Task<ActionResult<Task>> Get(int id)
         {
-            Member? member = await this.GetCurrentMember(_data);
+            Member? member = await this.GetCurrentMember(_data).ConfigureAwait(false);
             if (member is null) return Unauthorized();
 
-            Task? task = await _data.Tasks.FindAsync(id);
+            Task? task = await _data.Tasks.FindAsync(id).ConfigureAwait(false);
             if (task is null) return NotFound();
             if (!task.ReadRule.HasAccess(member) || task.AssigneeId != member.Id && task.ReporterId != member.Id)
                 return Forbid();
@@ -49,7 +49,7 @@ namespace AndNetwork9.Server.Controllers
         [Authorize]
         public async System.Threading.Tasks.Task<ActionResult<Task>> GetMe()
         {
-            Member? member = await this.GetCurrentMember(_data);
+            Member? member = await this.GetCurrentMember(_data).ConfigureAwait(false);
             if (member is null) return Unauthorized();
 
             // ReSharper disable once MergeIntoPattern
@@ -65,7 +65,7 @@ namespace AndNetwork9.Server.Controllers
         [Authorize]
         public async System.Threading.Tasks.Task<ActionResult<Task>> GetSquad()
         {
-            Member? member = await this.GetCurrentMember(_data);
+            Member? member = await this.GetCurrentMember(_data).ConfigureAwait(false);
             if (member is null) return Unauthorized();
             if (member.SquadNumber is null) return Forbid();
 
@@ -82,7 +82,7 @@ namespace AndNetwork9.Server.Controllers
         [Authorize]
         public async System.Threading.Tasks.Task<ActionResult<Task>> GetDirection()
         {
-            Member? member = await this.GetCurrentMember(_data);
+            Member? member = await this.GetCurrentMember(_data).ConfigureAwait(false);
             if (member is null) return Unauthorized();
 
             // ReSharper disable once MergeIntoPattern
@@ -98,7 +98,7 @@ namespace AndNetwork9.Server.Controllers
         [Authorize]
         public async System.Threading.Tasks.Task<ActionResult<Task>> GetMeAssignee()
         {
-            Member? member = await this.GetCurrentMember(_data);
+            Member? member = await this.GetCurrentMember(_data).ConfigureAwait(false);
             if (member is null) return Unauthorized();
 
             return Ok(_data.Tasks.Where(x => x.AssigneeId == member.Id).OrderBy(x => x));
@@ -108,7 +108,7 @@ namespace AndNetwork9.Server.Controllers
         [Authorize]
         public async System.Threading.Tasks.Task<ActionResult<Task>> GetMeReporter()
         {
-            Member? member = await this.GetCurrentMember(_data);
+            Member? member = await this.GetCurrentMember(_data).ConfigureAwait(false);
             if (member is null) return Unauthorized();
 
             return Ok(_data.Tasks.Where(x => x.ReporterId == member.Id).OrderBy(x => x));
@@ -118,7 +118,7 @@ namespace AndNetwork9.Server.Controllers
         [Authorize]
         public async System.Threading.Tasks.Task<ActionResult<Task>> GetMeWatcher()
         {
-            Member? member = await this.GetCurrentMember(_data);
+            Member? member = await this.GetCurrentMember(_data).ConfigureAwait(false);
             if (member is null) return Unauthorized();
 
             return Ok(_data.Tasks.Where(x => x.WatchersId.Any(y => y == member.Id) && x.ReadRule.HasAccess(member))
@@ -129,7 +129,7 @@ namespace AndNetwork9.Server.Controllers
         [Authorize]
         public async System.Threading.Tasks.Task<ActionResult<Task>> GetUnassigned()
         {
-            Member? member = await this.GetCurrentMember(_data);
+            Member? member = await this.GetCurrentMember(_data).ConfigureAwait(false);
             if (member is null) return Unauthorized();
 
             return Ok(_data.Tasks.Where(x =>
@@ -142,7 +142,7 @@ namespace AndNetwork9.Server.Controllers
         [Authorize]
         public async System.Threading.Tasks.Task<ActionResult<Task>> Post(Task task)
         {
-            Member? member = await this.GetCurrentMember(_data);
+            Member? member = await this.GetCurrentMember(_data).ConfigureAwait(false);
             if (member is null) return NotFound();
 
             task = task with
@@ -159,23 +159,23 @@ namespace AndNetwork9.Server.Controllers
             if (task.Tags.Any())
             {
                 Tag[] newTags = task.Tags.Except(_data.Tags, _tagComparer).ToArray();
-                if (newTags.Any()) await _data.Tags.AddRangeAsync(newTags);
+                if (newTags.Any()) await _data.Tags.AddRangeAsync(newTags).ConfigureAwait(false);
                 task.Tags = task.Tags.Join(_data.Tags, x => x.Name, x => x.Name, (_, tag) => tag).ToArray();
             }
 
             if (task.Files.Except(_data.StaticFiles).Any()) return BadRequest();
 
-            AccessRule? readRule = await _data.AccessRules.FindAsync(task.ReadRuleId);
+            AccessRule? readRule = await _data.AccessRules.FindAsync(task.ReadRuleId).ConfigureAwait(false);
             if (readRule is null) return BadRequest();
             task.ReadRule = readRule;
 
-            AccessRule? writeRule = await _data.AccessRules.FindAsync(task.WriteRuleId);
+            AccessRule? writeRule = await _data.AccessRules.FindAsync(task.WriteRuleId).ConfigureAwait(false);
             if (writeRule is null) return BadRequest();
             task.WriteRule = writeRule;
 
             if (task.AssigneeId is not null)
             {
-                task.Assignee = await _data.Members.FindAsync(task.AssigneeId.Value);
+                task.Assignee = await _data.Members.FindAsync(task.AssigneeId.Value).ConfigureAwait(false);
                 if (task.Assignee is null) return BadRequest();
             }
             else
@@ -185,7 +185,7 @@ namespace AndNetwork9.Server.Controllers
 
             if (task.SquadAssigneeId is not null)
             {
-                task.SquadAssignee = await _data.Squads.FindAsync(task.SquadAssigneeId.Value);
+                task.SquadAssignee = await _data.Squads.FindAsync(task.SquadAssigneeId.Value).ConfigureAwait(false);
                 if (task.SquadAssignee is null) return BadRequest();
             }
             else
@@ -206,13 +206,13 @@ namespace AndNetwork9.Server.Controllers
             if (task.SquadAssigneeId is not null)
                 watchers.Add(_data.Members.FirstOrDefault(x =>
                     x.IsSquadCommander && x.SquadNumber == task.SquadAssigneeId));
-            if (task.AssigneeId is not null) watchers.Add(await _data.Members.FindAsync(task.AssigneeId.Value));
+            if (task.AssigneeId is not null) watchers.Add(await _data.Members.FindAsync(task.AssigneeId.Value).ConfigureAwait(false));
 
             task.Watchers = watchers.Where(x => x is not null).ToArray()!;
 
             if (task.ParentId is not null)
             {
-                Task? parent = await _data.Tasks.FindAsync(task.ParentId);
+                Task? parent = await _data.Tasks.FindAsync(task.ParentId).ConfigureAwait(false);
                 if (parent is null) return BadRequest();
                 task.Parent = parent;
             }
@@ -221,8 +221,8 @@ namespace AndNetwork9.Server.Controllers
                 task.Parent = null;
             }
 
-            await _data.Tasks.AddAsync(task);
-            await _data.SaveChangesAsync();
+            await _data.Tasks.AddAsync(task).ConfigureAwait(false);
+            await _data.SaveChangesAsync().ConfigureAwait(false);
 
             _sendSender.NewTask(task, member);
 
@@ -233,10 +233,10 @@ namespace AndNetwork9.Server.Controllers
         [Authorize]
         public async Task<ActionResult<Comment>> PostComment(int taskId, Comment comment)
         {
-            Member? member = await this.GetCurrentMember(_data);
+            Member? member = await this.GetCurrentMember(_data).ConfigureAwait(false);
             if (member is null) return Unauthorized();
 
-            Task? task = await _data.Tasks.FindAsync(taskId);
+            Task? task = await _data.Tasks.FindAsync(taskId).ConfigureAwait(false);
             if (task is null) return NotFound();
             if (!task.ReadRule.HasAccess(member)) return Forbid();
 
@@ -264,7 +264,7 @@ namespace AndNetwork9.Server.Controllers
             };
             task.Comments.Add(result);
 
-            await _data.SaveChangesAsync();
+            await _data.SaveChangesAsync().ConfigureAwait(false);
             _sendSender.NewComment(task, member);
 
             return Ok(result);
@@ -274,10 +274,10 @@ namespace AndNetwork9.Server.Controllers
         [Authorize]
         public async Task<ActionResult<Task>> Put(int id, Task newTask)
         {
-            Member? member = await this.GetCurrentMember(_data);
+            Member? member = await this.GetCurrentMember(_data).ConfigureAwait(false);
             if (member is null) return Unauthorized();
 
-            Task? oldTask = await _data.Tasks.FindAsync(id);
+            Task? oldTask = await _data.Tasks.FindAsync(id).ConfigureAwait(false);
             if (oldTask is null) return NotFound();
             if (!oldTask.WriteRule.HasAccess(member)) return Forbid();
             if (oldTask.Id != newTask.Id) return BadRequest();
@@ -297,26 +297,26 @@ namespace AndNetwork9.Server.Controllers
             if (resultTask.Tags.Any())
             {
                 Tag[] newTags = resultTask.Tags.Except(_data.Tags, _tagComparer).ToArray();
-                if (newTags.Any()) await _data.Tags.AddRangeAsync(newTags);
+                if (newTags.Any()) await _data.Tags.AddRangeAsync(newTags).ConfigureAwait(false);
                 resultTask.Tags = resultTask.Tags.Join(_data.Tags, x => x.Name, x => x.Name, (_, tag) => tag).ToArray();
             }
 
             if (resultTask.Files.Except(_data.StaticFiles).Any()) return BadRequest();
 
-            AccessRule? readRule = await _data.AccessRules.FindAsync(resultTask.ReadRuleId);
+            AccessRule? readRule = await _data.AccessRules.FindAsync(resultTask.ReadRuleId).ConfigureAwait(false);
             if (readRule is null) return BadRequest();
             resultTask.ReadRule = readRule;
 
             if (resultTask.ReporterId == member.Id)
             {
-                AccessRule? writeRule = await _data.AccessRules.FindAsync(resultTask.WriteRuleId);
+                AccessRule? writeRule = await _data.AccessRules.FindAsync(resultTask.WriteRuleId).ConfigureAwait(false);
                 if (writeRule is null) return BadRequest();
                 resultTask.WriteRule = writeRule;
             }
 
             if (resultTask.AssigneeId is not null)
             {
-                resultTask.Assignee = await _data.Members.FindAsync(resultTask.AssigneeId.Value);
+                resultTask.Assignee = await _data.Members.FindAsync(resultTask.AssigneeId.Value).ConfigureAwait(false);
                 if (resultTask.Assignee is null) return BadRequest();
             }
             else
@@ -326,7 +326,7 @@ namespace AndNetwork9.Server.Controllers
 
             if (resultTask.SquadAssigneeId is not null)
             {
-                resultTask.SquadAssignee = await _data.Squads.FindAsync(resultTask.SquadAssigneeId.Value);
+                resultTask.SquadAssignee = await _data.Squads.FindAsync(resultTask.SquadAssigneeId.Value).ConfigureAwait(false);
                 if (resultTask.SquadAssignee is null) return BadRequest();
             }
             else
@@ -338,7 +338,7 @@ namespace AndNetwork9.Server.Controllers
 
             if (resultTask.ParentId is not null)
             {
-                Task? parent = await _data.Tasks.FindAsync(resultTask.ParentId);
+                Task? parent = await _data.Tasks.FindAsync(resultTask.ParentId).ConfigureAwait(false);
                 if (parent is null) return BadRequest();
                 resultTask.Parent = parent;
             }
@@ -359,17 +359,17 @@ namespace AndNetwork9.Server.Controllers
         [Authorize]
         public async Task<ActionResult<Task>> PatchStatus(int id, TaskStatus status)
         {
-            Member? member = await this.GetCurrentMember(_data);
+            Member? member = await this.GetCurrentMember(_data).ConfigureAwait(false);
             if (member is null) return Unauthorized();
 
-            Task? task = await _data.Tasks.FindAsync(id);
+            Task? task = await _data.Tasks.FindAsync(id).ConfigureAwait(false);
             if (task is null) return NotFound();
             if (!task.WriteRule.HasAccess(member) && task.AssigneeId != member.Id && task.ReporterId != member.Id)
                 return Forbid();
             if (task.Status == status) return Ok(task);
             task.Status = status;
             task.LastEditTime = DateTime.UtcNow;
-            await _data.SaveChangesAsync();
+            await _data.SaveChangesAsync().ConfigureAwait(false);
             _sendSender.NewStatus(task, member);
             return Ok(task);
         }
@@ -378,17 +378,17 @@ namespace AndNetwork9.Server.Controllers
         [Authorize]
         public async Task<ActionResult<Task>> PatchAssign(int id)
         {
-            Member? member = await this.GetCurrentMember(_data);
+            Member? member = await this.GetCurrentMember(_data).ConfigureAwait(false);
             if (member is null) return Unauthorized();
 
-            Task? task = await _data.Tasks.FindAsync(id);
+            Task? task = await _data.Tasks.FindAsync(id).ConfigureAwait(false);
             if (task is null) return NotFound();
             if (!task.WriteRule.HasAccess(member) && task.ReporterId != member.Id || !task.AllowAssignByMember)
                 return Forbid();
             if (task.AssigneeId == member.Id) return Ok(task);
             task.Assignee = member;
             task.LastEditTime = DateTime.UtcNow;
-            await _data.SaveChangesAsync();
+            await _data.SaveChangesAsync().ConfigureAwait(false);
             _sendSender.NewAssignee(task);
             return Ok(task);
         }

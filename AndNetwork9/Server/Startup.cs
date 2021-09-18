@@ -23,10 +23,7 @@ namespace AndNetwork9.Server
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
-        {
-            Configuration = configuration;
-        }
+        public Startup(IConfiguration configuration) => Configuration = configuration;
 
         public IConfiguration Configuration { get; }
 
@@ -56,6 +53,7 @@ namespace AndNetwork9.Server
             services.AddScoped<RepoSetFileSender>();
             services.AddScoped<NewRepoSender>();
             services.AddScoped<VoteSender>();
+            services.AddScoped<SendSender>();
 
             services.AddSingleton<IAuthorizationPolicyProvider, ClanPolicyProvider>();
             services.AddSingleton<IAuthorizationHandler, ClanPolicyProvider>();
