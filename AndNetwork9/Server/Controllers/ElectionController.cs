@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AndNetwork9.Server.Auth.Attributes;
@@ -44,7 +45,7 @@ namespace AndNetwork9.Server.Controllers
             Member? member = await this.GetCurrentMember(_data).ConfigureAwait(false);
             if (member is null) return Unauthorized();
 
-            return Ok((CouncilElection)_data.Elections.Single(x => x.Stage != ElectionStage.Ended));
+            return Ok(_data.Elections.Single(x => x.Stage != ElectionStage.Ended).GetCouncilElection(member));
         }
 
         [HttpGet("{id:int}")]
@@ -56,47 +57,20 @@ namespace AndNetwork9.Server.Controllers
 
             Election? election = await _data.Elections.FindAsync(id).ConfigureAwait(false);
             if (election is null) return NotFound();
-
-            return Ok((CouncilElection)election);
+            CouncilElection result = election.GetCouncilElection(member);
+            return Ok(result);
         }
 
-        [HttpGet("tokens")]
-        [MinRankAuthorize]
-        public async Task<ActionResult<CouncilElectionTokenPack>> GetTokens()
-        {
-            Member? member = await this.GetCurrentMember(_data).ConfigureAwait(false);
-            if (member is null) return Unauthorized();
-
-            Election election = _data.Elections.Single(x => x.Stage != ElectionStage.Ended);
-
-            return Ok(new CouncilElectionTokenPack
-            {
-                MemberId = member.Id,
-                ElectionId = election.Id,
-                Tokens = election.Votings
-                    .Where(x => x.Members.Any(y =>
-                        y.Votes is null
-                        && !y.Voted
-                        && y.MemberId == member.Id
-                        && y.VoterKey is not null
-                        && y.VoterKey != Guid.Empty))
-                    .ToDictionary(x => x.Direction,
-                        x => x.Members.First(y => y.MemberId == member.Id).VoterKey.GetValueOrDefault(Guid.Empty)),
-            });
-        }
 
         [HttpPost("vote")]
         [MinRankAuthorize]
-        public async Task<IActionResult> PostVote(CouncilElectionVote vote)
+        public async Task<IActionResult> PostVote(Dictionary<int, Dictionary<int, uint>> vote)
         {
             Member? member = await this.GetCurrentMember(_data).ConfigureAwait(false);
             if (member is null) return Unauthorized();
             try
             {
-                await _voteSender.CallAsync(new(member.Id,
-                    vote.Key,
-                    vote.Direction,
-                    vote.Votes.Select(x => new VoteArgNode(x.Key == 0 ? null : x.Key, x.Value)).ToArray())).ConfigureAwait(false);
+                await _voteSender.CallAsync(new(member.Id, vote.ToDictionary(x => (Direction)x.Key, x => x.Value))).ConfigureAwait(false);
             }
             catch
             {

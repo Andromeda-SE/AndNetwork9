@@ -1,0 +1,21 @@
+﻿<div class="card user-select-none">
+    <div class="card-body">
+        <h5 class="card-title">@ElectionVote.Direction.GetName()</h5>
+        <div>
+            @if (Initialized)
+            {
+                @foreach ((int memberId, uint votes) in ElectionVote.Votes.OrderByDescending(x => x.Value))
+                {
+                    <b>@(memberId == 0 ? (MarkupString)"Против всех" : AllMembers.First(x => x.Id == memberId).GetHtml())</b>
+                    <div class="progress w-100 h-100 mb-3">
+                        <div class="progress-bar" role="progressbar" style="background: @(GetColor(memberId)); width: @(GetPercent(votes) * 100D)%;">@(votes.ToString("D"))</div>
+                    </div>
+                }
+            }
+            else
+            {
+                <LoadingSpinner/>
+            }
+        </div>
+    </div>
+</div>

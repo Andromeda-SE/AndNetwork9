@@ -40,7 +40,7 @@ namespace AndNetwork9.Elections.Listeners
             Member? member = await data.Members.FindAsync(memberId).ConfigureAwait(false);
 
             if (member is null) throw new FailedCallException(HttpStatusCode.NotFound);
-            if (member.Rank < Rank.Assistant || member.Direction <= Direction.None || member.IsSquadCommander)
+            if (member.Rank < Rank.Assistant || member.Direction <= Direction.None)
                 throw new FailedCallException(HttpStatusCode.Forbidden);
 
             Election? election;
@@ -62,8 +62,7 @@ namespace AndNetwork9.Elections.Listeners
                 ElectionId = election.Id,
                 MemberId = memberId,
                 Votes = 0,
-                VoterKey = default,
-                Voted = true,
+                Voted = false,
             });
             await data.SaveChangesAsync().ConfigureAwait(false);
             await _rewriteElectionsChannelSender.CallAsync(election).ConfigureAwait(false);

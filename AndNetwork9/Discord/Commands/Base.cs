@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -39,9 +40,11 @@ namespace AndNetwork9.Discord.Commands
             return Data.Members.First(x => x.DiscordId == Context.User.Id);
         }
 
+
         protected override async Task<IUserMessage> ReplyAsync(string? message = null, bool isTts = false,
             Embed? embed = null, RequestOptions? options = null, AllowedMentions? allowedMentions = null,
-            MessageReference? messageReference = null) => await Context.Message
+            MessageReference? messageReference = null,
+            MessageComponent component = null) => await Context.Message
             .ReplyAsync(message, isTts, embed, allowedMentions, options)
             .ConfigureAwait(false);
 

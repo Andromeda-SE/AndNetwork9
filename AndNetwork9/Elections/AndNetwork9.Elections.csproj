@@ -18,4 +18,10 @@
     <ProjectReference Include="..\Shared\AndNetwork9.Shared.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Reference Include="Npgsql.EntityFrameworkCore.PostgreSQL">
+      <HintPath>..\Shared.Backend\Npgsql.EntityFrameworkCore.PostgreSQL.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 </Project>

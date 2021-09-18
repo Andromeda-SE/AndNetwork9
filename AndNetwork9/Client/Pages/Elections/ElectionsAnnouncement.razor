@@ -1,0 +1,18 @@
+﻿@if (Initialized)
+{
+    <BaseBodyWithAside>
+        <Main>
+            @foreach (CouncilElectionVote vote in CurrentElections.Votes)
+            {
+                <div class="mb-3">
+                    <ElectionAnnouncementCard ElectionVote="vote" AllMembers="AllMembers"/>
+                </div>
+            }
+        </Main>
+        <Aside>
+            <div>
+                <ElectionsAside Election="CurrentElections"/>
+            </div>
+        </Aside>
+    </BaseBodyWithAside>
+}
