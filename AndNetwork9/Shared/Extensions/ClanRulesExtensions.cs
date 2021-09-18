@@ -17,13 +17,21 @@ namespace AndNetwork9.Shared.Extensions
             new Dictionary<Rank, int>(new[]
             {
                 new KeyValuePair<Rank, int>(Rank.Neophyte, 0),
-                new KeyValuePair<Rank, int>(Rank.Trainee, 1),
-                new KeyValuePair<Rank, int>(Rank.Assistant, 5),
+                new KeyValuePair<Rank, int>(Rank.Trainee, 5),
+                new KeyValuePair<Rank, int>(Rank.Assistant, 10),
                 new KeyValuePair<Rank, int>(Rank.JuniorEmployee, 15),
-                new KeyValuePair<Rank, int>(Rank.Employee, 25),
-                new KeyValuePair<Rank, int>(Rank.SeniorEmployee, 50),
-                new KeyValuePair<Rank, int>(Rank.Specialist, 75),
-                new KeyValuePair<Rank, int>(Rank.Defender, 100),
+                new KeyValuePair<Rank, int>(Rank.Employee, 20),
+                new KeyValuePair<Rank, int>(Rank.SeniorEmployee, 25),
+                new KeyValuePair<Rank, int>(Rank.JuniorEmployee, 30),
+                new KeyValuePair<Rank, int>(Rank.Specialist, 35),
+                new KeyValuePair<Rank, int>(Rank.SeniorSpecialist, 40),
+                new KeyValuePair<Rank, int>(Rank.JuniorIntercessor, 45),
+                new KeyValuePair<Rank, int>(Rank.Intercessor, 50),
+                new KeyValuePair<Rank, int>(Rank.SeniorIntercessor, 55),
+                new KeyValuePair<Rank, int>(Rank.JuniorSentinel, 60),
+                new KeyValuePair<Rank, int>(Rank.Sentinel, 65),
+                new KeyValuePair<Rank, int>(Rank.SeniorSentinel, 70),
+                //new KeyValuePair<Rank, int>(Rank.Defender, 100),
             }));
 
         public static Rank GetRank(this IEnumerable<Award> awards)
@@ -43,41 +51,23 @@ namespace AndNetwork9.Shared.Extensions
                 Rank.Ally => null,
                 Rank.Candidate => null,
                 Rank.None => null,
-                Rank.Neophyte => "⦁",
-                Rank.Trainee => "❮❮❮",
-                Rank.Assistant => "❮❮",
-                Rank.JuniorEmployee => "❮",
-                Rank.Employee => "❙❙❙",
-                Rank.SeniorEmployee => "❙❙",
-                Rank.Specialist => "❙",
-                Rank.Defender => "⛉",
+                Rank.Neophyte => "⦁⦁⦁",
+                Rank.Trainee => "⦁⦁",
+                Rank.Assistant => "⦁",
+                Rank.JuniorEmployee => "❮❮❮",
+                Rank.Employee => "❮❮",
+                Rank.SeniorEmployee => "❮",
+                Rank.JuniorSpecialist => "❙❙❙",
+                Rank.Specialist => "❙❙",
+                Rank.SeniorSpecialist => "❙",
+                Rank.JuniorIntercessor => "☆☆☆",
+                Rank.Intercessor => "☆☆",
+                Rank.SeniorIntercessor => "☆",
+                Rank.JuniorSentinel => "★★★",
+                Rank.Sentinel => "★★",
+                Rank.SeniorSentinel => "★",
                 Rank.Advisor => "△",
                 Rank.FirstAdvisor => "▲",
-                _ => throw new ArgumentOutOfRangeException(nameof(rank), rank, null),
-            };
-        }
-
-        public static string? GetAsciiRankIcon(this Rank rank)
-        {
-            return rank switch
-            {
-                Rank.Outcast => null,
-                Rank.Enemy => null,
-                Rank.Guest => null,
-                Rank.Diplomat => null,
-                Rank.Ally => null,
-                Rank.Candidate => null,
-                Rank.None => null,
-                Rank.Neophyte => "O",
-                Rank.Trainee => "VVV",
-                Rank.Assistant => "VV",
-                Rank.JuniorEmployee => "V",
-                Rank.Employee => "III",
-                Rank.SeniorEmployee => "II",
-                Rank.Specialist => "I",
-                Rank.Defender => "D",
-                Rank.Advisor => "A",
-                Rank.FirstAdvisor => "1A",
                 _ => throw new ArgumentOutOfRangeException(nameof(rank), rank, null),
             };
         }
@@ -114,8 +104,15 @@ namespace AndNetwork9.Shared.Extensions
                 Rank.JuniorEmployee => "Младший сотрудник",
                 Rank.Employee => "Сотрудник",
                 Rank.SeniorEmployee => "Старший сорудник",
+                Rank.JuniorSpecialist => "Младший специалист",
                 Rank.Specialist => "Специалист",
-                Rank.Defender => "Защитник",
+                Rank.SeniorSpecialist => "Старший специалист",
+                Rank.JuniorIntercessor => "Младший заступник",
+                Rank.Intercessor => "Заступник",
+                Rank.SeniorIntercessor => "Старший заступник",
+                Rank.JuniorSentinel => "Младший страж",
+                Rank.Sentinel => "Страж",
+                Rank.SeniorSentinel => "Старший страж",
                 Rank.Advisor => "Советник",
                 Rank.FirstAdvisor => "Первый советник",
                 _ => throw new ArgumentOutOfRangeException(nameof(rank), rank, null),
@@ -127,10 +124,12 @@ namespace AndNetwork9.Shared.Extensions
             return type switch
             {
                 AwardType.None => string.Empty,
+                AwardType.Copper => "Медь",
                 AwardType.Bronze => "Бронза",
                 AwardType.Silver => "Серебро",
                 AwardType.Gold => "Золото",
-                AwardType.Hero => "Звание героя клана",
+                AwardType.Sapphire => "Сапфир",
+                AwardType.Hero => "Герой",
                 _ => throw new ArgumentOutOfRangeException(nameof(type), type, null),
             };
         }
@@ -168,10 +167,12 @@ namespace AndNetwork9.Shared.Extensions
             return awardType switch
             {
                 AwardType.None => string.Empty,
+                AwardType.Copper => "\U0001f7e9",
                 AwardType.Bronze => "\U0001F7EB",
                 AwardType.Silver => "\U00002B1C",
                 AwardType.Gold => "\U0001F7E8",
-                AwardType.Hero => "\U0001F7E6",
+                AwardType.Sapphire => "\U0001f7e6",
+                AwardType.Hero => "\U0001f7ea",
                 _ => throw new ArgumentOutOfRangeException(nameof(awardType), awardType, null),
             };
         }

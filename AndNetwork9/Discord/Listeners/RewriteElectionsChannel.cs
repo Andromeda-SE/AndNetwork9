@@ -126,7 +126,7 @@ namespace AndNetwork9.Discord.Listeners
             string GetElectionsMemberString(ElectionsMember electionsMember)
             {
                 StringBuilder stringText = new(64);
-                string? rankIcon = electionsMember.Member.Rank.GetAsciiRankIcon();
+                string? rankIcon = electionsMember.Member.Rank.GetRankIcon();
                 string rank = rankIcon is null ? string.Empty : $"[{rankIcon}]";
                 stringText.Append(rank);
                 stringText.Append(' ', rankLength - rank.Length + 1);
