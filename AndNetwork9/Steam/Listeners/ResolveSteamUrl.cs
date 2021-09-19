@@ -26,16 +26,12 @@ namespace AndNetwork9.Steam.Listeners
 
         protected override async Task<ulong?> GetResponseAsync(string request)
         {
-            Logger.LogInformation(request);
             request = request.Replace("http://", string.Empty);
             request = request.Replace("https://", string.Empty);
             request = request.Replace("steamcommunity.com/id/", string.Empty);
             request = request.Replace("steamcommunity.com/profiles/", string.Empty);
             request = request.Trim('/');
             if (ulong.TryParse(request, out ulong result)) return result;
-            Logger.LogInformation(request);
-            Logger.LogInformation(HttpUtility.UrlEncode(request));
-            Logger.LogInformation(WebUtility.UrlEncode(request));
             PlayerActivityResult<ResolveSteamUrlResult>? answer =
                 await _httpClient.GetFromJsonAsync<PlayerActivityResult<ResolveSteamUrlResult>>(
                     $"https://api.steampowered.com/ISteamUser/ResolveVanityURL/v1/?key={_steamKey}&vanityurl={HttpUtility.UrlEncode(request)}");
