@@ -1,6 +1,6 @@
 #See https://aka.ms/containerfastmode to understand how Visual Studio uses this Dockerfile to build your images for faster debugging.
 
-FROM mcr.microsoft.com/dotnet/aspnet:6.0.0-preview.7-alpine3.13 AS base
+FROM mcr.microsoft.com/dotnet/aspnet:6.0-alpine AS base
 RUN apk update
 RUN apk add --no-cache icu-libs
 RUN apk add --no-cache tzdata
@@ -10,7 +10,7 @@ WORKDIR /app
 EXPOSE 80
 EXPOSE 443
 
-FROM mcr.microsoft.com/dotnet/sdk:6.0.100-preview.7-alpine3.13 AS build
+FROM mcr.microsoft.com/dotnet/sdk:6.0-alpine AS build
 WORKDIR /src
 COPY ["AndNetwork9/Storage/AndNetwork9.Storage.csproj", "AndNetwork9/Storage/"]
 COPY ["AndNetwork9/Shared.Backend/AndNetwork9.Shared.Backend.csproj", "AndNetwork9/Shared.Backend/"]
