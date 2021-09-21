@@ -5,10 +5,13 @@
     <Nullable>warnings</Nullable>
 	  <LangLevel>preview</LangLevel>
 	  <DisableImplicitNamespaceImports>true</DisableImplicitNamespaceImports>
+	  <RunAOTCompilation>false</RunAOTCompilation>
+	  <InvariantGlobalization>false</InvariantGlobalization>
+	  <BlazorEnableTimeZoneSupport>true</BlazorEnableTimeZoneSupport>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <Optimize>True</Optimize>
+    <Optimize>False</Optimize>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">

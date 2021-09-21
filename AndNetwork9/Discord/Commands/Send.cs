@@ -38,7 +38,8 @@ namespace AndNetwork9.Discord.Commands
                 if (await TrySendMessage(message, member).ConfigureAwait(false))
                     await ReplyAsync($"Сообщение отправлено игроку <@{member.DiscordId}>").ConfigureAwait(false);
                 else
-                    await ReplyAsync($"Ошибка при отправке сообщения игроку <@{member.DiscordId}>").ConfigureAwait(false);
+                    await ReplyAsync($"Ошибка при отправке сообщения игроку <@{member.DiscordId}>")
+                        .ConfigureAwait(false);
             }
         }
 
@@ -47,7 +48,8 @@ namespace AndNetwork9.Discord.Commands
         public async Task All(string message)
         {
             await ReplyAsync(
-                (await SendMessages(message, Data.Members.Where(x => x.Rank > Rank.None).AsAsyncEnumerable()).ConfigureAwait(false))
+                (await SendMessages(message, Data.Members.Where(x => x.Rank > Rank.None).AsAsyncEnumerable())
+                    .ConfigureAwait(false))
                 .ToString()).ConfigureAwait(false);
         }
 
@@ -56,8 +58,9 @@ namespace AndNetwork9.Discord.Commands
         public async Task Online(string message)
         {
             await ReplyAsync((await SendMessages(message,
-                    Data.Members.Where(x => x.Rank > Rank.None).AsAsyncEnumerable().Where(x =>
-                        Bot.GetUser(x.DiscordId).Status is > UserStatus.Offline and < UserStatus.DoNotDisturb)).ConfigureAwait(false))
+                        Data.Members.Where(x => x.Rank > Rank.None).AsAsyncEnumerable().Where(x =>
+                            Bot.GetUser(x.DiscordId).Status is > UserStatus.Offline and < UserStatus.DoNotDisturb))
+                    .ConfigureAwait(false))
                 .ToString()).ConfigureAwait(false);
         }
 
@@ -66,7 +69,8 @@ namespace AndNetwork9.Discord.Commands
         public async Task Direction(Direction direction, string message)
         {
             await ReplyAsync((await SendMessages(message,
-                    Data.Members.Where(x => x.Rank > Rank.None && x.Direction == direction).AsAsyncEnumerable()).ConfigureAwait(false))
+                        Data.Members.Where(x => x.Rank > Rank.None && x.Direction == direction).AsAsyncEnumerable())
+                    .ConfigureAwait(false))
                 .ToString()).ConfigureAwait(false);
         }
 
@@ -93,7 +97,8 @@ namespace AndNetwork9.Discord.Commands
                 .Distinct(DiscordIdComparer.Static).ToAsyncEnumerable();
             IAsyncEnumerable<Shared.Member> members = Data.Members.AsAsyncEnumerable()
                 .Join(users, x => x.DiscordId, x => x.Id, (member, _) => member);
-            await ReplyAsync((await SendMessages(text, members).ConfigureAwait(false)).ToString()).ConfigureAwait(false);
+            await ReplyAsync((await SendMessages(text, members).ConfigureAwait(false)).ToString())
+                .ConfigureAwait(false);
         }
 
         [Command(nameof(NoReaction))]
@@ -121,7 +126,8 @@ namespace AndNetwork9.Discord.Commands
             IAsyncEnumerable<Shared.Member> members = Data.Members.AsAsyncEnumerable()
                 .Join(users, x => x.DiscordId, x => x.Id, (member, _) => member);
 
-            await ReplyAsync((await SendMessages(text, members).ConfigureAwait(false)).ToString()).ConfigureAwait(false);
+            await ReplyAsync((await SendMessages(text, members).ConfigureAwait(false)).ToString())
+                .ConfigureAwait(false);
         }
 
         private async Task<StringBuilder> SendMessages(string text, IAsyncEnumerable<Shared.Member> members,

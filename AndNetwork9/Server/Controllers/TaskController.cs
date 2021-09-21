@@ -206,7 +206,8 @@ namespace AndNetwork9.Server.Controllers
             if (task.SquadAssigneeId is not null)
                 watchers.Add(_data.Members.FirstOrDefault(x =>
                     x.IsSquadCommander && x.SquadNumber == task.SquadAssigneeId));
-            if (task.AssigneeId is not null) watchers.Add(await _data.Members.FindAsync(task.AssigneeId.Value).ConfigureAwait(false));
+            if (task.AssigneeId is not null)
+                watchers.Add(await _data.Members.FindAsync(task.AssigneeId.Value).ConfigureAwait(false));
 
             task.Watchers = watchers.Where(x => x is not null).ToArray()!;
 
@@ -326,7 +327,8 @@ namespace AndNetwork9.Server.Controllers
 
             if (resultTask.SquadAssigneeId is not null)
             {
-                resultTask.SquadAssignee = await _data.Squads.FindAsync(resultTask.SquadAssigneeId.Value).ConfigureAwait(false);
+                resultTask.SquadAssignee =
+                    await _data.Squads.FindAsync(resultTask.SquadAssigneeId.Value).ConfigureAwait(false);
                 if (resultTask.SquadAssignee is null) return BadRequest();
             }
             else

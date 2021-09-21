@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Components;
 
 namespace AndNetwork9.Client.Shared
 {
-    public partial class Table<TItem> : ComponentBase where TItem : IId
+    public class Table<TItem> : ComponentBase where TItem : IId
     {
         private int? _selectedColumn;
 

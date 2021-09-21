@@ -63,7 +63,8 @@ namespace AndNetwork9.Discord.Commands
         [MinRankPermission(Rank.Assistant)]
         public async Task Register()
         {
-            Shared.Member member = await Data.Members.FirstAsync(x => x.DiscordId == Context.Message.Author.Id).ConfigureAwait(false);
+            Shared.Member member = await Data.Members.FirstAsync(x => x.DiscordId == Context.Message.Author.Id)
+                .ConfigureAwait(false);
             await Register(member.Id).ConfigureAwait(false);
         }
     }

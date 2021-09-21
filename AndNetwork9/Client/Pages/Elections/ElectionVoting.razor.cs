@@ -8,7 +8,7 @@ using AndNetwork9.Shared.Elections;
 using AndNetwork9.Shared.Enums;
 using Microsoft.AspNetCore.Components;
 
-namespace AndNetwork9.Client.Pages.Elections 
+namespace AndNetwork9.Client.Pages.Elections
 {
     public partial class ElectionVoting
     {
@@ -20,10 +20,12 @@ namespace AndNetwork9.Client.Pages.Elections
         public CouncilElection CurrentElections { get; set; }
         [Parameter]
         public IReadOnlyCollection<Member> AllMembers { get; set; }
-        public Dictionary<Direction, Dictionary<int, uint>> Bulletins { get; set; } = new (Enum.GetValues<Direction>().Count(x => x > Direction.None));
+        public Dictionary<Direction, Dictionary<int, uint>> Bulletins { get; set; } =
+            new(Enum.GetValues<Direction>().Count(x => x > Direction.None));
         public bool Initialized { get; set; } = false;
 
-        public Dictionary<Direction, bool> SendsAllowed { get; set; } = new Dictionary<Direction, bool>(Enum.GetValues<Direction>().Count(x => x > Direction.None));
+        public Dictionary<Direction, bool> SendsAllowed { get; set; } =
+            new(Enum.GetValues<Direction>().Count(x => x > Direction.None));
         public bool SendAllowed => SendsAllowed.All(x => x.Value);
 
         protected override async void OnInitialized()
@@ -42,8 +44,9 @@ namespace AndNetwork9.Client.Pages.Elections
 
         private async System.Threading.Tasks.Task Send()
         {
-            await Client.PostAsJsonAsync("api/Election/vote", Bulletins.Where(x => SendsAllowed[x.Key]).ToDictionary(x => (int)x.Key, x => x.Value));
-            NavigationManager.NavigateTo(NavigationManager.BaseUri, false, false);
+            await Client.PostAsJsonAsync("api/Election/vote",
+                Bulletins.Where(x => SendsAllowed[x.Key]).ToDictionary(x => (int)x.Key, x => x.Value));
+            NavigationManager.NavigateTo(NavigationManager.BaseUri);
         }
 
         private void UpdateSendAllowed(Direction direction, bool allow)
@@ -53,4 +56,3 @@ namespace AndNetwork9.Client.Pages.Elections
         }
     }
 }
-

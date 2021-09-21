@@ -4,6 +4,7 @@ using AndNetwork9.Server.Auth;
 using AndNetwork9.Server.Extensions;
 using AndNetwork9.Shared.Backend;
 using AndNetwork9.Shared.Backend.Rabbit;
+using AndNetwork9.Shared.Backend.Senders.AwardDispenser;
 using AndNetwork9.Shared.Backend.Senders.Discord;
 using AndNetwork9.Shared.Backend.Senders.Elections;
 using AndNetwork9.Shared.Backend.Senders.Storage;
@@ -54,6 +55,7 @@ namespace AndNetwork9.Server
             services.AddScoped<NewRepoSender>();
             services.AddScoped<VoteSender>();
             services.AddScoped<SendSender>();
+            services.AddScoped<GiveAwardSender>();
 
             services.AddSingleton<IAuthorizationPolicyProvider, ClanPolicyProvider>();
             services.AddSingleton<IAuthorizationHandler, ClanPolicyProvider>();

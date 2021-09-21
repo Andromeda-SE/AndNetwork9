@@ -27,7 +27,8 @@ namespace AndNetwork9.Discord.Listeners
         private readonly DiscordBot _bot;
         private readonly IServiceScopeFactory _scopeFactory;
 
-        public RewriteElectionsChannel(IConnection connection, DiscordBot bot, IServiceScopeFactory scopeFactory, ILogger<RewriteElectionsChannel> logger) :
+        public RewriteElectionsChannel(IConnection connection, DiscordBot bot, IServiceScopeFactory scopeFactory,
+            ILogger<RewriteElectionsChannel> logger) :
             base(connection, RewriteElectionsChannelSender.QUEUE_NAME, logger)
         {
             _bot = bot;
@@ -55,10 +56,12 @@ namespace AndNetwork9.Discord.Listeners
                     .ToAsyncEnumerable().ConfigureAwait(false))
                 {
                     SocketTextChannel discordChannel = _bot.GetGuild(_bot.GuildId).GetTextChannel(channel.DiscordId);
-                    IMessage[] messages = (await discordChannel.GetMessagesAsync(5, RequestOptions.Default).ToArrayAsync().ConfigureAwait(false))
+                    IMessage[] messages = (await discordChannel.GetMessagesAsync(5, RequestOptions.Default)
+                            .ToArrayAsync().ConfigureAwait(false))
                         .SelectMany(x => x).ToArray();
 
-                    for (int i = 0; i < 5 - messages.Length; i++) await discordChannel.SendMessageAsync("…").ConfigureAwait(false);
+                    for (int i = 0; i < 5 - messages.Length; i++)
+                        await discordChannel.SendMessageAsync("…").ConfigureAwait(false);
 
                     foreach ((IMessage message, Direction direction) in messages.Zip(Enum.GetValues<Direction>()
                         .Where(x => x > Direction.None)))

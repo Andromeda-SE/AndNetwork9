@@ -11,16 +11,13 @@ namespace AndNetwork9.Shared.Converters
             string? raw = reader.GetString();
             return raw is null ? null : ulong.Parse(raw);
         }
+
         public override void Write(Utf8JsonWriter writer, ulong? value, JsonSerializerOptions options)
         {
             if (value.HasValue)
-            {
                 writer.WriteStringValue(value.Value.ToString("D"));
-            }
             else
-            {
                 writer.WriteNullValue();
-            }
         }
     }
 }

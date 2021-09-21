@@ -24,7 +24,9 @@ namespace AndNetwork9.Elections.Listeners
         private readonly IServiceScopeFactory _scopeFactory;
 
         public Register(IConnection connection, RewriteElectionsChannelSender rewriteElectionsChannelSender,
-            IServiceScopeFactory scopeFactory, ILogger<Register> logger) : base(connection, RegisterSender.QUEUE_NAME, logger)
+            IServiceScopeFactory scopeFactory, ILogger<Register> logger) : base(connection,
+            RegisterSender.QUEUE_NAME,
+            logger)
         {
             _rewriteElectionsChannelSender = rewriteElectionsChannelSender;
             _scopeFactory = scopeFactory;
@@ -46,7 +48,8 @@ namespace AndNetwork9.Elections.Listeners
             Election? election;
             try
             {
-                election = await data.Elections.SingleAsync(x => x.Stage == ElectionStage.Registration).ConfigureAwait(false);
+                election = await data.Elections.SingleAsync(x => x.Stage == ElectionStage.Registration)
+                    .ConfigureAwait(false);
             }
             catch (InvalidOperationException)
             {

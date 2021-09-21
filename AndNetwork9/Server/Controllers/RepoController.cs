@@ -129,7 +129,8 @@ namespace AndNetwork9.Server.Controllers
             Repo? result = await _data.Repos.FindAsync(id).ConfigureAwait(false);
             if (result is null) return NotFound();
             if (!result.ReadRule.HasAccess(member)) return Forbid();
-            RepoNode? node = await _data.RepoNodes.FindAsync(id, version, modification, prototype).ConfigureAwait(false);
+            RepoNode? node = await _data.RepoNodes.FindAsync(id, version, modification, prototype)
+                .ConfigureAwait(false);
             if (node is null) return NotFound();
             return Ok(node);
         }
@@ -147,7 +148,8 @@ namespace AndNetwork9.Server.Controllers
             if (repo.CreatorId != member.Id && !repo.WriteRule.HasAccess(member)) return Forbid();
             if (data.Data.Length > 157286400) return StatusCode(413);
             RepoNode? node =
-                await _data.RepoNodes.FindAsync(data.RepoId, data.Version, data.Modification, data.Prototype).ConfigureAwait(false);
+                await _data.RepoNodes.FindAsync(data.RepoId, data.Version, data.Modification, data.Prototype)
+                    .ConfigureAwait(false);
             if (node is not null) return Conflict();
             RepoNodeWithData resultNode = data with
             {
@@ -170,7 +172,8 @@ namespace AndNetwork9.Server.Controllers
             Repo? repo = await _data.Repos.FindAsync(id).ConfigureAwait(false);
             if (repo is null) return NotFound();
             if (repo.CreatorId != member.Id && !repo.ReadRule.HasAccess(member)) return Forbid();
-            RepoNode? node = await _data.RepoNodes.FindAsync(id, version, modification, prototype).ConfigureAwait(false);
+            RepoNode? node = await _data.RepoNodes.FindAsync(id, version, modification, prototype)
+                .ConfigureAwait(false);
             if (node is null) return NotFound();
 
             byte[]? result = await _repoGetFileSender.CallAsync(node).ConfigureAwait(false);

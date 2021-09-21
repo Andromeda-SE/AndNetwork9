@@ -136,7 +136,8 @@ namespace AndNetwork9.Server.Controllers
             member.IsSquadCommander = true;
             await _data.SaveChangesAsync().ConfigureAwait(false);
             //todo: add discord role creation
-            await _publishSender.CallAsync($"Игроком <@{member.DiscordId:D}> созван новый, {addResult.Entity}!").ConfigureAwait(false);
+            await _publishSender.CallAsync($"Игроком <@{member.DiscordId:D}> созван новый, {addResult.Entity}!")
+                .ConfigureAwait(false);
             return addResult.Entity;
         }
 
@@ -188,7 +189,8 @@ namespace AndNetwork9.Server.Controllers
             member.Squad.Members.Add(candidate);
             candidate.PendingSquadMembership.Clear();
             await _data.SaveChangesAsync().ConfigureAwait(false);
-            await _publishSender.CallAsync($"{member.Squad} пополняется игроком <@{candidate.DiscordId:D}>").ConfigureAwait(false);
+            await _publishSender.CallAsync($"{member.Squad} пополняется игроком <@{candidate.DiscordId:D}>")
+                .ConfigureAwait(false);
             return Ok();
         }
 

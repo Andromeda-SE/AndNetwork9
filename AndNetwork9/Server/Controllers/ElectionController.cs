@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AndNetwork9.Server.Auth.Attributes;
@@ -70,7 +69,8 @@ namespace AndNetwork9.Server.Controllers
             if (member is null) return Unauthorized();
             try
             {
-                await _voteSender.CallAsync(new(member.Id, vote.ToDictionary(x => (Direction)x.Key, x => x.Value))).ConfigureAwait(false);
+                await _voteSender.CallAsync(new(member.Id, vote.ToDictionary(x => (Direction)x.Key, x => x.Value)))
+                    .ConfigureAwait(false);
             }
             catch
             {

@@ -9,6 +9,8 @@ namespace AndNetwork9.Shared.Backend.Senders.Storage
     {
         public const string QUEUE_NAME = "Storage.NewRepo";
 
-        public NewRepoSender(IConnection connection, ILogger<NewRepoSender> logger) : base(connection, QUEUE_NAME, logger) { }
+        public NewRepoSender(IConnection connection, ILogger<NewRepoSender> logger) : base(connection,
+            QUEUE_NAME,
+            logger) { }
     }
 }

@@ -1,15 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using AndNetwork9.Server.Auth.Attributes;
 using AndNetwork9.Server.Extensions;
 using AndNetwork9.Shared;
 using AndNetwork9.Shared.Backend;
-using AndNetwork9.Shared.Backend.Senders.Discord;
+using AndNetwork9.Shared.Backend.Senders.AwardDispenser;
 using AndNetwork9.Shared.Enums;
-using AndNetwork9.Shared.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -20,14 +18,12 @@ namespace AndNetwork9.Server.Controllers
     public class AwardController : ControllerBase
     {
         private readonly ClanDataContext _data;
-        private readonly PublishSender _publishSender;
-        private readonly SendSender _sendSender;
+        private readonly GiveAwardSender _giveAwardSender;
 
-        public AwardController(ClanDataContext data, PublishSender publishSender, SendSender sendSender)
+        public AwardController(ClanDataContext data, GiveAwardSender giveAwardSender)
         {
             _data = data;
-            _publishSender = publishSender;
-            _sendSender = sendSender;
+            _giveAwardSender = giveAwardSender;
         }
 
         [HttpGet]
@@ -56,9 +52,6 @@ namespace AndNetwork9.Server.Controllers
             Member? caller = await this.GetCurrentMember(_data).ConfigureAwait(false);
             if (caller is null) return Unauthorized();
 
-            awards = awards.OrderByDescending(x => x.Type).ToArray();
-            StringBuilder text = new(256);
-            List<Member> members = new(awards.Length);
             foreach (Award award in awards)
             {
                 Member? member = await _data.Members.FindAsync(award.MemberId).ConfigureAwait(false);
@@ -75,28 +68,11 @@ namespace AndNetwork9.Server.Controllers
                     Member = member,
                     MemberId = member.Id,
                 };
-                text.AppendLine(
-                    $"{result.Type.GetTypeName()} [{result.Description}] достается игроку {member.GetDiscordMention()}");
-                if (!members.Contains(member)) members.Add(member);
-                member.Awards.Add(result);
-            }
-
-            text.AppendLine();
-            foreach (Member member in members.OrderByDescending(x => x.Rank))
-            {
-                Rank newRank = member.Awards.GetRank();
-                if (member.Rank >= newRank) continue;
-                Rank oldRank = member.Rank;
-                member.Rank = newRank;
-                text.AppendLine($"Игрок {member.GetDiscordMention()} повышен до ранга «{member.Rank.GetRankName()}»");
-                if (oldRank == Rank.Neophyte)
-                    await _sendSender.CallAsync(new(member.DiscordId,
-                        "Похоже, вас повысили! Теперь вы можете изменить свое направление на сайте клана")).ConfigureAwait(false);
+                await _giveAwardSender.CallAsync(result).ConfigureAwait(false);
             }
 
             await _data.SaveChangesAsync().ConfigureAwait(false);
-            await _publishSender.CallAsync(text.ToString()).ConfigureAwait(false);
-            return Ok(awards);
+            return Ok();
         }
     }
 }

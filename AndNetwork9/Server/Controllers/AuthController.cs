@@ -33,7 +33,8 @@ namespace AndNetwork9.Server.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Post([FromBody] AuthCredentials value)
         {
-            Member? member = await _data.Members.FirstOrDefaultAsync(x => x.Nickname == value.Nickname).ConfigureAwait(false);
+            Member? member = await _data.Members.FirstOrDefaultAsync(x => x.Nickname == value.Nickname)
+                .ConfigureAwait(false);
             if (member is null
                 || member.PasswordHash is null
                 || !member.PasswordHash.SequenceEqual(value.Password.GetPasswordHash())) return NotFound();

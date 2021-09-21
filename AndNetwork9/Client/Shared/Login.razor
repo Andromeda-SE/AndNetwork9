@@ -7,7 +7,7 @@
             <label class="form-label mt-3">Пароль</label>
             <InputText @bind-Value="Credentials.Password" class="form-control" type="password"/>
 
-            <div class="form-text text-danger mt-3" hidden="@(!ErrorLogin)">Неверный логин или пароль</div>
+            <div class="form-text mt-3 text-danger" hidden="@(!ErrorLogin)">Неверный логин или пароль</div>
             <button class="btn btn-primary mt-3" disabled="@(!LoginEnabled)" @onclick="LoginAsync" type="submit">Войти</button>
         </EditForm>
     </div>

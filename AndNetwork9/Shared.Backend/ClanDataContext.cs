@@ -9,7 +9,6 @@ using AndNetwork9.Shared.Utility;
 using AndNetwork9.Shared.Votings;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
-using TaskStatus = AndNetwork9.Shared.Enums.TaskStatus;
 
 namespace AndNetwork9.Shared.Backend
 {
@@ -186,6 +185,7 @@ namespace AndNetwork9.Shared.Backend
                     entity.HasOne(x => x.GaveBy).WithMany(x => x.GivenAwards).HasForeignKey(x => x.GaveById)
                         .IsRequired(false);
                     entity.Property(x => x.Description);
+                    entity.Property(x => x.AutomationTag);
                 });
 
                 modelBuilder.Entity<Member>(entity =>

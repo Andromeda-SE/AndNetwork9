@@ -9,7 +9,7 @@ namespace AndNetwork9.Shared.Converters
         public override ulong Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
             string? raw = reader.GetString();
-            return raw is null ? throw new(): ulong.Parse(raw);
+            return raw is null ? throw new() : ulong.Parse(raw);
         }
 
         public override void Write(Utf8JsonWriter writer, ulong value, JsonSerializerOptions options)

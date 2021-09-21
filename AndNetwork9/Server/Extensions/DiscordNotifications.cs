@@ -13,7 +13,8 @@ namespace AndNetwork9.Server.Extensions
     {
         public static void Send(this SendSender sender, IEnumerable<Member> recipients, string message)
         {
-            Task.WaitAll(recipients.Select(watcher => Task.Run(async () => await sender.Send(watcher, message).ConfigureAwait(false)))
+            Task.WaitAll(recipients
+                .Select(watcher => Task.Run(async () => await sender.Send(watcher, message).ConfigureAwait(false)))
                 .ToArray());
         }
 

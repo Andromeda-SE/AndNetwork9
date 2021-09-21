@@ -1,5 +1,4 @@
-﻿using System;
-using System.Text.Json;
+﻿using System.Text.Json;
 using System.Threading;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -16,8 +15,9 @@ namespace AndNetwork9.Shared.Backend.Rabbit
             IgnoreReadOnlyProperties = true,
         };
 
-        protected readonly ILogger<BaseRabbitListener> Logger;
         protected readonly IConnection Connection;
+
+        protected readonly ILogger<BaseRabbitListener> Logger;
         protected readonly string QueueName;
         protected EventingBasicConsumer Consumer = null!;
 

@@ -21,11 +21,11 @@ namespace AndNetwork9.Shared.Backend.Extensions
                 });
                 logging.SetMinimumLevel(
 #if DEBUG
-LogLevel.Debug
-#else 
+                    LogLevel.Debug
+#else
 LogLevel.Information
 #endif
-);
+                );
             });
         }
     }

@@ -8,6 +8,8 @@ namespace AndNetwork9.Shared.Backend.Senders.Discord
     public class RewriteElectionsChannelSender : BaseRabbitSenderWithoutResponse<Election>
     {
         public const string QUEUE_NAME = "Discord.RewriteElectionsChannel";
-        public RewriteElectionsChannelSender(IConnection connection, ILogger<RewriteElectionsChannelSender> logger) : base(connection, QUEUE_NAME, logger) { }
+
+        public RewriteElectionsChannelSender(IConnection connection, ILogger<RewriteElectionsChannelSender> logger) :
+            base(connection, QUEUE_NAME, logger) { }
     }
 }

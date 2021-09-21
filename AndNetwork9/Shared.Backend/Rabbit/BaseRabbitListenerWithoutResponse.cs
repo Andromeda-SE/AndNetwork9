@@ -9,7 +9,8 @@ namespace AndNetwork9.Shared.Backend.Rabbit
 {
     public abstract class BaseRabbitListenerWithoutResponse<TRequest> : BaseRabbitListener
     {
-        protected BaseRabbitListenerWithoutResponse(IConnection connection, string queue, ILogger<BaseRabbitListenerWithoutResponse<TRequest>> logger) : base(connection, queue, logger) { }
+        protected BaseRabbitListenerWithoutResponse(IConnection connection, string queue,
+            ILogger<BaseRabbitListenerWithoutResponse<TRequest>> logger) : base(connection, queue, logger) { }
 
         protected override void Received(object sender, BasicDeliverEventArgs args)
         {
@@ -17,7 +18,8 @@ namespace AndNetwork9.Shared.Backend.Rabbit
             {
                 try
                 {
-                    Logger.LogInformation($"Received {args.DeliveryTag}, CorrelationId = {args.BasicProperties.CorrelationId}");
+                    Logger.LogInformation(
+                        $"Received {args.DeliveryTag}, CorrelationId = {args.BasicProperties.CorrelationId}");
                     Logger.LogInformation($"Ack {args.DeliveryTag}");
                     Model.BasicAck(args.DeliveryTag, false);
                     IBasicProperties replyProperties = Model.CreateBasicProperties();
@@ -48,6 +50,7 @@ namespace AndNetwork9.Shared.Backend.Rabbit
                             ReadOnlyMemory<byte> result = ReadOnlyMemory<byte>.Empty;
                             Model.BasicPublish(string.Empty, args.BasicProperties.ReplyTo, replyProperties, result);
                         }
+
                         Logger.LogInformation($"Finish {args.DeliveryTag}");
                     }
                 }

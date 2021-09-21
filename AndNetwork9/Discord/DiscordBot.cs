@@ -11,8 +11,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using File = AndNetwork9.Discord.Commands.File;
-using IResult = Discord.Commands.IResult;
 
 namespace AndNetwork9.Discord
 {
@@ -115,7 +113,8 @@ namespace AndNetwork9.Discord
             {
                 Logger.LogInformation(
                     $"{context.User} sent wrong command \"{message.Content}\": «{result.Error}/{result.ErrorReason}»");
-                await context.Message.ReplyAsync(result.Error?.GetLocalizedString() ?? "Неизвестная ошибка").ConfigureAwait(false);
+                await context.Message.ReplyAsync(result.Error?.GetLocalizedString() ?? "Неизвестная ошибка")
+                    .ConfigureAwait(false);
                 if (result is ExecuteResult executeResult)
                     throw executeResult.Exception;
             }
@@ -130,7 +129,8 @@ namespace AndNetwork9.Discord
         public async Task UninstallCommandsAsync()
         {
             MessageReceived -= HandleCommandAsync;
-            foreach (ModuleInfo module in _commandService.Modules) await _commandService.RemoveModuleAsync(module).ConfigureAwait(false);
+            foreach (ModuleInfo module in _commandService.Modules)
+                await _commandService.RemoveModuleAsync(module).ConfigureAwait(false);
         }
 
         private Task HandleCommandAsync(SocketMessage messageParam)
