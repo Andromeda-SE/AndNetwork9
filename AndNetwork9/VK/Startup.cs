@@ -13,8 +13,10 @@ public class Startup
     {
         RabbitConnectionPool.SetConfiguration(configuration);
         services.AddScoped(_ => RabbitConnectionPool.Factory.CreateConnection());
-        services.AddHostedService<WallPublish>();
-        services.AddSingleton<VkApi,VkBot>();
+        
+        services.AddSingleton<VkApi, VkBot>();
         services.AddHostedService(provider => (VkBot)provider.GetService(typeof(VkApi))!);
+        
+        services.AddHostedService<WallPublish>();
     }
 }
