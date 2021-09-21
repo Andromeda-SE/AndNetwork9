@@ -1,37 +1,29 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Net;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using AndNetwork9.Shared.Backend.Rabbit;
 using AndNetwork9.Shared.Backend.Senders.VK;
-using AndNetwork9.VK;
 using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
 using VkNet;
-using VkNet.Model.Attachments;
-using VkNet.Model.RequestParams;
 
-    public class WallPublish : BaseRabbitListenerWithoutResponse<string>
+namespace AndNetwork9.VK.Listeners
 {
-    public override Task Run(string request)
+    public class WallPublish : BaseRabbitListenerWithoutResponse<string>
     {
+        private readonly VkApi _vkApi;
 
-        var post = vkapi.Wall.Post(new WallPostParams
+        public WallPublish(IConnection connection, ILogger<BaseRabbitListenerWithoutResponse<string>> logger, VkApi vkApi) :
+            base(connection, WallPublishSender.QUEUE_NAME, logger) => this._vkApi = vkApi;
+
+        public override Task Run(string request)
         {
-            OwnerId = -207090758,
-            FromGroup = true,
-            Message = request,
-            CloseComments = false,
-
-
-        });
-        return Task.CompletedTask;
+            long post = _vkApi.Wall.Post(new()
+            {
+                OwnerId = -207090758,
+                FromGroup = true,
+                Message = request,
+                CloseComments = false,
+            });
+            return Task.CompletedTask;
+        }
     }
-
-    public WallPublish(IConnection connection,  ILogger<BaseRabbitListenerWithoutResponse<string>> logger, VkApi vkapi) : base(connection, WallPublishSender.QUEUE_NAME, logger)
-    {
-        this.vkapi = vkapi;
-    }
-
-    private readonly VkApi vkapi;
 }
