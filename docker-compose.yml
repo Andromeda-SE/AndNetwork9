@@ -53,6 +53,29 @@ services:
       - database
       - broker
 
+  andnetwork9steam:
+    container_name: AndNetwork9.Steam
+    image: ${DOCKER_REGISTRY-}andnetwork9steam
+    restart: "no"
+    env_file: .env
+    build:
+      context: .
+      dockerfile: AndNetwork9/Steam/Dockerfile
+    depends_on: 
+      - broker
+
+  andnetwork9awarddispenser:
+    container_name: AndNetwork9.AwardDispenser
+    image: ${DOCKER_REGISTRY-}awarddispenser
+    restart: "no"
+    env_file: .env
+    build:
+      context: .
+      dockerfile: AndNetwork9/AwardDispenser/Dockerfile
+    depends_on: 
+      - broker
+      - database
+
   database:
     container_name: AndNetwork9.Database
     image: postgres:alpine
@@ -92,6 +115,10 @@ services:
     image: gcr.io/cadvisor/cadvisor:latest
     container_name: AndNetwork9.Monitoring.Cadvisor
     privileged: true
+    command: 
+      - '--housekeeping_interval=15s'
+      - '--docker_only=true'
+      - '--disable_metrics=disk'
     ports:
     - 8080:8080
     volumes:

@@ -186,6 +186,7 @@ namespace AndNetwork9.Shared.Backend
                     entity.HasOne(x => x.GaveBy).WithMany(x => x.GivenAwards).HasForeignKey(x => x.GaveById)
                         .IsRequired(false);
                     entity.Property(x => x.Description);
+                    entity.Property(x => x.AutomationTag);
                 });
 
                 modelBuilder.Entity<Member>(entity =>
