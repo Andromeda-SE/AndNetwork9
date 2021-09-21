@@ -22,7 +22,7 @@ namespace AndNetwork9.Shared.Extensions
                 new KeyValuePair<Rank, int>(Rank.JuniorEmployee, 15),
                 new KeyValuePair<Rank, int>(Rank.Employee, 20),
                 new KeyValuePair<Rank, int>(Rank.SeniorEmployee, 25),
-                new KeyValuePair<Rank, int>(Rank.JuniorEmployee, 30),
+                new KeyValuePair<Rank, int>(Rank.JuniorSpecialist, 30),
                 new KeyValuePair<Rank, int>(Rank.Specialist, 35),
                 new KeyValuePair<Rank, int>(Rank.SeniorSpecialist, 40),
                 new KeyValuePair<Rank, int>(Rank.JuniorIntercessor, 45),
@@ -31,12 +31,11 @@ namespace AndNetwork9.Shared.Extensions
                 new KeyValuePair<Rank, int>(Rank.JuniorSentinel, 60),
                 new KeyValuePair<Rank, int>(Rank.Sentinel, 65),
                 new KeyValuePair<Rank, int>(Rank.SeniorSentinel, 70),
-                //new KeyValuePair<Rank, int>(Rank.Defender, 100),
             }));
 
         public static Rank GetRank(this IEnumerable<Award> awards)
         {
-            int result = awards.Sum(x => (int)x.Type);
+            double result = awards.Sum(x => x.Points);
             return RankPoints.Where(x => x.Value <= result).OrderByDescending(x => x.Value).First().Key;
         }
 

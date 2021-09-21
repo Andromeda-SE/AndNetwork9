@@ -6,7 +6,7 @@ namespace AndNetwork9.Shared.Backend.Senders.Steam
 {
     public record PlayerActivityResultNode
     {
-        public const string SPACE_ENGINEERS_APP_ID = "244850";
+        private const string _SPACE_ENGINEERS_APP_ID = "244850";
         [JsonPropertyName("steamid")]
         [JsonConverter(typeof(UInt64FromStringConverter))]
         public ulong SteamId { get; set; }
@@ -20,9 +20,12 @@ namespace AndNetwork9.Shared.Backend.Senders.Steam
         [JsonPropertyName("gameserversteamid")]
         [JsonConverter(typeof(NullableUInt64FromStringConverter))]
         public ulong? GameServerSteamId { get; set; }
+        [JsonPropertyName("lobbysteamid")]
+        [JsonConverter(typeof(NullableUInt64FromStringConverter))]
+        public ulong? LobbySteamId { get; set; }
         [JsonPropertyName("gameid")]
         public string? GameId { get; set; }
         [JsonIgnore]
-        public bool InSpaceEngineers => GameId == SPACE_ENGINEERS_APP_ID;
+        public bool InSpaceEngineers => GameId == _SPACE_ENGINEERS_APP_ID;
     }
 }

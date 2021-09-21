@@ -10,7 +10,7 @@
     <OutputType>Library</OutputType>
     <StartupObject />
     <LangLevel>preview</LangLevel>
-    <DisableImplicitNamespaceImports>true</DisableImplicitNamespaceImports>
+    <ImplicitUsings>disable</ImplicitUsings>
   </PropertyGroup>
 
   <ItemGroup>
@@ -30,6 +30,10 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Shared\AndNetwork9.Shared.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Senders\AwardDispenser\" />
   </ItemGroup>
 
 </Project>
