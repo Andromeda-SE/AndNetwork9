@@ -14,16 +14,15 @@ namespace AndNetwork9.VK.Listeners
         public WallPublish(IConnection connection, ILogger<BaseRabbitListenerWithoutResponse<string>> logger, VkApi vkApi) :
             base(connection, WallPublishSender.QUEUE_NAME, logger) => this._vkApi = vkApi;
 
-        public override Task Run(string request)
+        public override async Task Run(string request)
         {
-            long post = _vkApi.Wall.Post(new()
+            await _vkApi.Wall.PostAsync(new()
             {
                 OwnerId = -207090758,
                 FromGroup = true,
                 Message = request,
                 CloseComments = false,
             });
-            return Task.CompletedTask;
         }
     }
 }
