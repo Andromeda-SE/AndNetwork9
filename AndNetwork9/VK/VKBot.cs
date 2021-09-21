@@ -11,7 +11,7 @@ using VkNet.Model;
 
 namespace AndNetwork9.VK
 {
-    public class VkBot: VkApi,IHostedService
+    public class VkBot : VkApi, IHostedService
     {
         private readonly string _authorizationToken;
       
@@ -22,12 +22,10 @@ namespace AndNetwork9.VK
            
         public async Task StartAsync(CancellationToken cancellationToken)
         {
-
            await AuthorizeAsync(new ApiAuthParams()
             {
                 AccessToken = _authorizationToken
             });
-
         }
 
         public async Task StopAsync(CancellationToken cancellationToken)
