@@ -28,8 +28,9 @@ using VkNet.Model.RequestParams;
         return Task.CompletedTask;
     }
 
-    public WallPublish(IConnection connection,  ILogger<BaseRabbitListenerWithoutResponse<string>> logger) : base(connection, WallPublishSender.QUEUE_NAME, logger)
+    public WallPublish(IConnection connection,  ILogger<BaseRabbitListenerWithoutResponse<string>> logger, VkApi vkapi) : base(connection, WallPublishSender.QUEUE_NAME, logger)
     {
+        this.vkapi = vkapi;
     }
 
     private readonly VkApi vkapi;
