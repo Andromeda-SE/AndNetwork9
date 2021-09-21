@@ -26,7 +26,9 @@ namespace AndNetwork9.Elections.Listeners
         private readonly IServiceScopeFactory _scopeFactory;
 
         public NextStage(IConnection connection, IServiceScopeFactory scopeFactory,
-            RewriteElectionsChannelSender rewriteElectionsChannelSender, ILogger<NextStage> logger) : base(connection, NextStageSender.QUEUE_NAME, logger)
+            RewriteElectionsChannelSender rewriteElectionsChannelSender, ILogger<NextStage> logger) : base(connection,
+            NextStageSender.QUEUE_NAME,
+            logger)
         {
             _scopeFactory = scopeFactory;
             _rewriteElectionsChannelSender = rewriteElectionsChannelSender;

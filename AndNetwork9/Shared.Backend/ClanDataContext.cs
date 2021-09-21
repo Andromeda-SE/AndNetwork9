@@ -9,7 +9,6 @@ using AndNetwork9.Shared.Utility;
 using AndNetwork9.Shared.Votings;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
-using TaskStatus = AndNetwork9.Shared.Enums.TaskStatus;
 
 namespace AndNetwork9.Shared.Backend
 {

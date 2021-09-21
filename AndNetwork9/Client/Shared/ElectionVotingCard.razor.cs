@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using AndNetwork9.Client.Pages.Elections;
 using AndNetwork9.Shared;
 using AndNetwork9.Shared.Elections;
-using AndNetwork9.Shared.Enums;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 
@@ -29,10 +27,10 @@ namespace AndNetwork9.Client.Shared
 
         public bool AllowPlus =>
             UsedVotes < MaxVotes && !ReadOnly;
-
-        public bool AllowMinus(int memberId) => Bulletin[memberId] > 0 && !ReadOnly;
         public bool AllowSend =>
             UsedVotes == MaxVotes || ReadOnly;
+
+        public bool AllowMinus(int memberId) => Bulletin[memberId] > 0 && !ReadOnly;
 
         public void Add(int memberId, MouseEventArgs e)
         {
@@ -46,5 +44,4 @@ namespace AndNetwork9.Client.Shared
             UpdateAllowSend(false);
         }
     }
-
 }

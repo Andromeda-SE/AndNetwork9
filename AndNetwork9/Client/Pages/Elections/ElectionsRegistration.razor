@@ -1,50 +1,52 @@
-﻿        @if (CurrentElections is not null && AllMembers is not null)
-        {
-            @if (CurrentElections.Votes.Any(x => x.Votes.ContainsKey(AuthStateProvider.CurrentMember.Id)))
-            {
-                <button class="btn btn-danger" disabled>Отозвать свою кандидатуру</button>
-            }
-            else
-            {
-                <button class="btn btn-primary" disabled="@((AuthStateProvider.CurrentMember.Rank <= Rank.Neophyte || AuthStateProvider.CurrentMember.Direction <= Direction.None))" @onclick="async () => await Register()">Выдвинуть свою кандидатуру</button>
-            }
-            
-            <BaseBodyWithAside>
-             <Main>
-                 <table class="table">
-                     <thead>
-                     <th scope="col"/>
-                     <th scope="col">Игрок</th>
-                     </thead>
-                     <tbody>
-                     @foreach (CouncilElectionVote voting in CurrentElections.Votes)
-                     {
-                         <tr>
-                             <th colspan="2">@voting.Direction.GetName()</th>
-                         </tr>
-                         @if (voting.Votes.Keys.Count == 1)
-                         {
-                             <tr>
-                                 <td><i>(нет кандидатов)</i></td>
-                                 <td/>
-                             </tr>
-                         }
-                         
-                         @foreach (MarkupString markup in voting.Votes.Keys.Where(x => x != 0).Select(x => AllMembers.First(y => y.Id == x).GetHtml()))
-                         {
-                             <tr>
-                                 <td/>
-                                 <td>@markup</td>
-                             </tr>
-                         }
-                     }
-                     </tbody>
-                 </table>
-             </Main>
-             <Aside>
-                 <div>
-                     <ElectionsAside Election="CurrentElections"/>
-                 </div>
-             </Aside>
-         </BaseBodyWithAside>
-        }
+﻿@if (CurrentElections is not null && AllMembers is not null)
+{
+    @if (CurrentElections.Votes.Any(x => x.Votes.ContainsKey(AuthStateProvider.CurrentMember.Id)))
+    {
+        <button class="btn btn-danger" disabled>Отозвать свою кандидатуру</button>
+    }
+    else
+    {
+        <button class="btn btn-primary" disabled="@(AuthStateProvider.CurrentMember.Rank <= Rank.Neophyte || AuthStateProvider.CurrentMember.Direction <= Direction.None)" @onclick="async () => await Register()">Выдвинуть свою кандидатуру</button>
+    }
+
+    <BaseBodyWithAside>
+        <Main>
+            <table class="table">
+                <thead>
+                <th scope="col"/>
+                <th scope="col">Игрок</th>
+                </thead>
+                <tbody>
+                @foreach (CouncilElectionVote voting in CurrentElections.Votes)
+                {
+                    <tr>
+                        <th colspan="2">@voting.Direction.GetName()</th>
+                    </tr>
+                    @if (voting.Votes.Keys.Count == 1)
+                    {
+                        <tr>
+                            <td>
+                                <i>(нет кандидатов)</i>
+                            </td>
+                            <td/>
+                        </tr>
+                    }
+
+                    @foreach (MarkupString markup in voting.Votes.Keys.Where(x => x != 0).Select(x => AllMembers.First(y => y.Id == x).GetHtml()))
+                    {
+                        <tr>
+                            <td/>
+                            <td>@markup</td>
+                        </tr>
+                    }
+                }
+                </tbody>
+            </table>
+        </Main>
+        <Aside>
+            <div>
+                <ElectionsAside Election="CurrentElections"/>
+            </div>
+        </Aside>
+    </BaseBodyWithAside>
+}

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using AndNetwork9.Shared.Enums;
 
 namespace AndNetwork9.Shared.Backend.Senders.Elections

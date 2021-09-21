@@ -42,7 +42,8 @@ namespace AndNetwork9.Server
             Stream responseStream = httpContext.Response.Body;
             if (selectedEncoding.CodePage == Encoding.UTF8.CodePage)
             {
-                await JsonSerializer.SerializeAsync(responseStream, context.Object, type, SerializerOptions).ConfigureAwait(false);
+                await JsonSerializer.SerializeAsync(responseStream, context.Object, type, SerializerOptions)
+                    .ConfigureAwait(false);
                 await responseStream.FlushAsync().ConfigureAwait(false);
             }
             else
@@ -52,7 +53,8 @@ namespace AndNetwork9.Server
                     Encoding.UTF8,
                     true);
                 await using ConfiguredAsyncDisposable _ = stream.ConfigureAwait(false);
-                await JsonSerializer.SerializeAsync(stream, context.Object, type, SerializerOptions).ConfigureAwait(false);
+                await JsonSerializer.SerializeAsync(stream, context.Object, type, SerializerOptions)
+                    .ConfigureAwait(false);
                 await stream.FlushAsync().ConfigureAwait(false);
             }
         }

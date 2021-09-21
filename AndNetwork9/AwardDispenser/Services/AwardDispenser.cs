@@ -26,10 +26,11 @@ namespace AndNetwork9.AwardDispenser.Services
             new WithComradesAwardDispenserJob(),
         };
 
-        private readonly PlayerActivitySender _playerActivitySender;
-        private readonly IServiceScopeFactory _scopeFactory;
         private readonly GiveAwardSender _giveAwardSender;
         private readonly ILogger<AwardDispenser> _logger;
+
+        private readonly PlayerActivitySender _playerActivitySender;
+        private readonly IServiceScopeFactory _scopeFactory;
 
         public AwardDispenser(IConfiguration configuration, IServiceScopeFactory scopeFactory,
             PlayerActivitySender playerActivitySender, GiveAwardSender giveAwardSender, ILogger<AwardDispenser> logger)
@@ -70,7 +71,6 @@ namespace AndNetwork9.AwardDispenser.Services
                 job.PlayerActivity = nodes;
                 foreach (Member member in (await job.AvailableAsync(members).ConfigureAwait(false)).Where(x => x.Value)
                     .Select(x => x.Key))
-                {
                     await _giveAwardSender.CallAsync(new()
                     {
                         AutomationTag = job.AutomationTag,
@@ -82,11 +82,13 @@ namespace AndNetwork9.AwardDispenser.Services
                         MemberId = member.Id,
                         Type = job.AwardType,
                     }).ConfigureAwait(false);
-                }
             }
 
             await data.SaveChangesAsync(CancellationToken.None).ConfigureAwait(false);
-            _logger.LogInformation("Triggered " + nameof(AwardDispenser) + Environment.NewLine + $"Interval = {Interval.TotalSeconds}s");
+            _logger.LogInformation("Triggered "
+                                   + nameof(AwardDispenser)
+                                   + Environment.NewLine
+                                   + $"Interval = {Interval.TotalSeconds}s");
         }
     }
 }

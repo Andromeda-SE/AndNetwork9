@@ -4,7 +4,6 @@ using System.Linq;
 using System.Net;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
-using AndNetwork9.Shared;
 using AndNetwork9.Shared.Backend;
 using AndNetwork9.Shared.Backend.Elections;
 using AndNetwork9.Shared.Backend.Rabbit;
@@ -15,7 +14,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
-using Task = System.Threading.Tasks.Task;
 
 namespace AndNetwork9.Elections.Listeners
 {
@@ -26,7 +24,7 @@ namespace AndNetwork9.Elections.Listeners
 
         public Vote(IConnection connection,
             IServiceScopeFactory scopeFactory,
-            RewriteElectionsChannelSender rewriteElectionsChannelSender, 
+            RewriteElectionsChannelSender rewriteElectionsChannelSender,
             ILogger<Vote> logger) : base(connection, VoteSender.QUEUE_NAME, logger)
         {
             _scopeFactory = scopeFactory;
@@ -38,7 +36,8 @@ namespace AndNetwork9.Elections.Listeners
             try
             {
                 Logger.LogInformation("Start porcess voting…");
-                Logger.LogInformation($"MemberId: {request.MemberId}{Environment.NewLine}{string.Join(Environment.NewLine, request.Bulletin.Select(x => $"{x.Key} {string.Join(", ", x.Value.Select(y => $"{y.Key}-{y.Value}"))}"))}");
+                Logger.LogInformation(
+                    $"MemberId: {request.MemberId}{Environment.NewLine}{string.Join(Environment.NewLine, request.Bulletin.Select(x => $"{x.Key} {string.Join(", ", x.Value.Select(y => $"{y.Key}-{y.Value}"))}"))}");
                 AsyncServiceScope scope = _scopeFactory.CreateAsyncScope();
                 await using ConfiguredAsyncDisposable _ = scope.ConfigureAwait(false);
                 ClanDataContext data = (ClanDataContext)scope.ServiceProvider.GetService(typeof(ClanDataContext))!;
@@ -46,13 +45,15 @@ namespace AndNetwork9.Elections.Listeners
                 Election? election;
                 try
                 {
-                    election = await data.Elections.SingleAsync(x => x.Stage == ElectionStage.Voting).ConfigureAwait(false);
+                    election = await data.Elections.SingleAsync(x => x.Stage == ElectionStage.Voting)
+                        .ConfigureAwait(false);
                     Logger.LogInformation($"Election = {election.Id}");
                 }
                 catch (InvalidOperationException)
                 {
                     throw new FailedCallException(HttpStatusCode.Gone);
                 }
+
                 foreach ((Direction direction, IReadOnlyDictionary<int, uint> votes) in request.Bulletin)
                 {
                     Logger.LogInformation($"Process {election.Id}/{direction}…");
@@ -76,12 +77,10 @@ namespace AndNetwork9.Elections.Listeners
                     foreach ((ElectionsMember candidate, int vote) in candidatesVotes)
                     {
                         if (vote == 0) continue;
-                        candidate.Votes += (int)vote;
+                        candidate.Votes += vote;
                     }
-                    if (votes.TryGetValue(0, out uint againstAllVotes))
-                    {
-                        voting.AgainstAll += (int)againstAllVotes;
-                    }
+
+                    if (votes.TryGetValue(0, out uint againstAllVotes)) voting.AgainstAll += (int)againstAllVotes;
                 }
 
                 await data.SaveChangesAsync().ConfigureAwait(false);
@@ -92,7 +91,6 @@ namespace AndNetwork9.Elections.Listeners
                 Logger.LogError(e, request.MemberId.ToString());
                 throw;
             }
-
         }
     }
 }

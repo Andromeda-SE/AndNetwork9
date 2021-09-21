@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using AndNetwork9.Shared.Backend.Rabbit;
-using AndNetwork9.Shared.Enums;
+﻿using AndNetwork9.Shared.Backend.Rabbit;
 using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
 

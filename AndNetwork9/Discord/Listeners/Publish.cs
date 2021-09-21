@@ -17,8 +17,10 @@ namespace AndNetwork9.Discord.Listeners
         private readonly DiscordBot _bot;
         private readonly IServiceScopeFactory _scopeFactory;
 
-        public Publish(IConnection connection, DiscordBot bot, IServiceScopeFactory scopeFactory, ILogger<Publish> logger) : base(connection,
-            PublishSender.QUEUE_NAME, logger)
+        public Publish(IConnection connection, DiscordBot bot, IServiceScopeFactory scopeFactory,
+            ILogger<Publish> logger) : base(connection,
+            PublishSender.QUEUE_NAME,
+            logger)
         {
             _bot = bot;
             _scopeFactory = scopeFactory;

@@ -32,7 +32,7 @@ namespace AndNetwork9.Client.Extensions
                 Direction.Research => "#198754",
                 Direction.Military => "#0d6efd",
                 Direction.Agitation => "#6f42c1",
-                _ => throw new ArgumentOutOfRangeException(nameof(direction), direction, null)
+                _ => throw new ArgumentOutOfRangeException(nameof(direction), direction, null),
             };
         }
 

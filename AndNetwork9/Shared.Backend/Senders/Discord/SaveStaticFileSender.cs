@@ -8,6 +8,9 @@ namespace AndNetwork9.Shared.Backend.Senders.Discord
     public class SaveStaticFileSender : BaseRabbitSenderWithResponse<SaveStaticFileArg, StaticFile>
     {
         public const string QUEUE_NAME = "Discord.SaveStaticFile";
-        public SaveStaticFileSender(IConnection connection, ILogger<SaveStaticFileSender> logger) : base(connection, QUEUE_NAME, logger) { }
+
+        public SaveStaticFileSender(IConnection connection, ILogger<SaveStaticFileSender> logger) : base(connection,
+            QUEUE_NAME,
+            logger) { }
     }
 }

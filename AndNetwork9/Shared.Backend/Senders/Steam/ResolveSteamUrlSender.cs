@@ -8,7 +8,7 @@ namespace AndNetwork9.Shared.Backend.Senders.Steam
     {
         public const string QUEUE_NAME = "Steam.ResolveSteamUrl";
 
-        public ResolveSteamUrlSender(IConnection connection, ILogger<BaseRabbitSenderWithResponse<string, ulong?>> logger) : base(connection, QUEUE_NAME, logger) { }
-
+        public ResolveSteamUrlSender(IConnection connection,
+            ILogger<BaseRabbitSenderWithResponse<string, ulong?>> logger) : base(connection, QUEUE_NAME, logger) { }
     }
 }

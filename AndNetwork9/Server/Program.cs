@@ -1,7 +1,5 @@
-﻿using System.Net;
-using AndNetwork9.Shared.Backend.Extensions;
+﻿using AndNetwork9.Shared.Backend.Extensions;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.Hosting;
 
 namespace AndNetwork9.Server

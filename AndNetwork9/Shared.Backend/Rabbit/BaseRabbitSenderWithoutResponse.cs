@@ -9,7 +9,8 @@ namespace AndNetwork9.Shared.Backend.Rabbit
 {
     public class BaseRabbitSenderWithoutResponse<TRequest> : BaseRabbitSender
     {
-        protected BaseRabbitSenderWithoutResponse(IConnection connection, string queue, ILogger<BaseRabbitSenderWithoutResponse<TRequest>> logger) : base(connection, queue, logger) { }
+        protected BaseRabbitSenderWithoutResponse(IConnection connection, string queue,
+            ILogger<BaseRabbitSenderWithoutResponse<TRequest>> logger) : base(connection, queue, logger) { }
 
         public async System.Threading.Tasks.Task CallAsync(TRequest arg)
         {
@@ -43,6 +44,7 @@ namespace AndNetwork9.Shared.Backend.Rabbit
                         Logger.LogWarning($"Timeout {guid}");
                         throw new TimeoutException();
                     }
+
                     Logger.LogInformation($"End wait {guid}");
                     BasicDeliverEventArgs reply = Replies[guid];
                     Logger.LogDebug("Ack {0}", properties.CorrelationId);

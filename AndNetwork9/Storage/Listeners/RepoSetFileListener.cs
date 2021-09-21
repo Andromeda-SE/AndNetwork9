@@ -18,8 +18,10 @@ namespace AndNetwork9.Storage.Listeners
         private readonly RepoManager _repoManager;
         private readonly IServiceScopeFactory _scopeFactory;
 
-        public RepoSetFileListener(IConnection connection, IServiceScopeFactory scopeFactory, ILogger<RepoSetFileListener> logger) : base(connection,
-            RepoSetFileSender.QUEUE_NAME, logger)
+        public RepoSetFileListener(IConnection connection, IServiceScopeFactory scopeFactory,
+            ILogger<RepoSetFileListener> logger) : base(connection,
+            RepoSetFileSender.QUEUE_NAME,
+            logger)
         {
             _scopeFactory = scopeFactory;
             _repoManager = new();

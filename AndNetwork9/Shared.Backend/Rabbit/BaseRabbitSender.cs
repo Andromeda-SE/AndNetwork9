@@ -16,6 +16,7 @@ namespace AndNetwork9.Shared.Backend.Rabbit
         };
 
         protected readonly EventingBasicConsumer Consumer;
+        protected readonly ILogger<BaseRabbitSender> Logger;
         protected readonly string MethodQueueName;
 
         protected readonly IModel Model;
@@ -24,7 +25,6 @@ namespace AndNetwork9.Shared.Backend.Rabbit
         protected readonly string ReplyQueueName;
 
         protected readonly ConcurrentDictionary<Guid, ManualResetEvent> Waiting = new();
-        protected readonly ILogger<BaseRabbitSender> Logger;
 
         protected BaseRabbitSender(IConnection connection, string queue, ILogger<BaseRabbitSender> logger)
         {
@@ -32,7 +32,7 @@ namespace AndNetwork9.Shared.Backend.Rabbit
             Logger.LogDebug("Creating…");
             Model = connection.CreateModel();
             MethodQueueName = queue;
-            
+
             ReplyQueueName = Model.QueueDeclare().QueueName;
             Logger.LogDebug($"Reply queue name = {ReplyQueueName}");
             Consumer = new(Model);

@@ -30,6 +30,15 @@ namespace AndNetwork9.Shared
 
         public string? Description { get; set; }
 
+        public int CompareTo(object? obj)
+        {
+            if (ReferenceEquals(null, obj)) return 1;
+            if (ReferenceEquals(this, obj)) return 0;
+            return obj is Award other
+                ? CompareTo(other)
+                : throw new ArgumentException($"Object must be of type {nameof(Award)}");
+        }
+
         public int CompareTo(Award? other)
         {
             if (ReferenceEquals(this, other)) return 0;
@@ -41,13 +50,6 @@ namespace AndNetwork9.Shared
             int memberComparison = Comparer<Member?>.Default.Compare(Member, other.Member);
             if (memberComparison != 0) return memberComparison;
             return Comparer<Member?>.Default.Compare(GaveBy, other.GaveBy);
-        }
-
-        public int CompareTo(object? obj)
-        {
-            if (ReferenceEquals(null, obj)) return 1;
-            if (ReferenceEquals(this, obj)) return 0;
-            return obj is Award other ? CompareTo(other) : throw new ArgumentException($"Object must be of type {nameof(Award)}");
         }
     }
 }

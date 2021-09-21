@@ -26,7 +26,9 @@ namespace AndNetwork9.Discord.Listeners
         private readonly ulong _storageId;
 
         public SaveStaticFile(IConnection connection, DiscordBot bot, IConfiguration configuration,
-            IServiceScopeFactory scopeFactory, ILogger<SaveStaticFile> logger) : base(connection, SaveStaticFileSender.QUEUE_NAME, logger)
+            IServiceScopeFactory scopeFactory, ILogger<SaveStaticFile> logger) : base(connection,
+            SaveStaticFileSender.QUEUE_NAME,
+            logger)
         {
             _bot = bot;
             _scopeFactory = scopeFactory;
@@ -66,7 +68,9 @@ namespace AndNetwork9.Discord.Listeners
             EntityEntry<StaticFile> staticFile = await data.StaticFiles.AddAsync(new()
             {
                 Id = 0,
-                Owner = request.OwnerId is not null ? await data.Members.FindAsync(request.OwnerId.Value).ConfigureAwait(false) : null,
+                Owner = request.OwnerId is not null
+                    ? await data.Members.FindAsync(request.OwnerId.Value).ConfigureAwait(false)
+                    : null,
                 Path = result.Attachments.Single().Url,
                 ReadRule = accessRule,
                 Extension = dotPos >= 0 ? name[(dotPos + 1)..] : string.Empty,

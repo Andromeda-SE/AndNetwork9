@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Security.Claims;
-using System.Security.Principal;
 using System.Threading.Tasks;
 using AndNetwork9.Shared;
 using AndNetwork9.Shared.Utility;
@@ -15,10 +13,7 @@ namespace AndNetwork9.Client.Services
 {
     public class AuthStateProvider : AuthenticationStateProvider
     {
-        public AuthStateProvider(HttpClient client)
-        {
-            Client = client;
-        }
+        public AuthStateProvider(HttpClient client) => Client = client;
 
         [Inject]
         public HttpClient Client { get; set; }
@@ -33,9 +28,10 @@ namespace AndNetwork9.Client.Services
             catch
             {
                 await LogoutAsync();
-                return new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity(Array.Empty<Claim>(), null)));
+                return new(new(new ClaimsIdentity(Array.Empty<Claim>(), null)));
             }
-            return new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity(Array.Empty<Claim>(), "Cookies")));
+
+            return new(new(new ClaimsIdentity(Array.Empty<Claim>(), "Cookies")));
         }
 
         public async Task<bool> LoginAsync(AuthCredentials authCredentials)

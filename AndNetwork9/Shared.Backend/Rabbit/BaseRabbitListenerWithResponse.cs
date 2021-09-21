@@ -10,7 +10,8 @@ namespace AndNetwork9.Shared.Backend.Rabbit
 {
     public abstract class BaseRabbitListenerWithResponse<TRequest, TResponse> : BaseRabbitListener
     {
-        protected BaseRabbitListenerWithResponse(IConnection connection, string queue, ILogger<BaseRabbitListenerWithResponse<TRequest, TResponse>> logger) : base(connection, queue, logger) { }
+        protected BaseRabbitListenerWithResponse(IConnection connection, string queue,
+            ILogger<BaseRabbitListenerWithResponse<TRequest, TResponse>> logger) : base(connection, queue, logger) { }
 
         protected override async void Received(object sender, BasicDeliverEventArgs args)
         {
@@ -51,6 +52,7 @@ namespace AndNetwork9.Shared.Backend.Rabbit
                                 : JsonSerializer.SerializeToUtf8Bytes(response, JsonSerializerOptions);
                             Model.BasicPublish(string.Empty, args.BasicProperties.ReplyTo, replyProperties, result);
                         }
+
                         Logger.LogInformation($"Finish {args.DeliveryTag}");
                     }
                 }
@@ -58,7 +60,6 @@ namespace AndNetwork9.Shared.Backend.Rabbit
                 {
                     Logger.LogError(e, $"Unhandled exception {args.DeliveryTag}");
                 }
-
             }).ConfigureAwait(false);
         }
 

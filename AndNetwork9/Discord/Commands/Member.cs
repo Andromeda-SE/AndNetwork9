@@ -21,7 +21,8 @@ namespace AndNetwork9.Discord.Commands
         [Command(nameof(Set))]
         public async Task Set(string property, [Remainder] string value)
         {
-            Shared.Member? member = await Data.Members.FirstOrDefaultAsync(x => x.DiscordId == Context.User.Id).ConfigureAwait(false);
+            Shared.Member? member = await Data.Members.FirstOrDefaultAsync(x => x.DiscordId == Context.User.Id)
+                .ConfigureAwait(false);
             if (member is null)
             {
                 await ReplyAsync("Участник не найден").ConfigureAwait(false);
@@ -64,7 +65,8 @@ namespace AndNetwork9.Discord.Commands
         [Priority(1)]
         public async Task Info()
         {
-            Shared.Member? member = await Data.Members.FirstOrDefaultAsync(x => x.DiscordId == Context.User.Id).ConfigureAwait(false);
+            Shared.Member? member = await Data.Members.FirstOrDefaultAsync(x => x.DiscordId == Context.User.Id)
+                .ConfigureAwait(false);
             await Get(member).ConfigureAwait(true);
         }
 

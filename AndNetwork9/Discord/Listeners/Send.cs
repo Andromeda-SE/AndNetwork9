@@ -13,7 +13,9 @@ namespace AndNetwork9.Discord.Listeners
     {
         private readonly DiscordBot _bot;
 
-        public Send(IConnection connection, DiscordBot bot, ILogger<Send> logger) : base(connection, SendSender.QUEUE_NAME, logger) => _bot = bot;
+        public Send(IConnection connection, DiscordBot bot, ILogger<Send> logger) : base(connection,
+            SendSender.QUEUE_NAME,
+            logger) => _bot = bot;
 
         public override async Task Run(SendArg arg)
         {
