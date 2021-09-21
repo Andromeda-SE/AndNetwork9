@@ -131,7 +131,7 @@ namespace AndNetwork9.Discord.Commands
                             counts[award.Type]++;
                             return counts;
                         }).Where(x => x.Value > 0).Select(x => $"{x.Key.GetAwardSymbol()} × {x.Value:D}"));
-                addField("Награды", member.Awards.Sum(x => (int)x.Type) + Environment.NewLine + awards);
+                addField("Награды", member.Awards.Sum(x => x.Points) + Environment.NewLine + awards);
             }
 
             if (member.TimeZone is not null)
