@@ -64,6 +64,17 @@ services:
     depends_on: 
       - broker
 
+  andnetwork9vk:
+    container_name: AndNetwork9.VK
+    image: ${DOCKER_REGISTRY-}andnetwork9vk
+    restart: "no"
+    env_file: .env
+    build:
+      context: .
+      dockerfile: AndNetwork9/VK/Dockerfile
+    depends_on: 
+      - broker
+
   andnetwork9awarddispenser:
     container_name: AndNetwork9.AwardDispenser
     image: ${DOCKER_REGISTRY-}awarddispenser
