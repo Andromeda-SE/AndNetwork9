@@ -47,6 +47,7 @@ namespace AndNetwork9.Shared
         public DateTime? EndTime { get; set; }
         public TaskStatus Status { get; set; }
         public TaskPriority Priority { get; set; }
+        public TaskLevel Level { get; set; }
         public AwardType? Award { get; set; }
 
         public bool AllowAssignByMember { get; set; }

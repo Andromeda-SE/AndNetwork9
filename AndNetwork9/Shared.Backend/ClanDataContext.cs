@@ -56,7 +56,6 @@ namespace AndNetwork9.Shared.Backend
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            CreateEnums(modelBuilder);
             CreateElections(modelBuilder);
             CreateUtility(modelBuilder);
             CreateClan(modelBuilder);
@@ -67,22 +66,6 @@ namespace AndNetwork9.Shared.Backend
             CreateStorage(modelBuilder);
 
             CreateAuth(modelBuilder);
-
-            static void CreateEnums(ModelBuilder modelBuilder)
-            {
-                modelBuilder.HasPostgresEnum<AwardType>();
-                modelBuilder.HasPostgresEnum<Direction>();
-                modelBuilder.HasPostgresEnum<ElectionStage>();
-                modelBuilder.HasPostgresEnum<MemberVote>();
-                modelBuilder.HasPostgresEnum<Rank>();
-                modelBuilder.HasPostgresEnum<TaskStatus>();
-                modelBuilder.HasPostgresEnum<TaskPriority>();
-
-                modelBuilder.HasPostgresEnum<ChannelType>();
-                modelBuilder.HasPostgresEnum<Permissions>();
-
-                modelBuilder.HasPostgresEnum<RepoType>();
-            }
 
             static void CreateElections(ModelBuilder modelBuilder)
             {
@@ -277,6 +260,7 @@ namespace AndNetwork9.Shared.Backend
                     entity.Property(x => x.LastEditTime).IsRequired(false);
                     entity.Property(x => x.EndTime);
                     entity.Property(x => x.Status);
+                    entity.Property(x => x.Level);
                     entity.Property(x => x.Priority).IsRequired();
                     entity.Property(x => x.Award).IsRequired(false);
                     entity.Property(x => x.AllowAssignByMember).IsRequired();
