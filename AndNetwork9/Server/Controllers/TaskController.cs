@@ -55,7 +55,7 @@ namespace AndNetwork9.Server.Controllers
             // ReSharper disable once MergeIntoPattern
             // ReSharper disable once MergeIntoLogicalPattern
             return Ok(_data.Tasks.Where(x =>
-                    x.AssigneeId == member.Id && x.Status > TaskStatus.Inactive && x.Status < TaskStatus.Resolved
+                    x.AssigneeId == member.Id && x.Status > TaskStatus.New && x.Status < TaskStatus.Resolved
                     || x.ReporterId == member.Id
                     && (x.Status == TaskStatus.Resolved || x.Status == TaskStatus.Rejected))
                 .OrderBy(x => x));
@@ -73,7 +73,7 @@ namespace AndNetwork9.Server.Controllers
             // ReSharper disable once MergeIntoLogicalPattern
             return Ok(_data.Tasks.Where(x =>
                 x.SquadAssigneeId == member.SquadNumber
-                && x.Status > TaskStatus.Inactive
+                && x.Status > TaskStatus.New
                 && x.Status < TaskStatus.Resolved
                 && x.ReadRule.HasAccess(member)).OrderBy(x => x));
         }
@@ -89,7 +89,7 @@ namespace AndNetwork9.Server.Controllers
             // ReSharper disable once MergeIntoLogicalPattern
             return Ok(_data.Tasks.Where(x =>
                 x.DirectionAssignee == member.Direction
-                && x.Status > TaskStatus.Inactive
+                && x.Status > TaskStatus.New
                 && x.Status < TaskStatus.Resolved
                 && x.ReadRule.HasAccess(member)).OrderBy(x => x));
         }
