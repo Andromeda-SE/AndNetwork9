@@ -5,7 +5,7 @@ namespace AndNetwork9.Shared.Backend.Senders.VK
 {
     public class ResolveVkUrlSender : BaseRabbitSenderWithoutResponse<string>
     {
-        public const string QUEUE_NAME = "Vk.WallPublish";
+        public const string QUEUE_NAME = "Vk.ResolveVkUrl";
         protected ResolveVkUrlSender(IConnection connection, ILogger<BaseRabbitSenderWithoutResponse<string>> logger) : base(connection, QUEUE_NAME, logger)
         {
         }
