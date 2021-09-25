@@ -59,6 +59,8 @@ namespace AndNetwork9.Tests
         [TestCase("durov", ExpectedResult = 1L)]
         [TestCase("fafdqwfgqf###%%\\^%^", ExpectedResult = null)]
         [TestCase("", ExpectedResult = null)]
+        [TestCase("     ", ExpectedResult = null)]
+        [TestCase("\r\n", ExpectedResult = null)]
         [TestCase("http://localhost:15672/#/queues/%2F/test", ExpectedResult = null)]
         public async Task<long?> Test1(string value)
         {

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
 using System.Reflection;
@@ -55,6 +56,8 @@ namespace AndNetwork9.Tests
         [TestCase("76561198109866439/", ExpectedResult = 76561198109866439UL)]
         [TestCase("fafdqwfgqf###%%\\^%^", ExpectedResult = null)]
         [TestCase("", ExpectedResult = null)]
+        [TestCase("     ", ExpectedResult = null)]
+        [TestCase("\r\n", ExpectedResult = null)]
         [TestCase("http://localhost:15672/#/queues/%2F/test", ExpectedResult = null)]
         public async Task<ulong?> Test1(string value)
         {
