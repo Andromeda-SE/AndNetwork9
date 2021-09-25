@@ -2,37 +2,28 @@
 using System;
 using System.Net;
 using AndNetwork9.Shared.Backend;
-using AndNetwork9.Shared.Backend.Discord.Enums;
-using AndNetwork9.Shared.Enums;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
+#nullable disable
+
 namespace AndNetwork9.Shared.Backend.Migrations
 {
     [DbContext(typeof(ClanDataContext))]
-    [Migration("20210702135057_AndNet")]
-    partial class AndNet
+    [Migration("20210924175736_AndNet9")]
+    partial class AndNet9
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasPostgresEnum(null, "award_type", new[] { "none", "bronze", "silver", "gold", "hero" })
-                .HasPostgresEnum(null, "channel_type", new[] { "text", "voice", "announcement", "stage" })
-                .HasPostgresEnum(null, "direction", new[] { "reserve", "none", "training", "infrastructure", "research", "military", "agitation" })
-                .HasPostgresEnum(null, "election_stage", new[] { "none", "registration", "voting", "announcement", "ended" })
-                .HasPostgresEnum(null, "member_vote", new[] { "invalid", "no_vote", "accept", "decline", "abstained", "need_more_information" })
-                .HasPostgresEnum(null, "permissions", new[] { "none", "view", "read", "write", "priority", "moderator", "all" })
-                .HasPostgresEnum(null, "rank", new[] { "outcast", "enemy", "guest", "diplomat", "ally", "candidate", "none", "neophyte", "trainee", "assistant", "junior_employee", "employee", "senior_employee", "specialist", "defender", "advisor", "first_advisor" })
-                .HasPostgresEnum(null, "repo_type", new[] { "none", "blueprint", "script", "world" })
-                .HasPostgresEnum(null, "task_priority", new[] { "lowest", "low", "medium", "high", "highest", "vital" })
-                .HasPostgresEnum(null, "task_status", new[] { "failed", "rejected", "canceled", "inactive", "to_do", "postponed", "analysis", "in_progress", "resolved", "done" })
-                .HasAnnotation("Relational:MaxIdentifierLength", 63)
-                .HasAnnotation("ProductVersion", "6.0.0-preview.5.21301.9")
-                .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                .HasAnnotation("ProductVersion", "6.0.0-rc.1.21452.10")
+                .HasAnnotation("Relational:MaxIdentifierLength", 63);
+
+            NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
             modelBuilder.Entity("AccessRuleMember", b =>
                 {
@@ -53,8 +44,12 @@ namespace AndNetwork9.Shared.Backend.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("AutomationTag")
+                        .HasColumnType("integer");
 
                     b.Property<DateOnly>("Date")
                         .HasColumnType("date");
@@ -68,10 +63,12 @@ namespace AndNetwork9.Shared.Backend.Migrations
                     b.Property<int>("MemberId")
                         .HasColumnType("integer");
 
-                    b.Property<AwardType>("Type")
-                        .HasColumnType("award_type");
+                    b.Property<int>("Type")
+                        .HasColumnType("integer");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AutomationTag");
 
                     b.HasIndex("GaveById");
 
@@ -94,7 +91,7 @@ namespace AndNetwork9.Shared.Backend.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime>("CodeExpireTime")
-                        .HasColumnType("timestamp without time zone");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<DateTime>("CreateTime")
                         .HasColumnType("timestamp with time zone");
@@ -122,8 +119,9 @@ namespace AndNetwork9.Shared.Backend.Migrations
                 {
                     b.Property<int>("Position")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Position"));
 
                     b.Property<decimal>("DiscordId")
                         .HasColumnType("numeric(20,0)");
@@ -145,8 +143,8 @@ namespace AndNetwork9.Shared.Backend.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("numeric(20,0)");
 
-                    b.Property<Permissions>("AdvisorPermissions")
-                        .HasColumnType("permissions");
+                    b.Property<decimal>("AdvisorPermissions")
+                        .HasColumnType("numeric(20,0)");
 
                     b.Property<int?>("CategoryId")
                         .HasColumnType("integer");
@@ -157,27 +155,27 @@ namespace AndNetwork9.Shared.Backend.Migrations
                     b.Property<int>("ChannelPosition")
                         .HasColumnType("integer");
 
-                    b.Property<Permissions>("EveryonePermissions")
-                        .HasColumnType("permissions");
+                    b.Property<decimal>("EveryonePermissions")
+                        .HasColumnType("numeric(20,0)");
 
-                    b.Property<Permissions>("MemberPermissions")
-                        .HasColumnType("permissions");
+                    b.Property<decimal>("MemberPermissions")
+                        .HasColumnType("numeric(20,0)");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<Permissions>("SquadCommanderPermissions")
-                        .HasColumnType("permissions");
+                    b.Property<decimal>("SquadCommanderPermissions")
+                        .HasColumnType("numeric(20,0)");
 
                     b.Property<int?>("SquadNumber")
                         .HasColumnType("integer");
 
-                    b.Property<Permissions>("SquadPermissions")
-                        .HasColumnType("permissions");
+                    b.Property<decimal>("SquadPermissions")
+                        .HasColumnType("numeric(20,0)");
 
-                    b.Property<ChannelType>("Type")
-                        .HasColumnType("channel_type");
+                    b.Property<int>("Type")
+                        .HasColumnType("integer");
 
                     b.HasKey("DiscordId");
 
@@ -195,8 +193,9 @@ namespace AndNetwork9.Shared.Backend.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateOnly>("AnnouncementDate")
                         .HasColumnType("date");
@@ -207,8 +206,8 @@ namespace AndNetwork9.Shared.Backend.Migrations
                     b.Property<DateOnly>("RegistrationDate")
                         .HasColumnType("date");
 
-                    b.Property<ElectionStage>("Stage")
-                        .HasColumnType("election_stage");
+                    b.Property<int>("Stage")
+                        .HasColumnType("integer");
 
                     b.Property<DateOnly>("StartDate")
                         .HasColumnType("date");
@@ -221,29 +220,13 @@ namespace AndNetwork9.Shared.Backend.Migrations
                     b.ToTable("Elections");
                 });
 
-            modelBuilder.Entity("AndNetwork9.Shared.Backend.Elections.ElectionVoting", b =>
-                {
-                    b.Property<int>("ElectionId")
-                        .HasColumnType("integer");
-
-                    b.Property<Direction>("Direction")
-                        .HasColumnType("direction");
-
-                    b.Property<int>("AgainstAll")
-                        .HasColumnType("integer");
-
-                    b.HasKey("ElectionId", "Direction");
-
-                    b.ToTable("ElectionVoting");
-                });
-
             modelBuilder.Entity("AndNetwork9.Shared.Backend.Elections.ElectionsMember", b =>
                 {
                     b.Property<int>("ElectionId")
                         .HasColumnType("integer");
 
-                    b.Property<Direction>("Direction")
-                        .HasColumnType("direction");
+                    b.Property<int>("Direction")
+                        .HasColumnType("integer");
 
                     b.Property<int>("MemberId")
                         .HasColumnType("integer");
@@ -252,10 +235,7 @@ namespace AndNetwork9.Shared.Backend.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<DateTime?>("VotedTime")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<Guid?>("VoterKey")
-                        .HasColumnType("uuid");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<int?>("Votes")
                         .HasColumnType("integer");
@@ -267,12 +247,29 @@ namespace AndNetwork9.Shared.Backend.Migrations
                     b.ToTable("ElectionsMember");
                 });
 
+            modelBuilder.Entity("AndNetwork9.Shared.Backend.Elections.ElectionVoting", b =>
+                {
+                    b.Property<int>("ElectionId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Direction")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("AgainstAll")
+                        .HasColumnType("integer");
+
+                    b.HasKey("ElectionId", "Direction");
+
+                    b.ToTable("ElectionVoting");
+                });
+
             modelBuilder.Entity("AndNetwork9.Shared.Member", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Comment")
                         .HasColumnType("text");
@@ -280,8 +277,8 @@ namespace AndNetwork9.Shared.Backend.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("text");
 
-                    b.Property<Direction>("Direction")
-                        .HasColumnType("direction");
+                    b.Property<int>("Direction")
+                        .HasColumnType("integer");
 
                     b.Property<decimal>("DiscordId")
                         .HasColumnType("numeric(20,0)");
@@ -305,8 +302,8 @@ namespace AndNetwork9.Shared.Backend.Migrations
                     b.Property<byte[]>("PasswordHash")
                         .HasColumnType("bytea");
 
-                    b.Property<Rank>("Rank")
-                        .HasColumnType("rank");
+                    b.Property<int>("Rank")
+                        .HasColumnType("integer");
 
                     b.Property<string>("RealName")
                         .HasColumnType("text");
@@ -332,8 +329,12 @@ namespace AndNetwork9.Shared.Backend.Migrations
 
                     b.HasAlternateKey("SteamId");
 
+                    b.HasIndex("Direction");
+
                     b.HasIndex("Nickname")
                         .IsUnique();
+
+                    b.HasIndex("Rank");
 
                     b.HasIndex("SquadNumber");
 
@@ -344,8 +345,9 @@ namespace AndNetwork9.Shared.Backend.Migrations
                 {
                     b.Property<int>("Number")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Number"));
 
                     b.Property<string>("Comment")
                         .HasColumnType("text");
@@ -376,8 +378,9 @@ namespace AndNetwork9.Shared.Backend.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<int>("CommentId")
                         .HasColumnType("integer");
@@ -396,8 +399,8 @@ namespace AndNetwork9.Shared.Backend.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<RepoType>("Type")
-                        .HasColumnType("repo_type");
+                    b.Property<int>("Type")
+                        .HasColumnType("integer");
 
                     b.Property<int>("WriteRuleId")
                         .HasColumnType("integer");
@@ -438,7 +441,7 @@ namespace AndNetwork9.Shared.Backend.Migrations
 
                     b.Property<DateTime>("CreateTime")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("timestamp with time zone")
                         .HasDefaultValueSql("now()");
 
                     b.Property<string>("Description")
@@ -456,8 +459,9 @@ namespace AndNetwork9.Shared.Backend.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<int?>("CommentId")
                         .HasColumnType("integer");
@@ -495,8 +499,9 @@ namespace AndNetwork9.Shared.Backend.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<bool>("AllowAssignByMember")
                         .HasColumnType("boolean");
@@ -504,31 +509,34 @@ namespace AndNetwork9.Shared.Backend.Migrations
                     b.Property<int?>("AssigneeId")
                         .HasColumnType("integer");
 
-                    b.Property<AwardType?>("Award")
-                        .HasColumnType("award_type");
+                    b.Property<int?>("Award")
+                        .HasColumnType("integer");
 
                     b.Property<DateTime>("CreateTime")
-                        .HasColumnType("timestamp without time zone");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<Direction?>("DirectionAssignee")
-                        .HasColumnType("direction");
+                    b.Property<int?>("DirectionAssignee")
+                        .HasColumnType("integer");
 
                     b.Property<DateTime?>("EndTime")
-                        .HasColumnType("timestamp without time zone");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<DateTime?>("LastEditTime")
-                        .HasColumnType("timestamp without time zone");
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("Level")
+                        .HasColumnType("integer");
 
                     b.Property<int?>("ParentId")
                         .IsRequired()
                         .HasColumnType("integer");
 
-                    b.Property<TaskPriority>("Priority")
-                        .HasColumnType("task_priority");
+                    b.Property<int>("Priority")
+                        .HasColumnType("integer");
 
                     b.Property<int>("ReadRuleId")
                         .HasColumnType("integer");
@@ -540,10 +548,10 @@ namespace AndNetwork9.Shared.Backend.Migrations
                         .HasColumnType("integer");
 
                     b.Property<DateTime>("StartTime")
-                        .HasColumnType("timestamp without time zone");
+                        .HasColumnType("timestamp with time zone");
 
-                    b.Property<Enums.TaskStatus>("Status")
-                        .HasColumnType("task_status");
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -573,15 +581,16 @@ namespace AndNetwork9.Shared.Backend.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                        .HasColumnType("integer");
 
-                    b.Property<Direction[]>("Directions")
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int[]>("Directions")
                         .IsRequired()
-                        .HasColumnType("direction[]");
+                        .HasColumnType("integer[]");
 
-                    b.Property<Rank>("MinRank")
-                        .HasColumnType("rank");
+                    b.Property<int>("MinRank")
+                        .HasColumnType("integer");
 
                     b.Property<string>("Name")
                         .HasColumnType("text");
@@ -600,8 +609,9 @@ namespace AndNetwork9.Shared.Backend.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<int?>("AuthorId")
                         .HasColumnType("integer");
@@ -661,11 +671,11 @@ namespace AndNetwork9.Shared.Backend.Migrations
                     b.Property<int>("MemberId")
                         .HasColumnType("integer");
 
-                    b.Property<MemberVote>("Result")
-                        .HasColumnType("member_vote");
+                    b.Property<int>("Result")
+                        .HasColumnType("integer");
 
                     b.Property<DateTime?>("VoteTime")
-                        .HasColumnType("timestamp without time zone");
+                        .HasColumnType("timestamp with time zone");
 
                     b.HasKey("VotingId", "MemberId");
 
@@ -678,11 +688,12 @@ namespace AndNetwork9.Shared.Backend.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("CreateTime")
-                        .HasColumnType("timestamp without time zone");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -695,10 +706,10 @@ namespace AndNetwork9.Shared.Backend.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<DateTime?>("EndTime")
-                        .HasColumnType("timestamp without time zone");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<DateTime>("LastEditTime")
-                        .HasColumnType("timestamp without time zone");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<int>("ReadRuleId")
                         .HasColumnType("integer");
@@ -706,8 +717,8 @@ namespace AndNetwork9.Shared.Backend.Migrations
                     b.Property<int?>("ReporterId")
                         .HasColumnType("integer");
 
-                    b.Property<MemberVote>("Result")
-                        .HasColumnType("member_vote");
+                    b.Property<int>("Result")
+                        .HasColumnType("integer");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -840,17 +851,6 @@ namespace AndNetwork9.Shared.Backend.Migrations
                     b.Navigation("Squad");
                 });
 
-            modelBuilder.Entity("AndNetwork9.Shared.Backend.Elections.ElectionVoting", b =>
-                {
-                    b.HasOne("AndNetwork9.Shared.Backend.Elections.Election", "Election")
-                        .WithMany("Votings")
-                        .HasForeignKey("ElectionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Election");
-                });
-
             modelBuilder.Entity("AndNetwork9.Shared.Backend.Elections.ElectionsMember", b =>
                 {
                     b.HasOne("AndNetwork9.Shared.Member", "Member")
@@ -868,6 +868,17 @@ namespace AndNetwork9.Shared.Backend.Migrations
                     b.Navigation("Member");
 
                     b.Navigation("Voting");
+                });
+
+            modelBuilder.Entity("AndNetwork9.Shared.Backend.Elections.ElectionVoting", b =>
+                {
+                    b.HasOne("AndNetwork9.Shared.Backend.Elections.Election", "Election")
+                        .WithMany("Votings")
+                        .HasForeignKey("ElectionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Election");
                 });
 
             modelBuilder.Entity("AndNetwork9.Shared.Member", b =>

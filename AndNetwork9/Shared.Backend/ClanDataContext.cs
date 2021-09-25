@@ -14,22 +14,6 @@ namespace AndNetwork9.Shared.Backend
 {
     public class ClanDataContext : DbContext
     {
-        static ClanDataContext()
-        {
-            NpgsqlConnection.GlobalTypeMapper.MapEnum<AwardType>();
-            NpgsqlConnection.GlobalTypeMapper.MapEnum<Direction>();
-            NpgsqlConnection.GlobalTypeMapper.MapEnum<ElectionStage>();
-            NpgsqlConnection.GlobalTypeMapper.MapEnum<MemberVote>();
-            NpgsqlConnection.GlobalTypeMapper.MapEnum<Rank>();
-            NpgsqlConnection.GlobalTypeMapper.MapEnum<TaskStatus>();
-            NpgsqlConnection.GlobalTypeMapper.MapEnum<TaskPriority>();
-
-            NpgsqlConnection.GlobalTypeMapper.MapEnum<ChannelType>();
-            NpgsqlConnection.GlobalTypeMapper.MapEnum<Permissions>();
-
-            NpgsqlConnection.GlobalTypeMapper.MapEnum<RepoType>();
-        }
-
         public ClanDataContext(DbContextOptions<ClanDataContext> options) : base(options) { }
 
         public DbSet<Election> Elections { get; set; } = null!;
@@ -161,6 +145,8 @@ namespace AndNetwork9.Shared.Backend
                     entity.HasKey(x => x.Id);
 
                     entity.HasIndex(x => x.MemberId).IsUnique(false);
+                    entity.HasIndex(x => x.AutomationTag).IsUnique(false);
+                    entity.Property(x => x.AutomationTag);
 
                     entity.HasOne(x => x.Member).WithMany(x => x.Awards).HasForeignKey(x => x.MemberId).IsRequired();
                     entity.Property(x => x.Type);
@@ -168,7 +154,7 @@ namespace AndNetwork9.Shared.Backend
                     entity.HasOne(x => x.GaveBy).WithMany(x => x.GivenAwards).HasForeignKey(x => x.GaveById)
                         .IsRequired(false);
                     entity.Property(x => x.Description);
-                    entity.Property(x => x.AutomationTag);
+                    
                 });
 
                 modelBuilder.Entity<Member>(entity =>
@@ -186,7 +172,9 @@ namespace AndNetwork9.Shared.Backend
 
 
                     entity.Property(x => x.JoinDate).HasColumnType("date");
+                    entity.HasIndex(x => x.Rank).IsUnique(false);
                     entity.Property(x => x.Rank).IsRequired();
+                    entity.HasIndex(x => x.Direction).IsUnique(false);
                     entity.Property(x => x.Direction).IsRequired();
                     entity.Property(x => x.LastDirectionChange).IsRequired();
 
