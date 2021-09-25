@@ -25,6 +25,7 @@ namespace AndNetwork9.Steam.Listeners
 
         protected override async Task<ulong?> GetResponseAsync(string request)
         {
+            if (string.IsNullOrWhiteSpace(request)) return null;
             request = request.Replace("http://", string.Empty);
             request = request.Replace("https://", string.Empty);
             request = request.Replace("steamcommunity.com/id/", string.Empty);
@@ -33,7 +34,7 @@ namespace AndNetwork9.Steam.Listeners
             if (ulong.TryParse(request, out ulong result)) return result;
             PlayerActivityResult<ResolveSteamUrlResult>? answer =
                 await _httpClient.GetFromJsonAsync<PlayerActivityResult<ResolveSteamUrlResult>>(
-                    $"https://api.steampowered.com/ISteamUser/ResolveVanityURL/v1/?key={_steamKey}&vanityurl={HttpUtility.UrlEncode(request)}");
+                    $"https://api.steampowered.com/ISteamUser/ResolveVanityURL/v1/?key={_steamKey}&vanityurl={HttpUtility.UrlEncode(request.Trim())}");
             return answer?.Result.SteamId;
         }
     }
