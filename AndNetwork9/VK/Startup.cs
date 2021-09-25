@@ -17,6 +17,8 @@ namespace AndNetwork9.VK
             services.AddHostedService(provider => (VkBot)provider.GetService(typeof(VkApi))!);
 
             services.AddHostedService<WallPublish>();
+            services.AddHostedService<ResolveVkUrl>();
+
         }
     }
 }
