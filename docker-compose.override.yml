@@ -8,8 +8,6 @@ services:
   andnetwork9server:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-    ports:
-      - "80"
 
   andnetwork9storage:
     environment:
