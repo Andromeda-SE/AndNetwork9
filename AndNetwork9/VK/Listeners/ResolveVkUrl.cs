@@ -1,30 +1,21 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using AndNetwork9.Shared.Backend.Rabbit;
 using AndNetwork9.Shared.Backend.Senders.VK;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
 using VkNet;
 using VkNet.Enums;
-
+using VkNet.Model;
 
 namespace AndNetwork9.VK.Listeners
 {
     public class ResolveVkUrl : BaseRabbitListenerWithResponse<string, long?>
     {
-        private readonly long _groupId;
         private readonly VkApi _vkApi;
-       
 
-        public ResolveVkUrl(IConnection connection, ILogger<ResolveVkUrl> logger,
-            IConfiguration configuration, VkApi vkApi) :
-            base(connection, ResolveVkUrlSender.QUEUE_NAME, logger)
-        {
-            _vkApi = vkApi;
-            _groupId = -long.Parse(configuration["Vk_GroupId"]);
-            if (_groupId > 0) throw new ArgumentException();
-        }
+        public ResolveVkUrl(IConnection connection, ILogger<ResolveVkUrl> logger, VkApi vkApi) :
+            base(connection, ResolveVkUrlSender.QUEUE_NAME, logger) => _vkApi = vkApi;
+
         protected override async Task<long?> GetResponseAsync(string request)
         {
             request = request.Replace("http://", string.Empty);
@@ -33,8 +24,8 @@ namespace AndNetwork9.VK.Listeners
             request = request.Replace("vk.com/id", string.Empty);
             request = request.Trim('/');
             if (long.TryParse(request, out long result)) return result;
-            var answer = await _vkApi.Utils.ResolveScreenNameAsync(_groupId.ToString());
-            return answer.Type==VkObjectType.User ? answer.Id:null;
+            VkObject? answer = await _vkApi.Utils.ResolveScreenNameAsync(request);
+            return answer is not null && answer.Type == VkObjectType.User ? answer.Id : null;
         }
     }
 }
