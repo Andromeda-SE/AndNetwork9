@@ -20,9 +20,13 @@ namespace AndNetwork9.VK.Listeners
         {
             request = request.Replace("http://", string.Empty);
             request = request.Replace("https://", string.Empty);
-            request = request.Replace("vk.com/", string.Empty);
             request = request.Replace("vk.com/id", string.Empty);
-            request = request.Trim('/');
+            request = request.Replace("vk.com/", string.Empty);
+            request = request.Trim().Trim('/');
+            if (string.IsNullOrWhiteSpace(request))
+            {
+                return null;
+            }
             if (long.TryParse(request, out long result)) return result;
             VkObject? answer = await _vkApi.Utils.ResolveScreenNameAsync(request);
             return answer is not null && answer.Type == VkObjectType.User ? answer.Id : null;
