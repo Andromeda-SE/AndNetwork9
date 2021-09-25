@@ -1,4 +1,5 @@
 ﻿using AndNetwork9.AwardDispenser.Listeners;
+using AndNetwork9.AwardDispenser.Services;
 using AndNetwork9.Shared.Backend;
 using AndNetwork9.Shared.Backend.Rabbit;
 using AndNetwork9.Shared.Backend.Senders.AwardDispenser;
@@ -26,10 +27,9 @@ namespace AndNetwork9.AwardDispenser
             services.AddSingleton<PlayerActivitySender>();
 
             services.AddHostedService<Services.AwardDispenser>();
-            services.AddHostedService<Services.RiseDispenser>();
+            services.AddHostedService<RiseDispenser>();
 
             services.AddHostedService<GiveAward>();
-            
         }
     }
 }

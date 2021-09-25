@@ -14,7 +14,9 @@ namespace AndNetwork9.Shared.Backend
         {
             CancellationTokenSource = new();
             Timer = new(Interval);
-            System.Threading.Tasks.Task.Run(async () => await ProcessTimer(CancellationTokenSource.Token).ConfigureAwait(false), cancellationToken);
+            System.Threading.Tasks.Task.Run(
+                async () => await ProcessTimer(CancellationTokenSource.Token).ConfigureAwait(false),
+                cancellationToken);
             return System.Threading.Tasks.Task.CompletedTask;
         }
 

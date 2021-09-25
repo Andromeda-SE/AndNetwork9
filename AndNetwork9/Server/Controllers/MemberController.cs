@@ -88,7 +88,8 @@ namespace AndNetwork9.Server.Controllers
             member.Direction = direction;
             await _data.SaveChangesAsync().ConfigureAwait(false);
             await _publishSender.CallAsync(
-                $"Игрок {member.GetDiscordMention()} сменил направление на «{member.Direction.GetName()}»").ConfigureAwait(false);
+                    $"Игрок {member.GetDiscordMention()} сменил направление на «{member.Direction.GetName()}»")
+                .ConfigureAwait(false);
             return Ok();
         }
 
@@ -106,7 +107,8 @@ namespace AndNetwork9.Server.Controllers
             member.Nickname = newNickname;
             await _data.SaveChangesAsync().ConfigureAwait(false);
             await _publishSender.CallAsync(
-                $"Игрок {member.GetDiscordMention()} сменил никнейм с «{oldNickname}» на «{newNickname}»").ConfigureAwait(false);
+                    $"Игрок {member.GetDiscordMention()} сменил никнейм с «{oldNickname}» на «{newNickname}»")
+                .ConfigureAwait(false);
             return Ok();
         }
 

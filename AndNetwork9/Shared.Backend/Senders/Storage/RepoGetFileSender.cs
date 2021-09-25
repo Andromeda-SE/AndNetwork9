@@ -9,6 +9,8 @@ namespace AndNetwork9.Shared.Backend.Senders.Storage
     {
         public const string QUEUE_NAME = "Storage.RepoGetFile";
 
-        public RepoGetFileSender(IConnection connection, ILogger<RepoGetFileSender> logger) : base(connection, QUEUE_NAME, logger) { }
+        public RepoGetFileSender(IConnection connection, ILogger<RepoGetFileSender> logger) : base(connection,
+            QUEUE_NAME,
+            logger) { }
     }
 }

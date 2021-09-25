@@ -4,8 +4,6 @@ using AndNetwork9.Shared.Enums;
 using AndNetwork9.Shared.Storage;
 using Markdig;
 using Microsoft.AspNetCore.Components;
-using Task = AndNetwork9.Shared.Task;
-using TaskStatus = AndNetwork9.Shared.Enums.TaskStatus;
 
 namespace AndNetwork9.Client.Extensions
 {
@@ -33,13 +31,13 @@ namespace AndNetwork9.Client.Extensions
                 TaskStatus.Failed => "Провалена",
                 TaskStatus.Rejected => "Отклонена",
                 TaskStatus.Canceled => "Отменена",
-                TaskStatus.Inactive => "Неактивна",
-                TaskStatus.ToDo => "Ожидает начала выполнения",
+                TaskStatus.New => "Новая",
+                TaskStatus.ToDo => "Готова к выполнению",
                 TaskStatus.Postponed => "Отложена",
                 TaskStatus.Analysis => "Анализ",
                 TaskStatus.InProgress => "В процессе",
                 TaskStatus.Resolved => "Выполнена",
-                TaskStatus.Done => "Закрыта",
+                TaskStatus.Done => "Выполнение подтверждено",
                 _ => throw new ArgumentOutOfRangeException(nameof(status), status, null),
             };
         }

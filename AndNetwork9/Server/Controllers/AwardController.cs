@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using AndNetwork9.Server.Auth.Attributes;
 using AndNetwork9.Server.Extensions;
@@ -9,7 +8,6 @@ using AndNetwork9.Shared;
 using AndNetwork9.Shared.Backend;
 using AndNetwork9.Shared.Backend.Senders.AwardDispenser;
 using AndNetwork9.Shared.Enums;
-using AndNetwork9.Shared.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -72,6 +70,7 @@ namespace AndNetwork9.Server.Controllers
                 };
                 await _giveAwardSender.CallAsync(result).ConfigureAwait(false);
             }
+
             await _data.SaveChangesAsync().ConfigureAwait(false);
             return Ok();
         }

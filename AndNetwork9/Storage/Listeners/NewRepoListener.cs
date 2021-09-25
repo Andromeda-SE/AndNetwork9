@@ -20,8 +20,10 @@ namespace AndNetwork9.Storage.Listeners
         private readonly RepoManager _repoManager;
         private readonly IServiceScopeFactory _scopeFactory;
 
-        public NewRepoListener(IConnection connection, IServiceScopeFactory scopeFactory, ILogger<NewRepoListener> logger) : base(connection,
-            NewRepoSender.QUEUE_NAME, logger)
+        public NewRepoListener(IConnection connection, IServiceScopeFactory scopeFactory,
+            ILogger<NewRepoListener> logger) : base(connection,
+            NewRepoSender.QUEUE_NAME,
+            logger)
         {
             _scopeFactory = scopeFactory;
             _repoManager = new();

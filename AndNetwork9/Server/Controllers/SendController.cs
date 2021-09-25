@@ -34,9 +34,10 @@ namespace AndNetwork9.Server.Controllers
                 Ids = args.Ids.Distinct().ToArray(),
             };
             await foreach (ulong id in _data.Members.AsAsyncEnumerable().Join(args.Ids.ToAsyncEnumerable(),
-                x => x.Id,
-                x => x,
-                (member, _) => member.DiscordId).ConfigureAwait(false)) await _sendSender.CallAsync(new(id, args.Message)).ConfigureAwait(false);
+                    x => x.Id,
+                    x => x,
+                    (member, _) => member.DiscordId)
+                .ConfigureAwait(false)) await _sendSender.CallAsync(new(id, args.Message)).ConfigureAwait(false);
 
             return Accepted();
         }

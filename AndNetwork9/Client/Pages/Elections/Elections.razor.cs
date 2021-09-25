@@ -1,7 +1,5 @@
-﻿
-using System.Net.Http;
+﻿using System.Net.Http;
 using System.Net.Http.Json;
-using AndNetwork9.Shared;
 using AndNetwork9.Shared.Elections;
 using Microsoft.AspNetCore.Components;
 
@@ -23,4 +21,3 @@ namespace AndNetwork9.Client.Pages.Elections
         }
     }
 }
-

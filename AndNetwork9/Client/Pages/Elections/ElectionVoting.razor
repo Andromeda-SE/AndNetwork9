@@ -10,7 +10,7 @@
             @foreach (CouncilElectionVote vote in CurrentElections.Votes)
             {
                 <div class="mb-3">
-                    <ElectionVotingCard ElectionVote="vote" AllMembers="AllMembers" Bulletin="Bulletins[vote.Direction]" ReadOnly="!vote.VoteAllowed" UpdateAllowSend="x => UpdateSendAllowed(vote.Direction, x)"/>
+                    <ElectionVotingCard AllMembers="AllMembers" Bulletin="Bulletins[vote.Direction]" ElectionVote="vote" ReadOnly="!vote.VoteAllowed" UpdateAllowSend="x => UpdateSendAllowed(vote.Direction, x)"/>
                 </div>
             }
             <div class="d-flex">

@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Globalization;
+﻿using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -41,11 +40,10 @@ namespace AndNetwork9.Discord.Commands
         }
 
 
-        protected override async Task<IUserMessage> ReplyAsync(string? message = null, bool isTts = false,
-            Embed? embed = null, RequestOptions? options = null, AllowedMentions? allowedMentions = null,
-            MessageReference? messageReference = null,
-            MessageComponent component = null) => await Context.Message
-            .ReplyAsync(message, isTts, embed, allowedMentions, options)
+        protected override async Task<IUserMessage> ReplyAsync(string? message = null, bool isTTS = false, Embed? embed = null, RequestOptions? options = null,
+            AllowedMentions? allowedMentions = null, MessageReference? messageReference = null, MessageComponent? component = null,
+            ISticker[]? stickers = null) => await Context.Message
+            .ReplyAsync(message, isTTS, embed, allowedMentions, options, component, stickers)
             .ConfigureAwait(false);
 
         protected async Task<IUserMessage> ReplyFileAsync(Stream stream, string fileName, string? messageText = null,

@@ -19,11 +19,12 @@ namespace AndNetwork9.AwardDispenser.Services
 {
     public class RiseDispenser : ITimerService
     {
-        private readonly IServiceScopeFactory _scopeFactory;
-        private readonly PublishSender _publishSender;
         private readonly ILogger<RiseDispenser> _logger;
+        private readonly PublishSender _publishSender;
+        private readonly IServiceScopeFactory _scopeFactory;
 
-        public RiseDispenser(IServiceScopeFactory scopeFactory, IConfiguration configuration, PublishSender publishSender, ILogger<RiseDispenser> logger)
+        public RiseDispenser(IServiceScopeFactory scopeFactory, IConfiguration configuration,
+            PublishSender publishSender, ILogger<RiseDispenser> logger)
         {
             _scopeFactory = scopeFactory;
             _publishSender = publishSender;
@@ -31,8 +32,9 @@ namespace AndNetwork9.AwardDispenser.Services
             Interval = TimeSpan.Parse(configuration["RISE_DISPENSER_INTERVAL"]);
         }
 
-        CancellationTokenSource? ITimerService.CancellationTokenSource { get; set; }
         protected TimeSpan Interval { get; init; }
+
+        CancellationTokenSource? ITimerService.CancellationTokenSource { get; set; }
         TimeSpan ITimerService.Interval => Interval;
 
         PeriodicTimer? ITimerService.Timer { get; set; }
@@ -46,7 +48,7 @@ namespace AndNetwork9.AwardDispenser.Services
                 (serviceScope.ServiceProvider.GetService(typeof(ClanDataContext)) as ClanDataContext)!;
             if (data is null) throw new();
             Member[] members = data.Members.Where(x => x.Rank > Rank.None && x.Rank < Rank.Advisor).ToArray();
-            Dictionary<Member, (Rank oldRank, Rank newRank)> changes = new (); 
+            Dictionary<Member, (Rank oldRank, Rank newRank)> changes = new();
             foreach (Member member in members)
             {
                 Rank actualRank = member.Awards.GetRank();
@@ -54,18 +56,20 @@ namespace AndNetwork9.AwardDispenser.Services
                 changes.Add(member, (member.Rank, actualRank));
                 member.Rank = actualRank;
             }
+
             if (!changes.Any()) return;
             await data.SaveChangesAsync();
             StringBuilder text = new(256);
             foreach ((Member member, (Rank oldRank, Rank newRank)) in changes.OrderByDescending(x => x.Key))
-            {
                 text.AppendLine(
                     oldRank > newRank
                         ? $"📉: Игрок {member.GetDiscordMention()} разжалован в ранг «{newRank.GetRankName()}»"
                         : $"📈: Игроку {member.GetDiscordMention()} присвоен ранг «{newRank.GetRankName()}»");
-            }
             if (text.Length > 0) await _publishSender.CallAsync(text.ToString());
-            _logger.LogInformation("Triggered " + nameof(RiseDispenser) + Environment.NewLine + $"Interval = {Interval.TotalSeconds}s");
+            _logger.LogInformation("Triggered "
+                                   + nameof(RiseDispenser)
+                                   + Environment.NewLine
+                                   + $"Interval = {Interval.TotalSeconds}s");
         }
     }
 }

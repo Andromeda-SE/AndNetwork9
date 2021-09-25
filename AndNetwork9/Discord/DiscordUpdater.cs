@@ -41,7 +41,8 @@ namespace AndNetwork9.Discord
 
             await InitRoles(guild).ConfigureAwait(false);
 
-            await foreach (Member member in _data.Members.ToAsyncEnumerable().ConfigureAwait(false)) await UpdateMember(guild, member).ConfigureAwait(false);
+            await foreach (Member member in _data.Members.ToAsyncEnumerable().ConfigureAwait(false))
+                await UpdateMember(guild, member).ConfigureAwait(false);
 
             await foreach (Channel channel in _data.DiscordChannels.ToAsyncEnumerable().ConfigureAwait(false))
                 await UpdateChannel(guild, channel).ConfigureAwait(false);
@@ -81,7 +82,8 @@ namespace AndNetwork9.Discord
             ImmutableDictionary<Squad, IRole>.Builder squadRolesBuilder =
                 ImmutableDictionary<Squad, IRole>.Empty.ToBuilder();
             foreach (Squad squad in await _data.Squads
-                .Where(x => x.DisbandDate <= DateOnly.FromDateTime(DateTime.UtcNow)).ToArrayAsync().ConfigureAwait(false))
+                .Where(x => x.DisbandDate <= DateOnly.FromDateTime(DateTime.UtcNow)).ToArrayAsync()
+                .ConfigureAwait(false))
             {
                 IRole role = squad.DiscordRoleId is null
                     ? await guild.CreateRoleAsync(squad.ToString(),

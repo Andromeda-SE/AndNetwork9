@@ -5,7 +5,6 @@ using System.Text.Json.Serialization;
 using AndNetwork9.Shared.Enums;
 using AndNetwork9.Shared.Storage;
 using AndNetwork9.Shared.Utility;
-using TaskStatus = AndNetwork9.Shared.Enums.TaskStatus;
 
 namespace AndNetwork9.Shared
 {
@@ -48,6 +47,7 @@ namespace AndNetwork9.Shared
         public DateTime? EndTime { get; set; }
         public TaskStatus Status { get; set; }
         public TaskPriority Priority { get; set; }
+        public TaskLevel Level { get; set; }
         public AwardType? Award { get; set; }
 
         public bool AllowAssignByMember { get; set; }

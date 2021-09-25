@@ -28,11 +28,7 @@ namespace AndNetwork9.Client.Pages.Elections
         private async System.Threading.Tasks.Task Register()
         {
             HttpResponseMessage response = await Client.GetAsync("api/Election/reg");
-            if (response.IsSuccessStatusCode)
-            {
-                NavigationManager.NavigateTo("/election", true);
-            }
+            if (response.IsSuccessStatusCode) NavigationManager.NavigateTo("/election", true);
         }
     }
-
 }

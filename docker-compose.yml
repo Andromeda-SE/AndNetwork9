@@ -64,6 +64,17 @@ services:
     depends_on: 
       - broker
 
+  andnetwork9vk:
+    container_name: AndNetwork9.VK
+    image: ${DOCKER_REGISTRY-}andnetwork9vk
+    restart: "no"
+    env_file: .env
+    build:
+      context: .
+      dockerfile: AndNetwork9/VK/Dockerfile
+    depends_on: 
+      - broker
+
   andnetwork9awarddispenser:
     container_name: AndNetwork9.AwardDispenser
     image: ${DOCKER_REGISTRY-}awarddispenser
@@ -91,44 +102,3 @@ services:
     env_file: .env
     volumes:
       - "./data/rabbitmq/rabbitmq.conf:/var/lib/rabbitmq/rabbitmq.conf"
-
-  prometheus:
-    image: prom/prometheus
-    container_name: AndNetwork9.Monitoring.Prometheus
-    volumes:
-      - ./data/prometheus/config:/etc/prometheus/
-      - ./data/prometheus/data:/prometheus
-    command:
-      - '--config.file=/etc/prometheus/prometheus.yml'
-    ports:
-      - 9090:9090
-
-  grafana:
-    image: grafana/grafana
-    container_name: AndNetwork9.Monitoring.Grafana
-    volumes:
-      - ./data/grafana:/var/lib/grafana
-    ports:
-      - 3000:3000
-
-  cadvisor:
-    image: gcr.io/cadvisor/cadvisor:latest
-    container_name: AndNetwork9.Monitoring.Cadvisor
-    privileged: true
-    command: 
-      - '--housekeeping_interval=15s'
-      - '--docker_only=true'
-      - '--disable_metrics=disk'
-    ports:
-    - 8080:8080
-    volumes:
-    - /:/rootfs:ro
-    - /var/run:/var/run:rw
-    - /sys:/sys:ro
-    - /var/lib/docker/:/var/lib/docker:ro
-
-  node-exporter:
-    image: prom/node-exporter:latest
-    container_name: AndNetwork9.Monitoring.NodeExporter
-    ports:
-    - 9100:9100

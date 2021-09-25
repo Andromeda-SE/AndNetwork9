@@ -8,6 +8,9 @@ namespace AndNetwork9.Shared.Backend.Senders.AwardDispenser
     {
         public const string QUEUE_NAME = "AwardDispenser.GiveAward";
 
-        public GiveAwardSender(IConnection connection, ILogger<BaseRabbitSenderWithoutResponse<Award>> logger) : base(connection, QUEUE_NAME, logger) { }
+        public GiveAwardSender(IConnection connection, ILogger<BaseRabbitSenderWithoutResponse<Award>> logger) : base(
+            connection,
+            QUEUE_NAME,
+            logger) { }
     }
 }
