@@ -13,7 +13,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace AndNetwork9.Shared.Backend.Migrations
 {
     [DbContext(typeof(ClanDataContext))]
-    [Migration("20210924175736_AndNet9")]
+    [Migration("20210925220849_AndNet9")]
     partial class AndNet9
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -171,6 +171,9 @@ namespace AndNetwork9.Shared.Backend.Migrations
                     b.Property<int?>("SquadNumber")
                         .HasColumnType("integer");
 
+                    b.Property<int?>("SquadPart")
+                        .HasColumnType("integer");
+
                     b.Property<decimal>("SquadPermissions")
                         .HasColumnType("numeric(20,0)");
 
@@ -182,9 +185,9 @@ namespace AndNetwork9.Shared.Backend.Migrations
                     b.HasIndex("Name")
                         .IsUnique();
 
-                    b.HasIndex("SquadNumber");
-
                     b.HasIndex("CategoryId", "ChannelPosition");
+
+                    b.HasIndex("SquadNumber", "SquadPart");
 
                     b.ToTable("DiscordChannels");
                 });
@@ -311,17 +314,20 @@ namespace AndNetwork9.Shared.Backend.Migrations
                     b.Property<int?>("SquadNumber")
                         .HasColumnType("integer");
 
+                    b.Property<int?>("SquadPartId")
+                        .HasColumnType("integer");
+
                     b.Property<decimal>("SteamId")
                         .HasColumnType("numeric(20,0)");
 
-                    b.Property<int?>("TelegramId")
-                        .HasColumnType("integer");
+                    b.Property<long?>("TelegramId")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("TimeZone")
                         .HasColumnType("text");
 
-                    b.Property<int?>("VkId")
-                        .HasColumnType("integer");
+                    b.Property<long?>("VkId")
+                        .HasColumnType("bigint");
 
                     b.HasKey("Id");
 
@@ -336,7 +342,7 @@ namespace AndNetwork9.Shared.Backend.Migrations
 
                     b.HasIndex("Rank");
 
-                    b.HasIndex("SquadNumber");
+                    b.HasIndex("SquadNumber", "SquadPartId");
 
                     b.ToTable("Members");
                 });
@@ -344,10 +350,10 @@ namespace AndNetwork9.Shared.Backend.Migrations
             modelBuilder.Entity("AndNetwork9.Shared.Squad", b =>
                 {
                     b.Property<int>("Number")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Number"));
+                    b.Property<int>("Part")
+                        .HasColumnType("integer");
 
                     b.Property<string>("Comment")
                         .HasColumnType("text");
@@ -367,7 +373,7 @@ namespace AndNetwork9.Shared.Backend.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("text");
 
-                    b.HasKey("Number");
+                    b.HasKey("Number", "Part");
 
                     b.HasIndex("DiscordRoleId");
 
@@ -547,6 +553,9 @@ namespace AndNetwork9.Shared.Backend.Migrations
                     b.Property<int?>("SquadAssigneeId")
                         .HasColumnType("integer");
 
+                    b.Property<int?>("SquadPartAssigneeId")
+                        .HasColumnType("integer");
+
                     b.Property<DateTime>("StartTime")
                         .HasColumnType("timestamp with time zone");
 
@@ -570,9 +579,9 @@ namespace AndNetwork9.Shared.Backend.Migrations
 
                     b.HasIndex("ReporterId");
 
-                    b.HasIndex("SquadAssigneeId");
-
                     b.HasIndex("WriteRuleId");
+
+                    b.HasIndex("SquadAssigneeId", "SquadPartAssigneeId");
 
                     b.ToTable("Tasks");
                 });
@@ -598,9 +607,12 @@ namespace AndNetwork9.Shared.Backend.Migrations
                     b.Property<int?>("SquadId")
                         .HasColumnType("integer");
 
+                    b.Property<int?>("SquadPartId")
+                        .HasColumnType("integer");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("SquadId");
+                    b.HasIndex("SquadId", "SquadPartId");
 
                     b.ToTable("AccessRules");
                 });
@@ -743,9 +755,12 @@ namespace AndNetwork9.Shared.Backend.Migrations
                     b.Property<int>("PendingSquadMembershipNumber")
                         .HasColumnType("integer");
 
-                    b.HasKey("CandidatesId", "PendingSquadMembershipNumber");
+                    b.Property<int>("PendingSquadMembershipPart")
+                        .HasColumnType("integer");
 
-                    b.HasIndex("PendingSquadMembershipNumber");
+                    b.HasKey("CandidatesId", "PendingSquadMembershipNumber", "PendingSquadMembershipPart");
+
+                    b.HasIndex("PendingSquadMembershipNumber", "PendingSquadMembershipPart");
 
                     b.ToTable("MemberSquad");
                 });
@@ -844,7 +859,7 @@ namespace AndNetwork9.Shared.Backend.Migrations
 
                     b.HasOne("AndNetwork9.Shared.Squad", "Squad")
                         .WithMany()
-                        .HasForeignKey("SquadNumber");
+                        .HasForeignKey("SquadNumber", "SquadPart");
 
                     b.Navigation("Category");
 
@@ -885,7 +900,7 @@ namespace AndNetwork9.Shared.Backend.Migrations
                 {
                     b.HasOne("AndNetwork9.Shared.Squad", "Squad")
                         .WithMany("Members")
-                        .HasForeignKey("SquadNumber");
+                        .HasForeignKey("SquadNumber", "SquadPartId");
 
                     b.Navigation("Squad");
                 });
@@ -983,15 +998,15 @@ namespace AndNetwork9.Shared.Backend.Migrations
                         .WithMany("CreatedTasks")
                         .HasForeignKey("ReporterId");
 
-                    b.HasOne("AndNetwork9.Shared.Squad", "SquadAssignee")
-                        .WithMany()
-                        .HasForeignKey("SquadAssigneeId");
-
                     b.HasOne("AndNetwork9.Shared.Utility.AccessRule", "WriteRule")
                         .WithMany()
                         .HasForeignKey("WriteRuleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("AndNetwork9.Shared.Squad", "SquadAssignee")
+                        .WithMany()
+                        .HasForeignKey("SquadAssigneeId", "SquadPartAssigneeId");
 
                     b.Navigation("Assignee");
 
@@ -1010,7 +1025,7 @@ namespace AndNetwork9.Shared.Backend.Migrations
                 {
                     b.HasOne("AndNetwork9.Shared.Squad", "Squad")
                         .WithMany()
-                        .HasForeignKey("SquadId");
+                        .HasForeignKey("SquadId", "SquadPartId");
 
                     b.Navigation("Squad");
                 });
@@ -1096,7 +1111,7 @@ namespace AndNetwork9.Shared.Backend.Migrations
 
                     b.HasOne("AndNetwork9.Shared.Squad", null)
                         .WithMany()
-                        .HasForeignKey("PendingSquadMembershipNumber")
+                        .HasForeignKey("PendingSquadMembershipNumber", "PendingSquadMembershipPart")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

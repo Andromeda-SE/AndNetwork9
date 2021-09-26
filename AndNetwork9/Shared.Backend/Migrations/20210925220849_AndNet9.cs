@@ -48,8 +48,8 @@ namespace AndNetwork9.Shared.Backend.Migrations
                 name: "Squads",
                 columns: table => new
                 {
-                    Number = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Number = table.Column<int>(type: "integer", nullable: false),
+                    Part = table.Column<int>(type: "integer", nullable: false),
                     Name = table.Column<string>(type: "text", nullable: true),
                     DiscordRoleId = table.Column<decimal>(type: "numeric(20,0)", nullable: true),
                     CreateDate = table.Column<DateOnly>(type: "date", nullable: false),
@@ -59,7 +59,7 @@ namespace AndNetwork9.Shared.Backend.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Squads", x => x.Number);
+                    table.PrimaryKey("PK_Squads", x => new { x.Number, x.Part });
                 });
 
             migrationBuilder.CreateTable(
@@ -101,16 +101,17 @@ namespace AndNetwork9.Shared.Backend.Migrations
                     Name = table.Column<string>(type: "text", nullable: true),
                     Directions = table.Column<int[]>(type: "integer[]", nullable: false),
                     MinRank = table.Column<int>(type: "integer", nullable: false),
-                    SquadId = table.Column<int>(type: "integer", nullable: true)
+                    SquadId = table.Column<int>(type: "integer", nullable: true),
+                    SquadPartId = table.Column<int>(type: "integer", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AccessRules", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_AccessRules_Squads_SquadId",
-                        column: x => x.SquadId,
+                        name: "FK_AccessRules_Squads_SquadId_SquadPartId",
+                        columns: x => new { x.SquadId, x.SquadPartId },
                         principalTable: "Squads",
-                        principalColumn: "Number");
+                        principalColumns: new[] { "Number", "Part" });
                 });
 
             migrationBuilder.CreateTable(
@@ -126,6 +127,7 @@ namespace AndNetwork9.Shared.Backend.Migrations
                     MemberPermissions = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
                     AdvisorPermissions = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
                     SquadNumber = table.Column<int>(type: "integer", nullable: true),
+                    SquadPart = table.Column<int>(type: "integer", nullable: true),
                     SquadPermissions = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
                     SquadCommanderPermissions = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
                     ChannelFlags = table.Column<int>(type: "integer", nullable: false)
@@ -139,10 +141,10 @@ namespace AndNetwork9.Shared.Backend.Migrations
                         principalTable: "DiscordCategories",
                         principalColumn: "Position");
                     table.ForeignKey(
-                        name: "FK_DiscordChannels_Squads_SquadNumber",
-                        column: x => x.SquadNumber,
+                        name: "FK_DiscordChannels_Squads_SquadNumber_SquadPart",
+                        columns: x => new { x.SquadNumber, x.SquadPart },
                         principalTable: "Squads",
-                        principalColumn: "Number");
+                        principalColumns: new[] { "Number", "Part" });
                 });
 
             migrationBuilder.CreateTable(
@@ -153,8 +155,8 @@ namespace AndNetwork9.Shared.Backend.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     SteamId = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
                     DiscordId = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
-                    VkId = table.Column<int>(type: "integer", nullable: true),
-                    TelegramId = table.Column<int>(type: "integer", nullable: true),
+                    VkId = table.Column<long>(type: "bigint", nullable: true),
+                    TelegramId = table.Column<long>(type: "bigint", nullable: true),
                     Nickname = table.Column<string>(type: "text", nullable: false),
                     RealName = table.Column<string>(type: "text", nullable: true),
                     TimeZone = table.Column<string>(type: "text", nullable: true),
@@ -163,6 +165,7 @@ namespace AndNetwork9.Shared.Backend.Migrations
                     Direction = table.Column<int>(type: "integer", nullable: false),
                     LastDirectionChange = table.Column<DateOnly>(type: "date", nullable: false),
                     SquadNumber = table.Column<int>(type: "integer", nullable: true),
+                    SquadPartId = table.Column<int>(type: "integer", nullable: true),
                     IsSquadCommander = table.Column<bool>(type: "boolean", nullable: false),
                     Description = table.Column<string>(type: "text", nullable: true),
                     Comment = table.Column<string>(type: "text", nullable: true),
@@ -175,10 +178,10 @@ namespace AndNetwork9.Shared.Backend.Migrations
                     table.UniqueConstraint("AK_Members_DiscordId", x => x.DiscordId);
                     table.UniqueConstraint("AK_Members_SteamId", x => x.SteamId);
                     table.ForeignKey(
-                        name: "FK_Members_Squads_SquadNumber",
-                        column: x => x.SquadNumber,
+                        name: "FK_Members_Squads_SquadNumber_SquadPartId",
+                        columns: x => new { x.SquadNumber, x.SquadPartId },
                         principalTable: "Squads",
-                        principalColumn: "Number");
+                        principalColumns: new[] { "Number", "Part" });
                 });
 
             migrationBuilder.CreateTable(
@@ -267,11 +270,12 @@ namespace AndNetwork9.Shared.Backend.Migrations
                 columns: table => new
                 {
                     CandidatesId = table.Column<int>(type: "integer", nullable: false),
-                    PendingSquadMembershipNumber = table.Column<int>(type: "integer", nullable: false)
+                    PendingSquadMembershipNumber = table.Column<int>(type: "integer", nullable: false),
+                    PendingSquadMembershipPart = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_MemberSquad", x => new { x.CandidatesId, x.PendingSquadMembershipNumber });
+                    table.PrimaryKey("PK_MemberSquad", x => new { x.CandidatesId, x.PendingSquadMembershipNumber, x.PendingSquadMembershipPart });
                     table.ForeignKey(
                         name: "FK_MemberSquad_Members_CandidatesId",
                         column: x => x.CandidatesId,
@@ -279,10 +283,10 @@ namespace AndNetwork9.Shared.Backend.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_MemberSquad_Squads_PendingSquadMembershipNumber",
-                        column: x => x.PendingSquadMembershipNumber,
+                        name: "FK_MemberSquad_Squads_PendingSquadMembershipNumber_PendingSqua~",
+                        columns: x => new { x.PendingSquadMembershipNumber, x.PendingSquadMembershipPart },
                         principalTable: "Squads",
-                        principalColumn: "Number",
+                        principalColumns: new[] { "Number", "Part" },
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -321,6 +325,7 @@ namespace AndNetwork9.Shared.Backend.Migrations
                     WriteRuleId = table.Column<int>(type: "integer", nullable: false),
                     AssigneeId = table.Column<int>(type: "integer", nullable: true),
                     SquadAssigneeId = table.Column<int>(type: "integer", nullable: true),
+                    SquadPartAssigneeId = table.Column<int>(type: "integer", nullable: true),
                     DirectionAssignee = table.Column<int>(type: "integer", nullable: true),
                     ReporterId = table.Column<int>(type: "integer", nullable: true),
                     CreateTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
@@ -360,10 +365,10 @@ namespace AndNetwork9.Shared.Backend.Migrations
                         principalTable: "Members",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_Tasks_Squads_SquadAssigneeId",
-                        column: x => x.SquadAssigneeId,
+                        name: "FK_Tasks_Squads_SquadAssigneeId_SquadPartAssigneeId",
+                        columns: x => new { x.SquadAssigneeId, x.SquadPartAssigneeId },
                         principalTable: "Squads",
-                        principalColumn: "Number");
+                        principalColumns: new[] { "Number", "Part" });
                     table.ForeignKey(
                         name: "FK_Tasks_Tasks_ParentId",
                         column: x => x.ParentId,
@@ -661,9 +666,9 @@ namespace AndNetwork9.Shared.Backend.Migrations
                 column: "AllowedMembersId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_AccessRules_SquadId",
+                name: "IX_AccessRules_SquadId_SquadPartId",
                 table: "AccessRules",
-                column: "SquadId");
+                columns: new[] { "SquadId", "SquadPartId" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Awards_AutomationTag",
@@ -717,9 +722,9 @@ namespace AndNetwork9.Shared.Backend.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_DiscordChannels_SquadNumber",
+                name: "IX_DiscordChannels_SquadNumber_SquadPart",
                 table: "DiscordChannels",
-                column: "SquadNumber");
+                columns: new[] { "SquadNumber", "SquadPart" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_ElectionsMember_MemberId",
@@ -743,14 +748,14 @@ namespace AndNetwork9.Shared.Backend.Migrations
                 column: "Rank");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Members_SquadNumber",
+                name: "IX_Members_SquadNumber_SquadPartId",
                 table: "Members",
-                column: "SquadNumber");
+                columns: new[] { "SquadNumber", "SquadPartId" });
 
             migrationBuilder.CreateIndex(
-                name: "IX_MemberSquad_PendingSquadMembershipNumber",
+                name: "IX_MemberSquad_PendingSquadMembershipNumber_PendingSquadMember~",
                 table: "MemberSquad",
-                column: "PendingSquadMembershipNumber");
+                columns: new[] { "PendingSquadMembershipNumber", "PendingSquadMembershipPart" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_MemberTask_WatchingTasksId",
@@ -843,9 +848,9 @@ namespace AndNetwork9.Shared.Backend.Migrations
                 column: "ReporterId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Tasks_SquadAssigneeId",
+                name: "IX_Tasks_SquadAssigneeId_SquadPartAssigneeId",
                 table: "Tasks",
-                column: "SquadAssigneeId");
+                columns: new[] { "SquadAssigneeId", "SquadPartAssigneeId" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Tasks_WriteRuleId",
@@ -928,7 +933,7 @@ namespace AndNetwork9.Shared.Backend.Migrations
                 table: "Votings");
 
             migrationBuilder.DropForeignKey(
-                name: "FK_Tasks_Squads_SquadAssigneeId",
+                name: "FK_Tasks_Squads_SquadAssigneeId_SquadPartAssigneeId",
                 table: "Tasks");
 
             migrationBuilder.DropForeignKey(

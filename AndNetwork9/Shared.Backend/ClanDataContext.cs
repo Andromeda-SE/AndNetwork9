@@ -116,7 +116,7 @@ namespace AndNetwork9.Shared.Backend
                     entity.Ignore(x => x.AllowedMembersIds);
                     entity.Property(x => x.Directions);
                     entity.Property(x => x.MinRank).IsRequired();
-                    entity.HasOne(x => x.Squad).WithMany().HasForeignKey(x => x.SquadId).IsRequired(false);
+                    entity.HasOne(x => x.Squad).WithMany().HasForeignKey(x => new {x.SquadId, x.SquadPartId}).IsRequired(false);
                     entity.HasMany(x => x.AllowedMembers).WithMany(x => x.AccessRulesOverrides);
                 });
 
@@ -183,7 +183,7 @@ namespace AndNetwork9.Shared.Backend
                     entity.Property(x => x.TimeZone)
                         .HasConversion(x => x!.Id, x => TimeZoneInfo.FindSystemTimeZoneById(x)).IsRequired(false);
 
-                    entity.HasOne(x => x.Squad).WithMany(x => x.Members).HasForeignKey(x => x.SquadNumber)
+                    entity.HasOne(x => x.Squad).WithMany(x => x.Members).HasForeignKey(x => new { x.SquadNumber , x.SquadPartId} )
                         .IsRequired(false);
                     entity.Property(x => x.IsSquadCommander).IsRequired();
 
@@ -203,8 +203,13 @@ namespace AndNetwork9.Shared.Backend
 
                 modelBuilder.Entity<Squad>(entity =>
                 {
-                    entity.HasKey(x => x.Number);
+                    entity.HasKey(x => new
+                    {
+                        x.Number,
+                        x.Part
+                    });
                     entity.Property(x => x.Name);
+                    entity.Property(x => x.Part);
 
                     entity.HasIndex(x => x.DiscordRoleId).IsUnique(false);
 
@@ -238,7 +243,7 @@ namespace AndNetwork9.Shared.Backend
 
                     entity.HasOne(x => x.Assignee).WithMany(x => x.Tasks).HasForeignKey(x => x.AssigneeId)
                         .IsRequired(false);
-                    entity.HasOne(x => x.SquadAssignee).WithMany().HasForeignKey(x => x.SquadAssigneeId)
+                    entity.HasOne(x => x.SquadAssignee).WithMany().HasForeignKey(x => new {x.SquadAssigneeId, x.SquadPartAssigneeId})
                         .IsRequired(false);
                     entity.Property(x => x.DirectionAssignee).IsRequired(false);
                     entity.HasOne(x => x.Reporter).WithMany(x => x.CreatedTasks).HasForeignKey(x => x.ReporterId)
