@@ -25,6 +25,7 @@ namespace AndNetwork9.AwardDispenser
             services.AddSingleton<GiveAwardSender>();
             services.AddSingleton<PublishSender>();
             services.AddSingleton<PlayerActivitySender>();
+            services.AddSingleton<UpdateUserSender>();
 
             services.AddHostedService<Services.AwardDispenser>();
             services.AddHostedService<RiseDispenser>();

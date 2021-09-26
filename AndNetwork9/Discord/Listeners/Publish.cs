@@ -32,9 +32,13 @@ namespace AndNetwork9.Discord.Listeners
             await using ConfiguredAsyncDisposable _ = scope.ConfigureAwait(false);
             ClanDataContext? data = (ClanDataContext?)scope.ServiceProvider.GetService(typeof(ClanDataContext));
             if (data is null) throw new ApplicationException();
-            ulong channelId = data.DiscordChannels.Single(x => x.ChannelFlags.HasFlag(ChannelFlags.Advertisement))
+            ulong channelId = data.DiscordChannels.First(x => x.ChannelFlags.HasFlag(ChannelFlags.Advertisement))
                 .DiscordId;
-            await _bot.GetGuild(_bot.GuildId).GetTextChannel(channelId).SendMessageAsync(arg).ConfigureAwait(false);
+           await 
+               (await
+               (await _bot.Rest.GetGuildAsync(_bot.GuildId).ConfigureAwait(false))
+               .GetTextChannelAsync(channelId).ConfigureAwait(false))
+               .SendMessageAsync(arg).ConfigureAwait(false);
         }
     }
 }

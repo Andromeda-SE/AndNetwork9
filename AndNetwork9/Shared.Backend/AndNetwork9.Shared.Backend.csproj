@@ -32,4 +32,8 @@
     <ProjectReference Include="..\Shared\AndNetwork9.Shared.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Migrations\" />
+  </ItemGroup>
+
 </Project>

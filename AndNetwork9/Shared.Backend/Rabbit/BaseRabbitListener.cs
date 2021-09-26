@@ -12,7 +12,8 @@ namespace AndNetwork9.Shared.Backend.Rabbit
         protected static readonly JsonSerializerOptions JsonSerializerOptions = new()
         {
             WriteIndented = false,
-            IgnoreReadOnlyProperties = true,
+            IgnoreReadOnlyProperties = false,
+            IgnoreReadOnlyFields = false,
         };
 
         protected readonly IConnection Connection;
@@ -30,7 +31,7 @@ namespace AndNetwork9.Shared.Backend.Rabbit
             Logger = logger;
         }
 
-        public System.Threading.Tasks.Task StartAsync(CancellationToken cancellationToken)
+        public virtual System.Threading.Tasks.Task StartAsync(CancellationToken cancellationToken)
         {
             Logger.LogDebug("Starting…");
             Model = Connection.CreateModel();
@@ -43,7 +44,7 @@ namespace AndNetwork9.Shared.Backend.Rabbit
             return System.Threading.Tasks.Task.CompletedTask;
         }
 
-        public System.Threading.Tasks.Task StopAsync(CancellationToken cancellationToken)
+        public virtual System.Threading.Tasks.Task StopAsync(CancellationToken cancellationToken)
         {
             Logger.LogDebug("Stopping…");
             Consumer.Received -= Received!;

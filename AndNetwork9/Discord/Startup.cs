@@ -31,6 +31,7 @@ namespace AndNetwork9.Discord
             services.AddHostedService<Send>();
             services.AddHostedService<Publish>();
             services.AddHostedService<RewriteElectionsChannel>();
+            services.AddHostedService<UpdateUser>();
         }
     }
 }

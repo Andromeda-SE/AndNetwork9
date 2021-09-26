@@ -21,11 +21,13 @@ namespace AndNetwork9.Server.Controllers
     {
         private readonly ClanDataContext _data;
         private readonly PublishSender _publishSender;
+        private readonly UpdateUserSender _updateUserSender;
 
-        public MemberController(ClanDataContext data, PublishSender publishSender)
+        public MemberController(ClanDataContext data, PublishSender publishSender, UpdateUserSender updateUserSender)
         {
             _data = data;
             _publishSender = publishSender;
+            _updateUserSender = updateUserSender;
         }
 
         [HttpGet("all")]
@@ -72,6 +74,7 @@ namespace AndNetwork9.Server.Controllers
                 JoinDate = DateOnly.FromDateTime(DateTime.UtcNow),
             }).ConfigureAwait(false);
             await _data.SaveChangesAsync().ConfigureAwait(false);
+            await _updateUserSender.CallAsync(member.DiscordId).ConfigureAwait(false);
             return Ok(result.Entity);
         }
 
@@ -90,6 +93,7 @@ namespace AndNetwork9.Server.Controllers
             await _publishSender.CallAsync(
                     $"Игрок {member.GetDiscordMention()} сменил направление на «{member.Direction.GetName()}»")
                 .ConfigureAwait(false);
+            await _updateUserSender.CallAsync(member.DiscordId).ConfigureAwait(false);
             return Ok();
         }
 
@@ -109,6 +113,7 @@ namespace AndNetwork9.Server.Controllers
             await _publishSender.CallAsync(
                     $"Игрок {member.GetDiscordMention()} сменил никнейм с «{oldNickname}» на «{newNickname}»")
                 .ConfigureAwait(false);
+            await _updateUserSender.CallAsync(member.DiscordId).ConfigureAwait(false);
             return Ok();
         }
 
@@ -121,6 +126,7 @@ namespace AndNetwork9.Server.Controllers
 
             member.RealName = string.IsNullOrWhiteSpace(newRealname) ? null : newRealname;
             await _data.SaveChangesAsync().ConfigureAwait(false);
+            await _updateUserSender.CallAsync(member.DiscordId).ConfigureAwait(false);
             return Ok();
         }
 
@@ -189,6 +195,7 @@ namespace AndNetwork9.Server.Controllers
             if (resultMember is null) return Forbid();
             EntityEntry<Member> result = _data.Members.Update(resultMember);
             await _data.SaveChangesAsync().ConfigureAwait(false);
+            await _updateUserSender.CallAsync(resultMember.DiscordId).ConfigureAwait(false);
             return Ok(result.Entity);
         }
     }

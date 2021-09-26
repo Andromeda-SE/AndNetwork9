@@ -21,14 +21,16 @@ namespace AndNetwork9.AwardDispenser.Services
     {
         private readonly ILogger<RiseDispenser> _logger;
         private readonly PublishSender _publishSender;
+        private readonly UpdateUserSender _updateUserSender;
         private readonly IServiceScopeFactory _scopeFactory;
 
         public RiseDispenser(IServiceScopeFactory scopeFactory, IConfiguration configuration,
-            PublishSender publishSender, ILogger<RiseDispenser> logger)
+            PublishSender publishSender, ILogger<RiseDispenser> logger, UpdateUserSender updateUserSender)
         {
             _scopeFactory = scopeFactory;
             _publishSender = publishSender;
             _logger = logger;
+            _updateUserSender = updateUserSender;
             Interval = TimeSpan.Parse(configuration["RISE_DISPENSER_INTERVAL"]);
         }
 
@@ -61,10 +63,14 @@ namespace AndNetwork9.AwardDispenser.Services
             await data.SaveChangesAsync();
             StringBuilder text = new(256);
             foreach ((Member member, (Rank oldRank, Rank newRank)) in changes.OrderByDescending(x => x.Key))
+            {
                 text.AppendLine(
                     oldRank > newRank
                         ? $"📉: Игрок {member.GetDiscordMention()} разжалован в ранг «{newRank.GetRankName()}»"
                         : $"📈: Игроку {member.GetDiscordMention()} присвоен ранг «{newRank.GetRankName()}»");
+                await _updateUserSender.CallAsync(member.DiscordId);
+            }
+
             if (text.Length > 0) await _publishSender.CallAsync(text.ToString());
             _logger.LogInformation("Triggered "
                                    + nameof(RiseDispenser)

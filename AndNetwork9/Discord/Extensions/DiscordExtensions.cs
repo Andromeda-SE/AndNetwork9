@@ -78,9 +78,9 @@ namespace AndNetwork9.Discord.Extensions
                 PermissionTarget.Role,
                 channel.AdvisorPermissions.ToOverwritePermissions());
 
-            if (channel.Squad is not null)
+            if (channel.Squad?.DiscordRoleId is not null)
             {
-                yield return new(updater.SquadsRoles[channel.Squad].Id,
+                yield return new(channel.Squad.DiscordRoleId.Value,
                     PermissionTarget.Role,
                     channel.SquadPermissions.ToOverwritePermissions());
                 if (channel.Squad.Commander is not null)

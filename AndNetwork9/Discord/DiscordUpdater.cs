@@ -17,6 +17,7 @@ using Task = System.Threading.Tasks.Task;
 
 namespace AndNetwork9.Discord
 {
+    [Obsolete]
     internal sealed class DiscordUpdater
     {
         private readonly DiscordBot _bot;
@@ -29,7 +30,6 @@ namespace AndNetwork9.Discord
         }
 
         public ImmutableDictionary<Direction, IRole> DirectionRoles { get; private set; } = null!;
-        public ImmutableDictionary<Squad, IRole> SquadsRoles { get; private set; } = null!;
         public IRole EveryoneRole { get; private set; } = null!;
         public IRole DefaultRole { get; private set; } = null!;
         public IRole AdvisorRole { get; private set; } = null!;
@@ -79,24 +79,6 @@ namespace AndNetwork9.Discord
 
             DirectionRoles = rolesBuilder.ToImmutable();
 
-            ImmutableDictionary<Squad, IRole>.Builder squadRolesBuilder =
-                ImmutableDictionary<Squad, IRole>.Empty.ToBuilder();
-            foreach (Squad squad in await _data.Squads
-                .Where(x => x.DisbandDate <= DateOnly.FromDateTime(DateTime.UtcNow)).ToArrayAsync()
-                .ConfigureAwait(false))
-            {
-                IRole role = squad.DiscordRoleId is null
-                    ? await guild.CreateRoleAsync(squad.ToString(),
-                        GuildPermissions.None,
-                        Color.Default,
-                        true,
-                        true,
-                        RequestOptions.Default).ConfigureAwait(false)
-                    : guild.Roles.First(x => x.Id == squad.DiscordRoleId.Value);
-                squadRolesBuilder.Add(squad, role);
-            }
-
-            SquadsRoles = squadRolesBuilder.ToImmutable();
 
             const string advisorRoleName = "Советник клана";
             AdvisorRole = roles.FirstOrDefault(x => x.Name == advisorRoleName)
