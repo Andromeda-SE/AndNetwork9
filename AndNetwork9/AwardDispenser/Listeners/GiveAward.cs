@@ -61,7 +61,7 @@ namespace AndNetwork9.AwardDispenser.Listeners
 
         private async Task TriggerPublish(CancellationToken cancellationToken = default)
         {
-            await Task.Delay(new TimeSpan(0, 0, 30), cancellationToken).ConfigureAwait(false);
+            await Task.Delay(new TimeSpan(0, 0, 5), cancellationToken).ConfigureAwait(false);
             string text;
             lock (_awards)
             {
