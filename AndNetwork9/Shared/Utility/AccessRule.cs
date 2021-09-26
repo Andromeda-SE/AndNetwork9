@@ -15,6 +15,7 @@ namespace AndNetwork9.Shared.Utility
         public Rank MinRank { get; set; } = Rank.Neophyte;
 
         public int? SquadId { get; set; }
+        public int? SquadPartId { get; set; }
         [JsonIgnore]
         public virtual Squad? Squad { get; set; }
 

@@ -15,8 +15,8 @@ namespace AndNetwork9.Shared
     {
         public ulong SteamId { get; set; }
         public ulong DiscordId { get; set; }
-        public int? VkId { get; set; }
-        public int? TelegramId { get; set; }
+        public long? VkId { get; set; }
+        public long? TelegramId { get; set; }
 
         public string Nickname { get; set; } = string.Empty;
         public string? RealName { get; set; }
@@ -34,6 +34,7 @@ namespace AndNetwork9.Shared
         public DateOnly LastDirectionChange { get; set; }
 
         public int? SquadNumber { get; set; }
+        public int? SquadPartId { get; set; }
 
         [JsonIgnore]
         public virtual Squad? Squad { get; set; }

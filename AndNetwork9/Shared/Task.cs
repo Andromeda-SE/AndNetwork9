@@ -30,6 +30,7 @@ namespace AndNetwork9.Shared
         [JsonIgnore]
         public virtual Member? Assignee { get; set; } = null!;
         public int? SquadAssigneeId { get; set; }
+        public int? SquadPartAssigneeId { get; set; }
         [JsonIgnore]
         public virtual Squad? SquadAssignee { get; set; } = null!;
         public Direction? DirectionAssignee { get; set; } = null!;

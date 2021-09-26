@@ -11,6 +11,7 @@ namespace AndNetwork9.Shared
     public record Squad : IId
     {
         public int Number { get; set; }
+        public int Part { get; set; }
         public string? Name { get; set; }
         [JsonIgnore]
         public ulong? DiscordRoleId { get; set; }
@@ -36,7 +37,26 @@ namespace AndNetwork9.Shared
 
         int IId.Id => Number;
 
-        public override string ToString() =>
-            (Name is null ? Number.ToRoman() : Number.ToRoman() + " " + Name) + " отряд";
+        public string ToString(bool includePart)
+        {
+            string result = ToString();
+            if (includePart)
+            {
+                result += ", ";
+                result += Part == 0
+                    ? "головное" :
+                    $"{Part:D}";
+                result += " отделение";
+            }
+            return result;
+        }
+
+        public override string ToString()
+        {
+            string result = Number.ToRoman();
+            if (Name is not null) result += $" {Name}";
+            result += " отряд";
+            return result;
+        }
     }
 }
