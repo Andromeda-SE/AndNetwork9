@@ -1,27 +1,30 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json.Serialization;
 using AndNetwork9.Shared.Enums;
+using AndNetwork9.Shared.Interfaces;
 
-namespace AndNetwork9.Shared.Backend.Elections
+namespace AndNetwork9.Shared.Backend.Elections;
+
+public record ElectionVoting : IConcurrencyToken
 {
-    public record ElectionVoting
+    public int ElectionId { get; set; }
+
+    [JsonIgnore]
+    public virtual Election Election { get; set; } = null!;
+
+    public Direction Direction { get; set; }
+
+    public int AgainstAll { get; set; } = 0;
+    [JsonIgnore]
+    public virtual IList<ElectionsMember> Members { get; set; } = new List<ElectionsMember>();
+
+    public Guid ConcurrencyToken { get; set; }
+
+    public Member? GetWinner()
     {
-        public int ElectionId { get; set; }
-
-        [JsonIgnore]
-        public virtual Election Election { get; set; } = null!;
-
-        public Direction Direction { get; set; }
-
-        public int AgainstAll { get; set; } = 0;
-        [JsonIgnore]
-        public virtual IList<ElectionsMember> Members { get; set; } = new List<ElectionsMember>();
-
-        public Member? GetWinner()
-        {
-            ElectionsMember? winner = Members.Where(x => x.Votes is not null).MaxBy(x => x.Votes);
-            return winner is not null && AgainstAll <= winner.Votes ? winner.Member : null;
-        }
+        ElectionsMember? winner = Members.Where(x => x.Votes is not null).MaxBy(x => x.Votes);
+        return winner is not null && AgainstAll <= winner.Votes ? winner.Member : null;
     }
 }

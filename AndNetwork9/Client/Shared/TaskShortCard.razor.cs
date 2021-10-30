@@ -1,11 +1,10 @@
 ﻿using AndNetwork9.Shared;
 using Microsoft.AspNetCore.Components;
 
-namespace AndNetwork9.Client.Shared
+namespace AndNetwork9.Client.Shared;
+
+public partial class TaskShortCard
 {
-    public partial class TaskShortCard
-    {
-        [Parameter]
-        public Task Task { get; set; }
-    }
+    [Parameter]
+    public Task Task { get; set; }
 }

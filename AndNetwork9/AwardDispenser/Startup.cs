@@ -9,28 +9,27 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace AndNetwork9.AwardDispenser
+namespace AndNetwork9.AwardDispenser;
+
+public static class Startup
 {
-    public static class Startup
+    public static void ConfigureServices(IServiceCollection services, IConfiguration configuration)
     {
-        public static void ConfigureServices(IServiceCollection services, IConfiguration configuration)
-        {
-            services.AddDbContext<ClanDataContext>(x =>
-                x.UseNpgsql(configuration["Postgres:ConnectionString"])
-                    .UseLazyLoadingProxies());
+        services.AddDbContext<ClanDataContext>(x =>
+            x.UseNpgsql(configuration["Postgres:ConnectionString"])
+                .UseLazyLoadingProxies());
 
-            RabbitConnectionPool.SetConfiguration(configuration);
-            services.AddScoped(_ => RabbitConnectionPool.Factory.CreateConnection());
+        RabbitConnectionPool.SetConfiguration(configuration);
+        services.AddScoped(_ => RabbitConnectionPool.Factory.CreateConnection());
 
-            services.AddSingleton<GiveAwardSender>();
-            services.AddSingleton<PublishSender>();
-            services.AddSingleton<PlayerActivitySender>();
-            services.AddSingleton<UpdateUserSender>();
+        services.AddSingleton<GiveAwardSender>();
+        services.AddSingleton<PublishSender>();
+        services.AddSingleton<PlayerActivitySender>();
+        services.AddSingleton<UpdateUserSender>();
 
-            services.AddHostedService<Services.AwardDispenser>();
-            services.AddHostedService<RiseDispenser>();
+        services.AddHostedService<Services.AwardDispenser>();
+        services.AddHostedService<RiseDispenser>();
 
-            services.AddHostedService<GiveAward>();
-        }
+        services.AddHostedService<GiveAward>();
     }
 }

@@ -13,7 +13,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace AndNetwork9.Shared.Backend.Migrations
 {
     [DbContext(typeof(ClanDataContext))]
-    [Migration("20210925220849_AndNet9")]
+    [Migration("20211010174845_AndNet9")]
     partial class AndNet9
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -50,6 +50,12 @@ namespace AndNetwork9.Shared.Backend.Migrations
 
                     b.Property<int?>("AutomationTag")
                         .HasColumnType("integer");
+
+                    b.Property<Guid>("ConcurrencyToken")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("uuid")
+                        .HasDefaultValueSql("gen_random_uuid()");
 
                     b.Property<DateOnly>("Date")
                         .HasColumnType("date");
@@ -123,6 +129,9 @@ namespace AndNetwork9.Shared.Backend.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Position"));
 
+                    b.Property<Guid>("ConcurrencyToken")
+                        .HasColumnType("uuid");
+
                     b.Property<decimal>("DiscordId")
                         .HasColumnType("numeric(20,0)");
 
@@ -155,6 +164,12 @@ namespace AndNetwork9.Shared.Backend.Migrations
                     b.Property<int>("ChannelPosition")
                         .HasColumnType("integer");
 
+                    b.Property<Guid>("ConcurrencyToken")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("uuid")
+                        .HasDefaultValueSql("gen_random_uuid()");
+
                     b.Property<decimal>("EveryonePermissions")
                         .HasColumnType("numeric(20,0)");
 
@@ -165,14 +180,14 @@ namespace AndNetwork9.Shared.Backend.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<decimal>("SquadCommanderPermissions")
+                    b.Property<decimal>("SquadCommandersPermissions")
                         .HasColumnType("numeric(20,0)");
 
-                    b.Property<int?>("SquadNumber")
-                        .HasColumnType("integer");
+                    b.Property<short?>("SquadNumber")
+                        .HasColumnType("smallint");
 
-                    b.Property<int?>("SquadPart")
-                        .HasColumnType("integer");
+                    b.Property<short?>("SquadPartNumber")
+                        .HasColumnType("smallint");
 
                     b.Property<decimal>("SquadPermissions")
                         .HasColumnType("numeric(20,0)");
@@ -187,7 +202,7 @@ namespace AndNetwork9.Shared.Backend.Migrations
 
                     b.HasIndex("CategoryId", "ChannelPosition");
 
-                    b.HasIndex("SquadNumber", "SquadPart");
+                    b.HasIndex("SquadNumber", "SquadPartNumber");
 
                     b.ToTable("DiscordChannels");
                 });
@@ -202,6 +217,12 @@ namespace AndNetwork9.Shared.Backend.Migrations
 
                     b.Property<DateOnly>("AnnouncementDate")
                         .HasColumnType("date");
+
+                    b.Property<Guid>("ConcurrencyToken")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("uuid")
+                        .HasDefaultValueSql("gen_random_uuid()");
 
                     b.Property<DateOnly>("EndDate")
                         .HasColumnType("date");
@@ -234,6 +255,12 @@ namespace AndNetwork9.Shared.Backend.Migrations
                     b.Property<int>("MemberId")
                         .HasColumnType("integer");
 
+                    b.Property<Guid>("ConcurrencyToken")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("uuid")
+                        .HasDefaultValueSql("gen_random_uuid()");
+
                     b.Property<bool>("Voted")
                         .HasColumnType("boolean");
 
@@ -261,6 +288,12 @@ namespace AndNetwork9.Shared.Backend.Migrations
                     b.Property<int>("AgainstAll")
                         .HasColumnType("integer");
 
+                    b.Property<Guid>("ConcurrencyToken")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("uuid")
+                        .HasDefaultValueSql("gen_random_uuid()");
+
                     b.HasKey("ElectionId", "Direction");
 
                     b.ToTable("ElectionVoting");
@@ -277,19 +310,22 @@ namespace AndNetwork9.Shared.Backend.Migrations
                     b.Property<string>("Comment")
                         .HasColumnType("text");
 
+                    b.Property<Guid>("ConcurrencyToken")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("uuid")
+                        .HasDefaultValueSql("gen_random_uuid()");
+
                     b.Property<string>("Description")
                         .HasColumnType("text");
 
                     b.Property<int>("Direction")
                         .HasColumnType("integer");
 
-                    b.Property<decimal>("DiscordId")
+                    b.Property<decimal?>("DiscordId")
                         .HasColumnType("numeric(20,0)");
 
                     b.Property<bool>("DiscordNotificationsEnabled")
-                        .HasColumnType("boolean");
-
-                    b.Property<bool>("IsSquadCommander")
                         .HasColumnType("boolean");
 
                     b.Property<DateOnly>("JoinDate")
@@ -311,13 +347,16 @@ namespace AndNetwork9.Shared.Backend.Migrations
                     b.Property<string>("RealName")
                         .HasColumnType("text");
 
-                    b.Property<int?>("SquadNumber")
-                        .HasColumnType("integer");
+                    b.Property<bool>("SquadCommander")
+                        .HasColumnType("boolean");
 
-                    b.Property<int?>("SquadPartId")
-                        .HasColumnType("integer");
+                    b.Property<short?>("SquadNumber")
+                        .HasColumnType("smallint");
 
-                    b.Property<decimal>("SteamId")
+                    b.Property<short>("SquadPartNumber")
+                        .HasColumnType("smallint");
+
+                    b.Property<decimal?>("SteamId")
                         .HasColumnType("numeric(20,0)");
 
                     b.Property<long?>("TelegramId")
@@ -331,32 +370,40 @@ namespace AndNetwork9.Shared.Backend.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasAlternateKey("DiscordId");
-
-                    b.HasAlternateKey("SteamId");
-
                     b.HasIndex("Direction");
+
+                    b.HasIndex("DiscordId")
+                        .IsUnique();
 
                     b.HasIndex("Nickname")
                         .IsUnique();
 
                     b.HasIndex("Rank");
 
-                    b.HasIndex("SquadNumber", "SquadPartId");
+                    b.HasIndex("SteamId")
+                        .IsUnique();
+
+                    b.HasIndex("SquadNumber", "SquadPartNumber");
 
                     b.ToTable("Members");
                 });
 
             modelBuilder.Entity("AndNetwork9.Shared.Squad", b =>
                 {
-                    b.Property<int>("Number")
-                        .HasColumnType("integer");
+                    b.Property<short>("Number")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("smallint");
 
-                    b.Property<int>("Part")
-                        .HasColumnType("integer");
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<short>("Number"));
 
                     b.Property<string>("Comment")
                         .HasColumnType("text");
+
+                    b.Property<Guid>("ConcurrencyToken")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("uuid")
+                        .HasDefaultValueSql("gen_random_uuid()");
 
                     b.Property<DateOnly>("CreateDate")
                         .HasColumnType("date");
@@ -373,11 +420,34 @@ namespace AndNetwork9.Shared.Backend.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("text");
 
-                    b.HasKey("Number", "Part");
-
-                    b.HasIndex("DiscordRoleId");
+                    b.HasKey("Number");
 
                     b.ToTable("Squads");
+                });
+
+            modelBuilder.Entity("AndNetwork9.Shared.SquadPart", b =>
+                {
+                    b.Property<short>("Number")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("Part")
+                        .HasColumnType("smallint");
+
+                    b.Property<string>("Comment")
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("ConcurrencyToken")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("text");
+
+                    b.Property<decimal?>("DiscordRoleId")
+                        .HasColumnType("numeric(20,0)");
+
+                    b.HasKey("Number", "Part");
+
+                    b.ToTable("SquadPart");
                 });
 
             modelBuilder.Entity("AndNetwork9.Shared.Storage.Repo", b =>
@@ -390,6 +460,12 @@ namespace AndNetwork9.Shared.Backend.Migrations
 
                     b.Property<int>("CommentId")
                         .HasColumnType("integer");
+
+                    b.Property<Guid>("ConcurrencyToken")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("uuid")
+                        .HasDefaultValueSql("gen_random_uuid()");
 
                     b.Property<int?>("CreatorId")
                         .HasColumnType("integer");
@@ -445,6 +521,12 @@ namespace AndNetwork9.Shared.Backend.Migrations
                     b.Property<int?>("AuthorId")
                         .HasColumnType("integer");
 
+                    b.Property<Guid>("ConcurrencyToken")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("uuid")
+                        .HasDefaultValueSql("gen_random_uuid()");
+
                     b.Property<DateTime>("CreateTime")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
@@ -471,6 +553,12 @@ namespace AndNetwork9.Shared.Backend.Migrations
 
                     b.Property<int?>("CommentId")
                         .HasColumnType("integer");
+
+                    b.Property<Guid>("ConcurrencyToken")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("uuid")
+                        .HasDefaultValueSql("gen_random_uuid()");
 
                     b.Property<string>("Extension")
                         .HasColumnType("text");
@@ -518,6 +606,12 @@ namespace AndNetwork9.Shared.Backend.Migrations
                     b.Property<int?>("Award")
                         .HasColumnType("integer");
 
+                    b.Property<Guid>("ConcurrencyToken")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("uuid")
+                        .HasDefaultValueSql("gen_random_uuid()");
+
                     b.Property<DateTime>("CreateTime")
                         .HasColumnType("timestamp with time zone");
 
@@ -550,11 +644,11 @@ namespace AndNetwork9.Shared.Backend.Migrations
                     b.Property<int?>("ReporterId")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("SquadAssigneeId")
-                        .HasColumnType("integer");
+                    b.Property<short?>("SquadAssigneeId")
+                        .HasColumnType("smallint");
 
-                    b.Property<int?>("SquadPartAssigneeId")
-                        .HasColumnType("integer");
+                    b.Property<short?>("SquadPartAssigneeId")
+                        .HasColumnType("smallint");
 
                     b.Property<DateTime>("StartTime")
                         .HasColumnType("timestamp with time zone");
@@ -579,9 +673,9 @@ namespace AndNetwork9.Shared.Backend.Migrations
 
                     b.HasIndex("ReporterId");
 
-                    b.HasIndex("WriteRuleId");
+                    b.HasIndex("SquadAssigneeId");
 
-                    b.HasIndex("SquadAssigneeId", "SquadPartAssigneeId");
+                    b.HasIndex("WriteRuleId");
 
                     b.ToTable("Tasks");
                 });
@@ -594,6 +688,12 @@ namespace AndNetwork9.Shared.Backend.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<Guid>("ConcurrencyToken")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("uuid")
+                        .HasDefaultValueSql("gen_random_uuid()");
+
                     b.Property<int[]>("Directions")
                         .IsRequired()
                         .HasColumnType("integer[]");
@@ -604,15 +704,23 @@ namespace AndNetwork9.Shared.Backend.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("text");
 
-                    b.Property<int?>("SquadId")
-                        .HasColumnType("integer");
+                    b.Property<short?>("SquadId")
+                        .HasColumnType("smallint");
 
-                    b.Property<int?>("SquadPartId")
-                        .HasColumnType("integer");
+                    b.Property<short?>("SquadPartId")
+                        .HasColumnType("smallint");
+
+                    b.Property<short?>("SquadPartNumber")
+                        .HasColumnType("smallint");
+
+                    b.Property<short?>("SquadPartPart")
+                        .HasColumnType("smallint");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("SquadId", "SquadPartId");
+                    b.HasIndex("SquadId");
+
+                    b.HasIndex("SquadPartNumber", "SquadPartPart");
 
                     b.ToTable("AccessRules");
                 });
@@ -627,6 +735,12 @@ namespace AndNetwork9.Shared.Backend.Migrations
 
                     b.Property<int?>("AuthorId")
                         .HasColumnType("integer");
+
+                    b.Property<Guid>("ConcurrencyToken")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("uuid")
+                        .HasDefaultValueSql("gen_random_uuid()");
 
                     b.Property<DateTime>("CreateTime")
                         .HasColumnType("timestamp with time zone");
@@ -670,6 +784,12 @@ namespace AndNetwork9.Shared.Backend.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("text");
 
+                    b.Property<Guid>("ConcurrencyToken")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("uuid")
+                        .HasDefaultValueSql("gen_random_uuid()");
+
                     b.HasKey("Name");
 
                     b.ToTable("Tags");
@@ -682,6 +802,12 @@ namespace AndNetwork9.Shared.Backend.Migrations
 
                     b.Property<int>("MemberId")
                         .HasColumnType("integer");
+
+                    b.Property<Guid>("ConcurrencyToken")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("uuid")
+                        .HasDefaultValueSql("gen_random_uuid()");
 
                     b.Property<int>("Result")
                         .HasColumnType("integer");
@@ -703,6 +829,12 @@ namespace AndNetwork9.Shared.Backend.Migrations
                         .HasColumnType("integer");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<Guid>("ConcurrencyToken")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("uuid")
+                        .HasDefaultValueSql("gen_random_uuid()");
 
                     b.Property<DateTime>("CreateTime")
                         .HasColumnType("timestamp with time zone");
@@ -752,15 +884,12 @@ namespace AndNetwork9.Shared.Backend.Migrations
                     b.Property<int>("CandidatesId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("PendingSquadMembershipNumber")
-                        .HasColumnType("integer");
+                    b.Property<short>("PendingSquadMembershipNumber")
+                        .HasColumnType("smallint");
 
-                    b.Property<int>("PendingSquadMembershipPart")
-                        .HasColumnType("integer");
+                    b.HasKey("CandidatesId", "PendingSquadMembershipNumber");
 
-                    b.HasKey("CandidatesId", "PendingSquadMembershipNumber", "PendingSquadMembershipPart");
-
-                    b.HasIndex("PendingSquadMembershipNumber", "PendingSquadMembershipPart");
+                    b.HasIndex("PendingSquadMembershipNumber");
 
                     b.ToTable("MemberSquad");
                 });
@@ -859,11 +988,17 @@ namespace AndNetwork9.Shared.Backend.Migrations
 
                     b.HasOne("AndNetwork9.Shared.Squad", "Squad")
                         .WithMany()
-                        .HasForeignKey("SquadNumber", "SquadPart");
+                        .HasForeignKey("SquadNumber");
+
+                    b.HasOne("AndNetwork9.Shared.SquadPart", "SquadPart")
+                        .WithMany()
+                        .HasForeignKey("SquadNumber", "SquadPartNumber");
 
                     b.Navigation("Category");
 
                     b.Navigation("Squad");
+
+                    b.Navigation("SquadPart");
                 });
 
             modelBuilder.Entity("AndNetwork9.Shared.Backend.Elections.ElectionsMember", b =>
@@ -898,9 +1033,20 @@ namespace AndNetwork9.Shared.Backend.Migrations
 
             modelBuilder.Entity("AndNetwork9.Shared.Member", b =>
                 {
-                    b.HasOne("AndNetwork9.Shared.Squad", "Squad")
+                    b.HasOne("AndNetwork9.Shared.SquadPart", "SquadPart")
                         .WithMany("Members")
-                        .HasForeignKey("SquadNumber", "SquadPartId");
+                        .HasForeignKey("SquadNumber", "SquadPartNumber");
+
+                    b.Navigation("SquadPart");
+                });
+
+            modelBuilder.Entity("AndNetwork9.Shared.SquadPart", b =>
+                {
+                    b.HasOne("AndNetwork9.Shared.Squad", "Squad")
+                        .WithMany("SquadParts")
+                        .HasForeignKey("Number")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Squad");
                 });
@@ -998,15 +1144,15 @@ namespace AndNetwork9.Shared.Backend.Migrations
                         .WithMany("CreatedTasks")
                         .HasForeignKey("ReporterId");
 
+                    b.HasOne("AndNetwork9.Shared.Squad", "SquadAssignee")
+                        .WithMany()
+                        .HasForeignKey("SquadAssigneeId");
+
                     b.HasOne("AndNetwork9.Shared.Utility.AccessRule", "WriteRule")
                         .WithMany()
                         .HasForeignKey("WriteRuleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("AndNetwork9.Shared.Squad", "SquadAssignee")
-                        .WithMany()
-                        .HasForeignKey("SquadAssigneeId", "SquadPartAssigneeId");
 
                     b.Navigation("Assignee");
 
@@ -1025,9 +1171,15 @@ namespace AndNetwork9.Shared.Backend.Migrations
                 {
                     b.HasOne("AndNetwork9.Shared.Squad", "Squad")
                         .WithMany()
-                        .HasForeignKey("SquadId", "SquadPartId");
+                        .HasForeignKey("SquadId");
+
+                    b.HasOne("AndNetwork9.Shared.SquadPart", "SquadPart")
+                        .WithMany()
+                        .HasForeignKey("SquadPartNumber", "SquadPartPart");
 
                     b.Navigation("Squad");
+
+                    b.Navigation("SquadPart");
                 });
 
             modelBuilder.Entity("AndNetwork9.Shared.Utility.Comment", b =>
@@ -1111,7 +1263,7 @@ namespace AndNetwork9.Shared.Backend.Migrations
 
                     b.HasOne("AndNetwork9.Shared.Squad", null)
                         .WithMany()
-                        .HasForeignKey("PendingSquadMembershipNumber", "PendingSquadMembershipPart")
+                        .HasForeignKey("PendingSquadMembershipNumber")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -1196,6 +1348,11 @@ namespace AndNetwork9.Shared.Backend.Migrations
                 });
 
             modelBuilder.Entity("AndNetwork9.Shared.Squad", b =>
+                {
+                    b.Navigation("SquadParts");
+                });
+
+            modelBuilder.Entity("AndNetwork9.Shared.SquadPart", b =>
                 {
                     b.Navigation("Members");
                 });

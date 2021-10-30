@@ -1,10 +1,9 @@
-﻿namespace AndNetwork9.Shared.Enums
+﻿namespace AndNetwork9.Shared.Enums;
+
+public enum RepoType
 {
-    public enum RepoType
-    {
-        None,
-        Blueprint,
-        Script,
-        World,
-    }
+    None,
+    Blueprint,
+    Script,
+    World,
 }

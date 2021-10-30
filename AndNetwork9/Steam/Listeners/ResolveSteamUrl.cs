@@ -8,34 +8,33 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
 
-namespace AndNetwork9.Steam.Listeners
+namespace AndNetwork9.Steam.Listeners;
+
+public class ResolveSteamUrl : BaseRabbitListenerWithResponse<string, ulong?>
 {
-    public class ResolveSteamUrl : BaseRabbitListenerWithResponse<string, ulong?>
+    private readonly HttpClient _httpClient;
+    private readonly string _steamKey;
+
+    public ResolveSteamUrl(IConnection connection, IConfiguration configuration,
+        ILogger<BaseRabbitListenerWithResponse<string, ulong?>> logger, HttpClient httpClient)
+        : base(connection, ResolveSteamUrlSender.QUEUE_NAME, logger)
     {
-        private readonly HttpClient _httpClient;
-        private readonly string _steamKey;
+        _httpClient = httpClient;
+        _steamKey = configuration["STEAM_KEY"];
+    }
 
-        public ResolveSteamUrl(IConnection connection, IConfiguration configuration,
-            ILogger<BaseRabbitListenerWithResponse<string, ulong?>> logger, HttpClient httpClient)
-            : base(connection, ResolveSteamUrlSender.QUEUE_NAME, logger)
-        {
-            _httpClient = httpClient;
-            _steamKey = configuration["STEAM_KEY"];
-        }
-
-        protected override async Task<ulong?> GetResponseAsync(string request)
-        {
-            if (string.IsNullOrWhiteSpace(request)) return null;
-            request = request.Replace("http://", string.Empty);
-            request = request.Replace("https://", string.Empty);
-            request = request.Replace("steamcommunity.com/id/", string.Empty);
-            request = request.Replace("steamcommunity.com/profiles/", string.Empty);
-            request = request.Trim('/');
-            if (ulong.TryParse(request, out ulong result)) return result;
-            PlayerActivityResult<ResolveSteamUrlResult>? answer =
-                await _httpClient.GetFromJsonAsync<PlayerActivityResult<ResolveSteamUrlResult>>(
-                    $"https://api.steampowered.com/ISteamUser/ResolveVanityURL/v1/?key={_steamKey}&vanityurl={HttpUtility.UrlEncode(request.Trim())}");
-            return answer?.Result.SteamId;
-        }
+    protected override async Task<ulong?> GetResponseAsync(string request)
+    {
+        if (string.IsNullOrWhiteSpace(request)) return null;
+        request = request.Replace("http://", string.Empty);
+        request = request.Replace("https://", string.Empty);
+        request = request.Replace("steamcommunity.com/id/", string.Empty);
+        request = request.Replace("steamcommunity.com/profiles/", string.Empty);
+        request = request.Trim('/');
+        if (ulong.TryParse(request, out ulong result)) return result;
+        PlayerActivityResult<ResolveSteamUrlResult>? answer =
+            await _httpClient.GetFromJsonAsync<PlayerActivityResult<ResolveSteamUrlResult>>(
+                $"https://api.steampowered.com/ISteamUser/ResolveVanityURL/v1/?key={_steamKey}&vanityurl={HttpUtility.UrlEncode(request.Trim())}");
+        return answer?.Result.SteamId;
     }
 }

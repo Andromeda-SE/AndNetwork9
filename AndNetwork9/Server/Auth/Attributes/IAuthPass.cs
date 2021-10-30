@@ -1,9 +1,8 @@
 ﻿using AndNetwork9.Shared;
 
-namespace AndNetwork9.Server.Auth.Attributes
+namespace AndNetwork9.Server.Auth.Attributes;
+
+public interface IAuthPass
 {
-    public interface IAuthPass
-    {
-        bool Pass(Member member);
-    }
+    bool Pass(Member member);
 }

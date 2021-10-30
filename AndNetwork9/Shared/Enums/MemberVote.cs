@@ -1,12 +1,11 @@
-﻿namespace AndNetwork9.Shared.Enums
+﻿namespace AndNetwork9.Shared.Enums;
+
+public enum MemberVote
 {
-    public enum MemberVote
-    {
-        Invalid = -1,
-        NoVote,
-        Accept,
-        Decline,
-        Abstained,
-        NeedMoreInformation,
-    }
+    Invalid = -1,
+    NoVote,
+    Accept,
+    Decline,
+    Abstained,
+    NeedMoreInformation,
 }

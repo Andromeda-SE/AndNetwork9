@@ -78,14 +78,14 @@
                         </div>
                         <div class="col-sm-2 d-flex justify-content-center">
                             <button class="btn btn-sm btn-success m-1"
-                                    disabled="@(SelectedSquad is null || !SelectedSquad.Members.Except(Members).Any())"
-                                    @onclick="() => AddMembers(SelectedSquad.Members.Except(Members))"
+                                    disabled="@(SelectedSquad is null || !SelectedSquad.SquadParts!.SelectMany(x => x.Members).Except(Members).Any())"
+                                    @onclick="() => AddMembers(SelectedSquad.SquadParts.SelectMany(x => x.Members).Except(Members))"
                                     type="button">
                                 <i class="bi bi-plus-lg"/>
                             </button>
                             <button class="btn btn-danger btn-sm m-1"
-                                    disabled="@(SelectedSquad is null || !SelectedSquad.Members.Intersect(Members).Any())"
-                                    @onclick="() => RemoveMembers(SelectedSquad.Members.Intersect(Members))"
+                                    disabled="@(SelectedSquad is null || !SelectedSquad.SquadParts!.SelectMany(x => x.Members).Intersect(Members).Any())"
+                                    @onclick="() => RemoveMembers(SelectedSquad.SquadParts.SelectMany(x => x.Members).Intersect(Members))"
                                     type="button">
                                 <i class="bi bi-dash-lg"/>
                             </button>
@@ -134,14 +134,14 @@
                     </div>
                     <div class="col-sm-2 d-flex justify-content-center">
                         <button class="btn btn-sm btn-success m-1"
-                                disabled="@(!AllMembers.Where(x => x.IsSquadCommander).Except(Members).Any())"
-                                @onclick="() => AddMembers(AllMembers.Where(x => x.IsSquadCommander).Except(Members))"
+                                disabled="@(!AllMembers.Where(x => x.CommanderLevel > SquadCommander.None).Except(Members).Any())"
+                                @onclick="() => AddMembers(AllMembers.Where(x => x.CommanderLevel > SquadCommander.None).Except(Members))"
                                 type="button">
                             <i class="bi bi-plus-lg"/>
                         </button>
                         <button class="btn btn-danger btn-sm m-1"
-                                disabled="@(!AllMembers.Where(x => x.IsSquadCommander).Intersect(Members).Any())"
-                                @onclick="() => RemoveMembers(AllMembers.Where(x => x.IsSquadCommander).Intersect(Members))"
+                                disabled="@(!AllMembers.Where(x => x.CommanderLevel > SquadCommander.None).Intersect(Members).Any())"
+                                @onclick="() => RemoveMembers(AllMembers.Where(x => x.CommanderLevel > SquadCommander.None).Intersect(Members))"
                                 type="button">
                             <i class="bi bi-dash-lg"/>
                         </button>

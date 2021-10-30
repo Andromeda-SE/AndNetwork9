@@ -10,63 +10,70 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.DependencyInjection;
 using Task = System.Threading.Tasks.Task;
 
-namespace AndNetwork9.Server.Auth
+namespace AndNetwork9.Server.Auth;
+
+public class ClanPolicyProvider : IAuthorizationPolicyProvider, IAuthorizationHandler
 {
-    public class ClanPolicyProvider : IAuthorizationPolicyProvider, IAuthorizationHandler
+    private readonly IServiceScopeFactory _scopeFactory;
+
+    public ClanPolicyProvider(IServiceScopeFactory scopeFactory)
     {
-        private readonly IServiceScopeFactory _scopeFactory;
+        _scopeFactory = scopeFactory;
+    }
 
-        public ClanPolicyProvider(IServiceScopeFactory scopeFactory) => _scopeFactory = scopeFactory;
+    public async Task HandleAsync(AuthorizationHandlerContext context)
+    {
+        using IServiceScope scope = _scopeFactory.CreateScope();
+        ClanDataContext? data = (ClanDataContext?)scope.ServiceProvider.GetService(typeof(ClanDataContext));
+        if (data is null) throw new ApplicationException();
 
-        public async Task HandleAsync(AuthorizationHandlerContext context)
+        Member? member = await context.User.GetCurrentMember(data).ConfigureAwait(false);
+        AuthSession? session = await context.User.GetCurrentSession(data).ConfigureAwait(false);
+        if (member is null
+            || session is null
+            || session.ExpireTime < DateTime.UtcNow
+            || session.Member.Id != member.Id)
         {
-            using IServiceScope scope = _scopeFactory.CreateScope();
-            ClanDataContext? data = (ClanDataContext?)scope.ServiceProvider.GetService(typeof(ClanDataContext));
-            if (data is null) throw new ApplicationException();
-
-            Member? member = await context.User.GetCurrentMember(data).ConfigureAwait(false);
-            AuthSession? session = await context.User.GetCurrentSession(data).ConfigureAwait(false);
-            if (member is null
-                || session is null
-                || session.ExpireTime < DateTime.UtcNow
-                || session.Member.Id != member.Id)
-            {
-                context.Fail();
-                return;
-            }
-
-            foreach (IAuthorizationRequirement requirement in context.PendingRequirements)
-                if (requirement is IAuthPass authPass && authPass.Pass(member))
-                    context.Succeed(requirement);
+            context.Fail();
+            return;
         }
 
-        public Task<AuthorizationPolicy?> GetPolicyAsync(string policyName)
-        {
-            AuthorizationPolicyBuilder builder =
-                new AuthorizationPolicyBuilder(CookieAuthenticationDefaults.AuthenticationScheme)
-                    .RequireAuthenticatedUser()
-                    .RequireClaim(AuthExtensions.MEMBER_ID_CLAIM_NAME)
-                    .RequireClaim(AuthExtensions.SESSION_ID_CLAIM_NAME);
+        foreach (IAuthorizationRequirement requirement in context.PendingRequirements)
+            if (requirement is IAuthPass authPass && authPass.Pass(member))
+                context.Succeed(requirement);
+    }
 
-            if (!policyName.StartsWith(MinRankAuthorizeAttribute.POLICY_PREFIX, StringComparison.OrdinalIgnoreCase)
-                && MinRankAuthorizeAttribute.TryParse(policyName[MinRankAuthorizeAttribute.POLICY_PREFIX.Length..],
-                    out IAuthorizationRequirement policy)) builder.AddRequirements(policy);
-            else if (!policyName.StartsWith(DirectionAuthorizeAttribute.POLICY_PREFIX,
-                         StringComparison.OrdinalIgnoreCase)
-                     && DirectionAuthorizeAttribute.TryParse(
-                         policyName[DirectionAuthorizeAttribute.POLICY_PREFIX.Length..],
-                         out policy)) builder.AddRequirements(policy);
+    public Task<AuthorizationPolicy?> GetPolicyAsync(string policyName)
+    {
+        AuthorizationPolicyBuilder builder =
+            new AuthorizationPolicyBuilder(CookieAuthenticationDefaults.AuthenticationScheme)
+                .RequireAuthenticatedUser()
+                .RequireClaim(AuthExtensions.MEMBER_ID_CLAIM_NAME)
+                .RequireClaim(AuthExtensions.SESSION_ID_CLAIM_NAME);
 
-            return Task.FromResult(builder.Build())!;
-        }
+        if (!policyName.StartsWith(MinRankAuthorizeAttribute.POLICY_PREFIX, StringComparison.OrdinalIgnoreCase)
+            && MinRankAuthorizeAttribute.TryParse(policyName[MinRankAuthorizeAttribute.POLICY_PREFIX.Length..],
+                out IAuthorizationRequirement policy)) builder.AddRequirements(policy);
+        else if (!policyName.StartsWith(DirectionAuthorizeAttribute.POLICY_PREFIX,
+                     StringComparison.OrdinalIgnoreCase)
+                 && DirectionAuthorizeAttribute.TryParse(
+                     policyName[DirectionAuthorizeAttribute.POLICY_PREFIX.Length..],
+                     out policy)) builder.AddRequirements(policy);
 
-        public async Task<AuthorizationPolicy> GetDefaultPolicyAsync() => await
+        return Task.FromResult(builder.Build())!;
+    }
+
+    public async Task<AuthorizationPolicy> GetDefaultPolicyAsync()
+    {
+        return await
             Task.FromResult(
                 new AuthorizationPolicyBuilder(CookieAuthenticationDefaults.AuthenticationScheme)
                     .RequireAuthenticatedUser()
                     .Build()).ConfigureAwait(false);
+    }
 
-        public async Task<AuthorizationPolicy?> GetFallbackPolicyAsync() =>
-            await Task.FromResult(default(AuthorizationPolicy)).ConfigureAwait(false);
+    public async Task<AuthorizationPolicy?> GetFallbackPolicyAsync()
+    {
+        return await Task.FromResult(default(AuthorizationPolicy)).ConfigureAwait(false);
     }
 }

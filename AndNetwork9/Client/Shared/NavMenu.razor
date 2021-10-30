@@ -18,28 +18,34 @@
                     <a class="nav-link" href="/election">Выборы</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/voting">Голосования</a>
+                    <a class="disabled nav-link" href="/voting">Голосования</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="/member">Игроки</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/squad">Отряды</a>
+                    <a class="disabled nav-link" href="/squad">Отряды</a>
                 </li>
-                @if (AuthStateProvider.CurrentMember.Rank >= Rank.Advisor)
+                @if (AuthStateProvider.CurrentMember.Rank >= Rank.Advisor || AuthStateProvider.CurrentMember.CommanderLevel == SquadCommander.Captain)
                 {
                     <li class="dropdown navbar-nav nav-item">
                         <a class="dropdown-toggle nav-link" data-bs-toggle="dropdown" href="#" id="dropdownMenuButton2" role="button">Управление</a>
                         <ul class="dropdown-menu dropdown-menu-dark">
+                        @if (AuthStateProvider.CurrentMember.Rank >= Rank.Advisor)
+                        {
                             <li>
                                 <a class="dropdown-item" href="/management/addmember">Добавить участника…</a>
                             </li>
-                            <li>
-                                <a class="dropdown-item" href="/management/addaward">Выдать награду…</a>
-                            </li>
+                        }
+                        <li>
+                            <a class="dropdown-item" href="/management/addaward">Выдать награду…</a>
+                        </li>
+                        @if (AuthStateProvider.CurrentMember.Rank >= Rank.Advisor)
+                        {
                             <li>
                                 <a class="dropdown-item" href="/management/message">Отправить сообщения…</a>
                             </li>
+                        }
                         </ul>
                     </li>
                 }

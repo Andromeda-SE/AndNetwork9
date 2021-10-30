@@ -1,11 +1,10 @@
-﻿namespace AndNetwork9.Shared.Enums
+﻿namespace AndNetwork9.Shared.Enums;
+
+public enum ElectionStage
 {
-    public enum ElectionStage
-    {
-        None,
-        Registration,
-        Voting,
-        Announcement,
-        Ended = int.MaxValue,
-    }
+    None,
+    Registration,
+    Voting,
+    Announcement,
+    Ended = int.MaxValue,
 }

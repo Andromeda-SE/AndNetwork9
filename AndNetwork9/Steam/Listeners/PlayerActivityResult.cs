@@ -1,10 +1,9 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace AndNetwork9.Steam.Listeners
+namespace AndNetwork9.Steam.Listeners;
+
+public record PlayerActivityResult<T>
 {
-    public record PlayerActivityResult<T>
-    {
-        [JsonPropertyName("response")]
-        public T Result { get; set; }
-    }
+    [JsonPropertyName("response")]
+    public T Result { get; set; }
 }

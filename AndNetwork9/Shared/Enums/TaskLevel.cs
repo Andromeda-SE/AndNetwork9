@@ -1,13 +1,12 @@
-﻿namespace AndNetwork9.Shared.Enums
+﻿namespace AndNetwork9.Shared.Enums;
+
+public enum TaskLevel
 {
-    public enum TaskLevel
-    {
-        Unknown,
-        Subtask,
-        Task,
-        Quest,
-        Story,
-        Epic,
-        Initiative,
-    }
+    Unknown,
+    Subtask,
+    Task,
+    Quest,
+    Story,
+    Epic,
+    Initiative,
 }

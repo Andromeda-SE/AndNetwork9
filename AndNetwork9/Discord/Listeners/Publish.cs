@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
+using AndNetwork9.Discord.Services;
 using AndNetwork9.Shared.Backend;
 using AndNetwork9.Shared.Backend.Discord.Enums;
 using AndNetwork9.Shared.Backend.Rabbit;
@@ -10,35 +11,34 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
 
-namespace AndNetwork9.Discord.Listeners
+namespace AndNetwork9.Discord.Listeners;
+
+public class Publish : BaseRabbitListenerWithoutResponse<string>
 {
-    public class Publish : BaseRabbitListenerWithoutResponse<string>
+    private readonly DiscordBot _bot;
+    private readonly IServiceScopeFactory _scopeFactory;
+
+    public Publish(IConnection connection, DiscordBot bot, IServiceScopeFactory scopeFactory,
+        ILogger<Publish> logger) : base(connection,
+        PublishSender.QUEUE_NAME,
+        logger)
     {
-        private readonly DiscordBot _bot;
-        private readonly IServiceScopeFactory _scopeFactory;
+        _bot = bot;
+        _scopeFactory = scopeFactory;
+    }
 
-        public Publish(IConnection connection, DiscordBot bot, IServiceScopeFactory scopeFactory,
-            ILogger<Publish> logger) : base(connection,
-            PublishSender.QUEUE_NAME,
-            logger)
-        {
-            _bot = bot;
-            _scopeFactory = scopeFactory;
-        }
-
-        public override async Task Run(string arg)
-        {
-            AsyncServiceScope scope = _scopeFactory.CreateAsyncScope();
-            await using ConfiguredAsyncDisposable _ = scope.ConfigureAwait(false);
-            ClanDataContext? data = (ClanDataContext?)scope.ServiceProvider.GetService(typeof(ClanDataContext));
-            if (data is null) throw new ApplicationException();
-            ulong channelId = data.DiscordChannels.First(x => x.ChannelFlags.HasFlag(ChannelFlags.Advertisement))
-                .DiscordId;
-           await 
-               (await
-               (await _bot.Rest.GetGuildAsync(_bot.GuildId).ConfigureAwait(false))
-               .GetTextChannelAsync(channelId).ConfigureAwait(false))
-               .SendMessageAsync(arg).ConfigureAwait(false);
-        }
+    public override async Task Run(string arg)
+    {
+        AsyncServiceScope scope = _scopeFactory.CreateAsyncScope();
+        await using ConfiguredAsyncDisposable _ = scope.ConfigureAwait(false);
+        ClanDataContext? data = (ClanDataContext?)scope.ServiceProvider.GetService(typeof(ClanDataContext));
+        if (data is null) throw new ApplicationException();
+        ulong channelId = data.DiscordChannels.First(x => x.ChannelFlags.HasFlag(ChannelFlags.Advertisement))
+            .DiscordId;
+        await
+            (await
+                (await _bot.Rest.GetGuildAsync(_bot.GuildId).ConfigureAwait(false))
+                .GetTextChannelAsync(channelId).ConfigureAwait(false))
+            .SendMessageAsync(arg).ConfigureAwait(false);
     }
 }

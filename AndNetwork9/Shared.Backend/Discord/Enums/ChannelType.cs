@@ -1,10 +1,10 @@
-﻿namespace AndNetwork9.Shared.Backend.Discord.Enums
+﻿namespace AndNetwork9.Shared.Backend.Discord.Enums;
+
+public enum ChannelType
 {
-    public enum ChannelType
-    {
-        Text,
-        Voice,
-        Announcement,
-        Stage,
-    }
+    Text,
+    Voice,
+    Announcement,
+    Stage,
+    Thread,
 }

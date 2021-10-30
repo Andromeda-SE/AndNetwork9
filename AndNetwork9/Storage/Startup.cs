@@ -5,21 +5,20 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace AndNetwork9.Storage
+namespace AndNetwork9.Storage;
+
+public static class Startup
 {
-    public static class Startup
+    public static void ConfigureServices(IServiceCollection services, IConfiguration configuration)
     {
-        public static void ConfigureServices(IServiceCollection services, IConfiguration configuration)
-        {
-            services.AddDbContext<ClanDataContext>(x =>
-                x.UseNpgsql(configuration["Postgres:ConnectionString"]).UseLazyLoadingProxies());
+        services.AddDbContext<ClanDataContext>(x =>
+            x.UseNpgsql(configuration["Postgres:ConnectionString"]).UseLazyLoadingProxies());
 
-            RabbitConnectionPool.SetConfiguration(configuration);
-            services.AddScoped(_ => RabbitConnectionPool.Factory.CreateConnection());
+        RabbitConnectionPool.SetConfiguration(configuration);
+        services.AddScoped(_ => RabbitConnectionPool.Factory.CreateConnection());
 
-            services.AddHostedService<RepoGetFileListener>();
-            services.AddHostedService<RepoSetFileListener>();
-            services.AddHostedService<NewRepoListener>();
-        }
+        services.AddHostedService<RepoGetFileListener>();
+        services.AddHostedService<RepoSetFileListener>();
+        services.AddHostedService<NewRepoListener>();
     }
 }

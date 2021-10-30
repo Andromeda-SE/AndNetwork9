@@ -1,7 +1,6 @@
-﻿namespace AndNetwork9.Shared.Interfaces
+﻿namespace AndNetwork9.Shared.Interfaces;
+
+public interface IId : IConcurrencyToken
 {
-    public interface IId
-    {
-        int Id { get; }
-    }
+    int Id { get; }
 }

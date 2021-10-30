@@ -10,14 +10,6 @@
 	  <BlazorEnableTimeZoneSupport>true</BlazorEnableTimeZoneSupport>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <Optimize>False</Optimize>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
-    <Optimize>True</Optimize>
-  </PropertyGroup>
-
   <ItemGroup>
     <Compile Remove="Shared\MessageBox.razor.cs" />
   </ItemGroup>
@@ -28,9 +20,9 @@
 
   <ItemGroup>
     <PackageReference Include="Markdig" Version="0.26.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="6.0.0-rc.1.21452.15" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="6.0.0-rc.1.21452.15" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="6.0.0-rc.1.21452.15" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="6.0.0-rc.2.21480.10" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="6.0.0-rc.2.21480.10" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="6.0.0-rc.2.21480.10" PrivateAssets="all" />
   </ItemGroup>
 
   <ItemGroup>
@@ -58,6 +50,10 @@
 
   <ItemGroup>
     <UpToDateCheckInput Remove="Shared\LoadingSpinner.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Pages\Squads\" />
   </ItemGroup>
 
 </Project>

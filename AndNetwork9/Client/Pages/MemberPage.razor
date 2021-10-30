@@ -51,7 +51,7 @@
             @if (SelectedEntity.SquadNumber is not null)
             {
                 <b>Отряд: </b>
-                <a class="@(SelectedEntity.IsSquadCommander ? "fw-bolder" : "")" href="squad/@(SelectedEntity.SquadNumber?.ToString("D"))">@SelectedEntity.Squad?.ToString()</a>
+                <a class="@(SelectedEntity.CommanderLevel > SquadCommander.None ? "fw-bolder" : "")" href="squad/@(SelectedEntity.SquadNumber?.ToString("D"))">@SelectedEntity.SquadPart?.ToString()</a>
                 <br/>
             }
             <b>Награды: </b>

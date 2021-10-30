@@ -1,9 +1,8 @@
-﻿namespace AndNetwork9.Client.Utility
+﻿namespace AndNetwork9.Client.Utility;
+
+public enum SortType
 {
-    public enum SortType
-    {
-        Default,
-        Alphabet,
-        Numeric,
-    }
+    Default,
+    Alphabet,
+    Numeric,
 }

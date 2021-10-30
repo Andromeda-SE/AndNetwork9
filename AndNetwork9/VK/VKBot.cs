@@ -5,25 +5,27 @@ using Microsoft.Extensions.Hosting;
 using VkNet;
 using VkNet.Model;
 
-namespace AndNetwork9.VK
+namespace AndNetwork9.VK;
+
+public class VkBot : VkApi, IHostedService
 {
-    public class VkBot : VkApi, IHostedService
+    private readonly string _authorizationToken;
+
+    public VkBot(IConfiguration configuration)
     {
-        private readonly string _authorizationToken;
+        _authorizationToken = configuration["Vk_Token"];
+    }
 
-        public VkBot(IConfiguration configuration) => _authorizationToken = configuration["Vk_Token"];
-
-        public async Task StartAsync(CancellationToken cancellationToken)
+    public async Task StartAsync(CancellationToken cancellationToken)
+    {
+        await AuthorizeAsync(new ApiAuthParams
         {
-            await AuthorizeAsync(new ApiAuthParams
-            {
-                AccessToken = _authorizationToken,
-            });
-        }
+            AccessToken = _authorizationToken,
+        });
+    }
 
-        public async Task StopAsync(CancellationToken cancellationToken)
-        {
-            await LogOutAsync();
-        }
+    public async Task StopAsync(CancellationToken cancellationToken)
+    {
+        await LogOutAsync();
     }
 }

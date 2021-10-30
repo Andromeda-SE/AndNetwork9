@@ -3,14 +3,13 @@ using AndNetwork9.Shared.Storage;
 using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
 
-namespace AndNetwork9.Shared.Backend.Senders.Storage
-{
-    public class RepoGetFileSender : BaseRabbitSenderWithResponse<RepoNode, byte[]>
-    {
-        public const string QUEUE_NAME = "Storage.RepoGetFile";
+namespace AndNetwork9.Shared.Backend.Senders.Storage;
 
-        public RepoGetFileSender(IConnection connection, ILogger<RepoGetFileSender> logger) : base(connection,
-            QUEUE_NAME,
-            logger) { }
-    }
+public class RepoGetFileSender : BaseRabbitSenderWithResponse<RepoNode, byte[]>
+{
+    public const string QUEUE_NAME = "Storage.RepoGetFile";
+
+    public RepoGetFileSender(IConnection connection, ILogger<RepoGetFileSender> logger) : base(connection,
+        QUEUE_NAME,
+        logger) { }
 }

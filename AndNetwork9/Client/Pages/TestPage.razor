@@ -1,6 +1,8 @@
 ﻿@page "/"
-@using AndNetwork9.Shared.Utility
+@using TaskStatus = AndNetwork9.Shared.Enums.TaskStatus
 @attribute [Authorize]
 
 
-<AccessRuleEditor Id="#testEditor" Model="new AccessRule()" RuleUpdated="rule => Console.WriteLine(rule.Id)"></AccessRuleEditor>
+<TaskShortCard Task="@Task"></TaskShortCard>
+<div class="mt-2"></div>
+<TaskShortCard Task="@ChildTask"></TaskShortCard>

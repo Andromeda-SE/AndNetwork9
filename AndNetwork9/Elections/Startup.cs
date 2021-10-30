@@ -6,24 +6,23 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace AndNetwork9.Elections
+namespace AndNetwork9.Elections;
+
+public static class Startup
 {
-    public static class Startup
+    public static void ConfigureServices(IServiceCollection services, IConfiguration configuration)
     {
-        public static void ConfigureServices(IServiceCollection services, IConfiguration configuration)
-        {
-            services.AddEntityFrameworkProxies();
-            services.AddDbContext<ClanDataContext>(x =>
-                x.UseNpgsql(configuration["Postgres:ConnectionString"]).UseLazyLoadingProxies());
+        services.AddEntityFrameworkProxies();
+        services.AddDbContext<ClanDataContext>(x =>
+            x.UseNpgsql(configuration["Postgres:ConnectionString"]).UseLazyLoadingProxies());
 
-            RabbitConnectionPool.SetConfiguration(configuration);
-            services.AddScoped(_ => RabbitConnectionPool.Factory.CreateConnection());
+        RabbitConnectionPool.SetConfiguration(configuration);
+        services.AddScoped(_ => RabbitConnectionPool.Factory.CreateConnection());
 
-            services.AddScoped<RewriteElectionsChannelSender>();
+        services.AddScoped<RewriteElectionsChannelSender>();
 
-            services.AddHostedService<NextStage>();
-            services.AddHostedService<Register>();
-            services.AddHostedService<Vote>();
-        }
+        services.AddHostedService<NextStage>();
+        services.AddHostedService<Register>();
+        services.AddHostedService<Vote>();
     }
 }

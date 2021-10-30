@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AndNetwork9.Server.Auth.Attributes;
@@ -10,204 +11,240 @@ using AndNetwork9.Shared.Enums;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 
-namespace AndNetwork9.Server.Controllers
+namespace AndNetwork9.Server.Controllers;
+
+[Route("api/[controller]")]
+[ApiController]
+public class SquadController : ControllerBase
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class SquadController : ControllerBase
+    private readonly ClanDataContext _data;
+    private readonly PublishSender _publishSender;
+
+    public SquadController(ClanDataContext data, PublishSender publishSender)
     {
-        private readonly ClanDataContext _data;
-        private readonly PublishSender _publishSender;
+        _data = data;
+        _publishSender = publishSender;
+    }
 
-        public SquadController(ClanDataContext data, PublishSender publishSender)
+    [HttpGet("all")]
+    [MinRankAuthorize]
+    public ActionResult<Squad[]> GetAll()
+    {
+        DateOnly today = DateOnly.FromDateTime(DateTime.Today);
+        return Ok(_data.Squads.Where(x => x.DisbandDate == null || x.DisbandDate > today).ToArray());
+    }
+
+    [HttpGet]
+    [MinRankAuthorize]
+    public async Task<ActionResult<Squad>> Get()
+    {
+        Member? member = await this.GetCurrentMember(_data).ConfigureAwait(false);
+        if (member is null) return Unauthorized();
+        
+        if (member.SquadPart is null) return NoContent();
+        return Ok(member.SquadPart.Squad);
+    }
+
+    [HttpGet("{id:int}")]
+    [MinRankAuthorize]
+    public async Task<ActionResult<Squad>> Get(short id)
+    {
+        Squad? squad = await _data.Squads.FindAsync(id).ConfigureAwait(false);
+        return squad is not null ? Ok(squad) : NotFound();
+    }
+
+    [HttpGet("{id:int}/parts")]
+    [MinRankAuthorize]
+    public async Task<ActionResult<SquadPart[]>> GetParts(short id)
+    {
+        Squad? squad = await _data.Squads.FindAsync(id).ConfigureAwait(false);
+        return squad is not null ? Ok(squad.SquadParts) : NotFound();
+    }
+
+    [HttpGet("{id:int}/part/{part:int}")]
+    [MinRankAuthorize]
+    public async Task<ActionResult<SquadPart>> GetPart(short id, short part)
+    {
+        Squad? squad = await _data.Squads.FindAsync(id).ConfigureAwait(false);
+        return squad is not null ? Ok(squad.SquadParts!.Single(x => x.Part == part)) : NotFound();
+    }
+
+    [HttpGet("{id:int}/comment")]
+    [MinRankAuthorize(Rank.Advisor)]
+    public async Task<ActionResult> GetComment(short id)
+    {
+        Squad? squad = await _data.Squads.FindAsync(id).ConfigureAwait(false);
+        return squad is not null ? Ok(squad.Comment) : NotFound();
+    }
+
+    [HttpGet("{id:int}/members")]
+    [MinRankAuthorize]
+    public async Task<ActionResult> GetMembers(short id)
+    {
+        Squad? squad = await _data.Squads.FindAsync(id).ConfigureAwait(false);
+        return squad?.SquadParts is not null
+            ? Ok(squad.SquadParts.SelectMany(x => x.Members).GetShort())
+            : NotFound();
+    }
+
+    [HttpGet("{id:int}/candidates")]
+    [CommanderAuthorize]
+    public async Task<ActionResult> GetCandidates(short id)
+    {
+        Squad? squad = await _data.Squads.FindAsync(id).ConfigureAwait(false);
+        return squad?.Candidates is not null ? Ok(squad.Candidates.GetShort()) : NotFound();
+    }
+
+    [HttpPut("{id:int}")]
+    [MinRankAuthorize(Rank.Advisor)]
+    public async Task<ActionResult<Squad>> Put(short id, Squad squad)
+    {
+        if (id != squad.Number) return BadRequest();
+        Squad? oldSquad = await _data.Squads.FindAsync(id).ConfigureAwait(false);
+        if (oldSquad is null) return NotFound();
+
+        Squad newSquad = oldSquad with
         {
-            _data = data;
-            _publishSender = publishSender;
-        }
+            Name = squad.Name,
+            Comment = squad.Comment,
+            DisbandDate = squad.DisbandDate,
+            DiscordRoleId = squad.DiscordRoleId,
+            Description = squad.Description,
+        };
 
-        [HttpGet("all")]
-        [MinRankAuthorize]
-        public ActionResult<Squad[]> GetAll()
+        _data.Squads.Update(newSquad);
+        await _data.SaveChangesAsync().ConfigureAwait(false);
+        return newSquad;
+    }
+
+    [HttpPut]
+    [CaptainAuthorize]
+    public async Task<ActionResult<Squad>> Put(Squad squad)
+    {
+        Member? member = await this.GetCurrentMember(_data).ConfigureAwait(false);
+        if (member is null) return Unauthorized();
+        Squad? oldSquad = member.SquadPart?.Squad;
+        if (oldSquad is null) return NotFound();
+
+        Squad newSquad = oldSquad with
         {
-            DateOnly today = DateOnly.FromDateTime(DateTime.Today);
-            return Ok(_data.Squads.Where(x => x.DisbandDate == null || x.DisbandDate > today).ToArray());
-        }
+            Description = squad.Description,
+        };
 
-        [HttpGet]
-        [MinRankAuthorize]
-        public async Task<ActionResult<Squad>> Get()
+        _data.Squads.Update(newSquad);
+        await _data.SaveChangesAsync().ConfigureAwait(false);
+        return newSquad;
+    }
+
+    [HttpPost]
+    [MinRankAuthorize(Rank.JuniorEmployee)]
+    public async Task<ActionResult<Squad>> Post(Squad squad)
+    {
+        Member? member = await this.GetCurrentMember(_data).ConfigureAwait(false);
+        if (member is null) return Unauthorized();
+
+        if (member.SquadPart is not null) return Forbid();
+
+
+        EntityEntry<Squad> addResult = await _data.Squads.AddAsync(squad with
         {
-            Member? member = await this.GetCurrentMember(_data).ConfigureAwait(false);
-            if (member is null) return NotFound();
+            Number = 0,
+            Name = null,
+            CreateDate = DateOnly.FromDateTime(DateTime.Today),
+        }).ConfigureAwait(false);
 
-            return Ok(member.Squad);
-        }
 
-        [HttpGet("{id:int}")]
-        [MinRankAuthorize]
-        public async Task<ActionResult<Squad>> Get(int id)
+        SquadPart leadPart = new()
         {
-            Squad? squad = await _data.Squads.FindAsync(id).ConfigureAwait(false);
-            return squad is not null ? Ok(squad) : NotFound();
-        }
+            Part = 0,
+            Number = addResult.Entity.Number,
+            Members = new List<Member>(),
+            DiscordRoleId = null,
+            Squad = addResult.Entity,
+        };
+        addResult.Entity.SquadParts = new List<SquadPart>();
+        addResult.Entity.SquadParts.Add(leadPart);
+        leadPart.Members.Add(member);
+        member.SquadCommander = true;
 
-        [HttpGet("{id:int}/comment")]
-        [MinRankAuthorize(Rank.Advisor)]
-        public async Task<ActionResult> GetComment(int id)
-        {
-            Squad? squad = await _data.Squads.FindAsync(id).ConfigureAwait(false);
-            return squad is not null ? Ok(squad.Comment) : NotFound();
-        }
+        await _data.SaveChangesAsync().ConfigureAwait(false);
+        //todo: add discord role creation
+        await _publishSender.CallAsync($"Игроком {member.GetDiscordMention()} созван новый, {addResult.Entity}!")
+            .ConfigureAwait(false);
+        return addResult.Entity;
+    }
 
-        [HttpGet("{id:int}/members")]
-        [MinRankAuthorize]
-        public async Task<ActionResult> GetMembers(int id)
-        {
-            Squad? squad = await _data.Squads.FindAsync(id).ConfigureAwait(false);
-            return squad is not null ? Ok(squad.Members.GetShort()) : NotFound();
-        }
+    [HttpPatch("{id:int}/join")]
+    [MinRankAuthorize]
+    public async Task<ActionResult> PatchJoin(short squadNumber)
+    {
+        Member? member = await this.GetCurrentMember(_data).ConfigureAwait(false);
+        if (member is null) return Unauthorized();
+        if (member.SquadPart is not null) return Forbid();
 
-        [HttpGet("{id:int}/candidates")]
-        [SquadCommanderAuthorize]
-        public async Task<ActionResult> GetCandidates(int id)
-        {
-            Squad? squad = await _data.Squads.FindAsync(id).ConfigureAwait(false);
-            return squad is not null ? Ok(squad.Candidates.GetShort()) : NotFound();
-        }
+        Squad? squad = await _data.Squads.FindAsync(squadNumber).ConfigureAwait(false);
+        if (squad is null) return NotFound();
 
-        [HttpPut("{id:int}")]
-        [MinRankAuthorize(Rank.Advisor)]
-        public async Task<ActionResult<Squad>> Put(int id, Squad squad)
-        {
-            if (id != squad.Number) return BadRequest();
-            Squad? oldSquad = await _data.Squads.FindAsync(id).ConfigureAwait(false);
-            if (oldSquad is null) return NotFound();
+        squad.Candidates!.Add(member);
+        await _data.SaveChangesAsync().ConfigureAwait(false);
+        return Ok();
+    }
 
-            Squad newSquad = oldSquad with
-            {
-                Name = squad.Name,
-                Comment = squad.Comment,
-                DisbandDate = squad.DisbandDate,
-                DiscordRoleId = squad.DiscordRoleId,
-                Description = squad.Description,
-            };
+    [HttpPatch("{squadNumber:int}/cancelJoin")]
+    [MinRankAuthorize]
+    public async Task<ActionResult> PatchCancelJoin(short squadNumber)
+    {
+        Member? member = await this.GetCurrentMember(_data).ConfigureAwait(false);
+        if (member is null) return Unauthorized();
+        if (member.SquadPart is not null) return Forbid();
 
-            _data.Squads.Update(newSquad);
-            await _data.SaveChangesAsync().ConfigureAwait(false);
-            return newSquad;
-        }
+        Squad? squad = await _data.Squads.FindAsync(squadNumber).ConfigureAwait(false);
+        if (squad is null) return NotFound();
 
-        [HttpPut]
-        [SquadCommanderAuthorize]
-        public async Task<ActionResult<Squad>> Put(Squad squad)
-        {
-            Member? member = await this.GetCurrentMember(_data).ConfigureAwait(false);
-            if (member is null) return Unauthorized();
-            Squad? oldSquad = member.Squad;
-            if (oldSquad is null) return NotFound();
-
-            Squad newSquad = oldSquad with
-            {
-                Description = squad.Description,
-            };
-
-            _data.Squads.Update(newSquad);
-            await _data.SaveChangesAsync().ConfigureAwait(false);
-            return newSquad;
-        }
-
-        [HttpPost]
-        [MinRankAuthorize]
-        public async Task<ActionResult<Squad>> Post(Squad squad)
-        {
-            Member? member = await this.GetCurrentMember(_data).ConfigureAwait(false);
-            if (member is null) return Unauthorized();
-
-            if (member.Squad is not null) return Forbid();
+        bool result = squad.Candidates!.Remove(member);
+        if (result) await _data.SaveChangesAsync().ConfigureAwait(false);
+        return result ? Ok() : NoContent();
+    }
 
 
-            EntityEntry<Squad>? addResult = await _data.Squads.AddAsync(squad with
-            {
-                Number = 0,
-                Name = null,
-                CreateDate = DateOnly.FromDateTime(DateTime.Today),
-            }).ConfigureAwait(false);
-            addResult.Entity.Members.Add(member);
-            member.IsSquadCommander = true;
-            await _data.SaveChangesAsync().ConfigureAwait(false);
-            //todo: add discord role creation
-            await _publishSender.CallAsync($"Игроком <@{member.DiscordId:D}> созван новый, {addResult.Entity}!")
-                .ConfigureAwait(false);
-            return addResult.Entity;
-        }
+    [HttpPatch("accept/{memberId:int}/{partNumber:int}")]
+    [CaptainAuthorize]
+    public async Task<ActionResult> PatchAccept(short memberId, short partNumber)
+    {
+        Member? member = await this.GetCurrentMember(_data).ConfigureAwait(false);
+        if (member is null) return Unauthorized();
+        if (member.SquadNumber is null || member.SquadPartNumber != 0 || !member.SquadCommander) return Forbid();
 
-        [HttpPatch("{id:int}/join")]
-        [MinRankAuthorize]
-        public async Task<ActionResult> PatchJoin(int squadNumber)
-        {
-            Member? member = await this.GetCurrentMember(_data).ConfigureAwait(false);
-            if (member is null) return Unauthorized();
-            if (member.Squad is not null) return Forbid();
+        Squad? squad = member.SquadPart?.Squad;
+        if (squad is null) return NotFound();
+        SquadPart? squadPart = squad.SquadParts?.Single(x => x.Part == partNumber);
+        if (squadPart is null) return NotFound();
 
-            Squad? squad = await _data.Squads.FindAsync(squadNumber).ConfigureAwait(false);
-            if (squad is null) return NotFound();
+        Member? candidate = squad.Candidates!.FirstOrDefault(x => x.Id == memberId);
+        if (candidate is null) return NotFound();
 
-            squad.Candidates.Add(member);
-            await _data.SaveChangesAsync().ConfigureAwait(false);
-            return Ok();
-        }
+        squad.Candidates!.Remove(candidate);
+        squadPart.Members.Add(candidate);
+        candidate.PendingSquadMembership.Clear();
+        await _data.SaveChangesAsync().ConfigureAwait(false);
+        await _publishSender.CallAsync($"{squad} пополняется игроком {candidate.GetDiscordMention()}")
+            .ConfigureAwait(false);
+        return Ok();
+    }
 
-        [HttpPatch("{id:int}/cancelJoin")]
-        [MinRankAuthorize]
-        public async Task<ActionResult> PatchCancelJoin(int squadNumber)
-        {
-            Member? member = await this.GetCurrentMember(_data).ConfigureAwait(false);
-            if (member is null) return Unauthorized();
-            if (member.Squad is not null) return Forbid();
+    [HttpPatch("decline")]
+    [CaptainAuthorize]
+    public async Task<ActionResult> PatchDecline(short memberId)
+    {
+        Member? member = await this.GetCurrentMember(_data).ConfigureAwait(false);
+        if (member is null) return Unauthorized();
+        if (member.SquadPart?.Squad is null) return Forbid();
 
-            Squad? squad = await _data.Squads.FindAsync(squadNumber).ConfigureAwait(false);
-            if (squad is null) return NotFound();
+        Member? candidate = member.SquadPart?.Squad.Candidates!.FirstOrDefault(x => x.Id == memberId);
+        if (candidate is null) return NotFound();
 
-            bool result = squad.Candidates.Remove(member);
-            if (result) await _data.SaveChangesAsync().ConfigureAwait(false);
-            return result ? Ok() : NoContent();
-        }
-
-
-        [HttpPatch("accept")]
-        [SquadCommanderAuthorize]
-        public async Task<ActionResult> PatchAccept(int memberId)
-        {
-            Member? member = await this.GetCurrentMember(_data).ConfigureAwait(false);
-            if (member is null) return Unauthorized();
-            if (member.Squad is null) return Forbid();
-
-            Member? candidate = member.Squad.Candidates.FirstOrDefault(x => x.Id == memberId);
-            if (candidate is null) return NotFound();
-
-            member.Squad.Candidates.Remove(candidate);
-            member.Squad.Members.Add(candidate);
-            candidate.PendingSquadMembership.Clear();
-            await _data.SaveChangesAsync().ConfigureAwait(false);
-            await _publishSender.CallAsync($"{member.Squad} пополняется игроком <@{candidate.DiscordId:D}>")
-                .ConfigureAwait(false);
-            return Ok();
-        }
-
-        [HttpPatch("decline")]
-        [SquadCommanderAuthorize]
-        public async Task<ActionResult> PatchDecline(int memberId)
-        {
-            Member? member = await this.GetCurrentMember(_data).ConfigureAwait(false);
-            if (member is null) return Unauthorized();
-            if (member.Squad is null) return Forbid();
-
-            Member? candidate = member.Squad.Candidates.FirstOrDefault(x => x.Id == memberId);
-            if (candidate is null) return NotFound();
-
-            member.Squad.Candidates.Remove(candidate);
-            await _data.SaveChangesAsync().ConfigureAwait(false);
-            return Ok();
-        }
+        member.SquadPart?.Squad.Candidates!.Remove(candidate);
+        await _data.SaveChangesAsync().ConfigureAwait(false);
+        return Ok();
     }
 }

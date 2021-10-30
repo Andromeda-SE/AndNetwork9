@@ -12,72 +12,71 @@ using AndNetwork9.Shared.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace AndNetwork9.Server.Controllers
+namespace AndNetwork9.Server.Controllers;
+
+[Route("api/[controller]")]
+[ApiController]
+public class ElectionController : ControllerBase
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class ElectionController : ControllerBase
+    private readonly ClanDataContext _data;
+    private readonly VoteSender _voteSender;
+
+    public ElectionController(ClanDataContext data, VoteSender voteSender)
     {
-        private readonly ClanDataContext _data;
-        private readonly VoteSender _voteSender;
+        _data = data;
+        _voteSender = voteSender;
+    }
 
-        public ElectionController(ClanDataContext data, VoteSender voteSender)
+    [HttpGet]
+    [Authorize]
+    public async Task<ActionResult<CouncilElection>> Get()
+    {
+        Member? member = await this.GetCurrentMember(_data).ConfigureAwait(false);
+        if (member is null) return Unauthorized();
+
+        return Ok(_data.Elections.Select(x => new {x.Id, x.Stage}));
+    }
+
+    [HttpGet("current")]
+    [Authorize]
+    public async Task<ActionResult<CouncilElection>> GetCurrent()
+    {
+        Member? member = await this.GetCurrentMember(_data).ConfigureAwait(false);
+        if (member is null) return Unauthorized();
+
+        return Ok(_data.Elections.Single(x => x.Stage != ElectionStage.Ended).GetCouncilElection(member));
+    }
+
+    [HttpGet("{id:int}")]
+    [MinRankAuthorize]
+    public async Task<ActionResult<CouncilElection>> Get(int id)
+    {
+        Member? member = await this.GetCurrentMember(_data).ConfigureAwait(false);
+        if (member is null) return Unauthorized();
+
+        Election? election = await _data.Elections.FindAsync(id).ConfigureAwait(false);
+        if (election is null) return NotFound();
+        CouncilElection result = election.GetCouncilElection(member);
+        return Ok(result);
+    }
+
+
+    [HttpPost("vote")]
+    [MinRankAuthorize]
+    public async Task<IActionResult> PostVote(Dictionary<int, Dictionary<int, uint>> vote)
+    {
+        Member? member = await this.GetCurrentMember(_data).ConfigureAwait(false);
+        if (member is null) return Unauthorized();
+        try
         {
-            _data = data;
-            _voteSender = voteSender;
+            await _voteSender.CallAsync(new(member.Id, vote.ToDictionary(x => (Direction)x.Key, x => x.Value)))
+                .ConfigureAwait(false);
+        }
+        catch
+        {
+            return BadRequest();
         }
 
-        [HttpGet]
-        [Authorize]
-        public async Task<ActionResult<CouncilElection>> Get()
-        {
-            Member? member = await this.GetCurrentMember(_data).ConfigureAwait(false);
-            if (member is null) return Unauthorized();
-
-            return Ok(_data.Elections.Select(x => new {x.Id, x.Stage}));
-        }
-
-        [HttpGet("current")]
-        [Authorize]
-        public async Task<ActionResult<CouncilElection>> GetCurrent()
-        {
-            Member? member = await this.GetCurrentMember(_data).ConfigureAwait(false);
-            if (member is null) return Unauthorized();
-
-            return Ok(_data.Elections.Single(x => x.Stage != ElectionStage.Ended).GetCouncilElection(member));
-        }
-
-        [HttpGet("{id:int}")]
-        [MinRankAuthorize]
-        public async Task<ActionResult<CouncilElection>> Get(int id)
-        {
-            Member? member = await this.GetCurrentMember(_data).ConfigureAwait(false);
-            if (member is null) return Unauthorized();
-
-            Election? election = await _data.Elections.FindAsync(id).ConfigureAwait(false);
-            if (election is null) return NotFound();
-            CouncilElection result = election.GetCouncilElection(member);
-            return Ok(result);
-        }
-
-
-        [HttpPost("vote")]
-        [MinRankAuthorize]
-        public async Task<IActionResult> PostVote(Dictionary<int, Dictionary<int, uint>> vote)
-        {
-            Member? member = await this.GetCurrentMember(_data).ConfigureAwait(false);
-            if (member is null) return Unauthorized();
-            try
-            {
-                await _voteSender.CallAsync(new(member.Id, vote.ToDictionary(x => (Direction)x.Key, x => x.Value)))
-                    .ConfigureAwait(false);
-            }
-            catch
-            {
-                return BadRequest();
-            }
-
-            return Ok();
-        }
+        return Ok();
     }
 }
