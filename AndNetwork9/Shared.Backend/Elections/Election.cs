@@ -58,4 +58,6 @@ public record Election : IConcurrencyToken
             Votes = votes,
         };
     }
+
+    public DateTime LastChanged { get; set; }
 }

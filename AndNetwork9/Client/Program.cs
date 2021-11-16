@@ -1,10 +1,13 @@
 using System;
+using System.Globalization;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using AndNetwork9.Client.Services;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace AndNetwork9.Client;
 
@@ -23,10 +26,15 @@ public class Program
             DefaultVersionPolicy = HttpVersionPolicy.RequestVersionOrHigher,
         });
 
+        builder.Services.AddSingleton<ModelService>();
+
         builder.Services.AddScoped<AuthStateProvider>();
         builder.Services.AddScoped<AuthenticationStateProvider, AuthStateProvider>();
         builder.Services.AddOptions();
         builder.Services.AddAuthorizationCore();
+
+        CultureInfo.DefaultThreadCurrentCulture = new CultureInfo("ru");
+        CultureInfo.DefaultThreadCurrentUICulture = new CultureInfo("ru");
 
         await builder.Build().RunAsync();
     }

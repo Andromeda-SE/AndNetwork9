@@ -2,6 +2,7 @@
 
 public enum Direction
 {
+    Auxiliary = -2,
     Reserve = -1,
     None,
     Training,

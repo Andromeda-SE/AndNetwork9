@@ -2,7 +2,7 @@
 
 namespace AndNetwork9.Shared.Interfaces;
 
-public interface IConcurrencyToken
+public interface IConcurrencyToken : ILastChanged
 {
     Guid ConcurrencyToken { get; set; }
 }

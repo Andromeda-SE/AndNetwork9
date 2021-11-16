@@ -37,4 +37,5 @@ public record Squad : IId
     int IId.Id => Number;
 
     public Guid ConcurrencyToken { get; set; }
+    public DateTime LastChanged { get; set; }
 }

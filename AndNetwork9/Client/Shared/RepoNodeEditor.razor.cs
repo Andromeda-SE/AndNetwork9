@@ -13,6 +13,19 @@ namespace AndNetwork9.Client.Shared;
 
 public partial class RepoNodeEditor
 {
+    private bool _initialized = false;
+    private bool _loadEnabled;
+
+    private bool LoadEnabled
+    {
+        get => _loadEnabled;
+        set
+        {
+            _loadEnabled = value;
+            StateHasChanged();
+        }
+    }
+
     public enum VersionLevel
     {
         Version,
@@ -29,19 +42,30 @@ public partial class RepoNodeEditor
     public string Description { get; set; }
     public VersionLevel Level { get; set; }
     public byte[] File { get; set; }
-
+    private bool LoadButtonEnabled => File is not null && !string.IsNullOrWhiteSpace(Description) && _loadEnabled;
     private async void FileChanged(InputFileChangeEventArgs e)
     {
-        IBrowserFile file = e.File;
-        await using Stream stream = file.OpenReadStream();
-        await using MemoryStream memoryStream = new();
-        await stream.CopyToAsync(memoryStream);
 
-        File = memoryStream.ToArray();
+        try
+        {
+            IBrowserFile file = e.File;
+            await using Stream stream = file.OpenReadStream(157286400L);
+            await using MemoryStream memoryStream = new();
+            await stream.CopyToAsync(memoryStream);
+
+            File = memoryStream.ToArray();
+        }
+        catch
+        {
+            File = null;
+        }
+
+        StateHasChanged();
     }
 
     private async Task Send()
     {
+        _loadEnabled = false;
         Console.WriteLine(string.Join(Environment.NewLine,
             Repo.Nodes.Select(x =>
                 $"V = {x.Version}, M = {x.Modification}, P = {x.Prototype}, S - {x.Description}")));
@@ -92,5 +116,13 @@ public partial class RepoNodeEditor
         Console.WriteLine($"F: V = {version}, M = {modification}, P = {prototype}");
         HttpResponseMessage response = await Client.PutAsJsonAsync($"api/Repo/{Repo.Id}/node", newNode);
         RepoUpdated(await response.Content.ReadFromJsonAsync<RepoNode>());
+
+        _loadEnabled = true;
+    }
+
+    protected override void OnInitialized()
+    {
+        _initialized = true;
+        _loadEnabled = true;
     }
 }

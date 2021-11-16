@@ -65,6 +65,7 @@ public class ClanDataContext : DbContext
                 entity.HasMany(x => x.Votings).WithOne(x => x.Election).IsRequired();
 
                 entity.Property(x => x.ConcurrencyToken).IsRowVersion().HasDefaultValueSql("gen_random_uuid()");
+                entity.Property(x => x.LastChanged).IsRowVersion().HasDefaultValueSql("now()");
             });
 
             modelBuilder.Entity<ElectionVoting>(entity =>
@@ -82,6 +83,7 @@ public class ClanDataContext : DbContext
                 entity.HasMany(x => x.Members).WithOne(x => x.Voting).IsRequired();
 
                 entity.Property(x => x.ConcurrencyToken).IsRowVersion().HasDefaultValueSql("gen_random_uuid()");
+                entity.Property(x => x.LastChanged).IsRowVersion().HasDefaultValueSql("now()");
             });
 
             modelBuilder.Entity<ElectionsMember>(entity =>
@@ -106,6 +108,7 @@ public class ClanDataContext : DbContext
                 entity.Property(x => x.VotedTime);
 
                 entity.Property(x => x.ConcurrencyToken).IsRowVersion().HasDefaultValueSql("gen_random_uuid()");
+                entity.Property(x => x.LastChanged).IsRowVersion().HasDefaultValueSql("now()");
             });
         }
 
@@ -123,6 +126,7 @@ public class ClanDataContext : DbContext
                 entity.HasMany(x => x.AllowedMembers).WithMany(x => x.AccessRulesOverrides);
 
                 entity.Property(x => x.ConcurrencyToken).IsRowVersion().HasDefaultValueSql("gen_random_uuid()");
+                entity.Property(x => x.LastChanged).IsRowVersion().HasDefaultValueSql("now()");
             });
 
             modelBuilder.Entity<Comment>(entity =>
@@ -131,11 +135,15 @@ public class ClanDataContext : DbContext
                 entity.HasOne(x => x.Author);
 
                 entity.Property(x => x.Text).IsRequired();
-                entity.HasMany(x => x.Files);
+                entity.HasOne(x => x.Task).WithMany(x => x.Comments).HasForeignKey(x => x.TaskId).IsRequired(false);
+                entity.HasOne(x => x.TaskDescription).WithOne(x => x.Description).HasForeignKey<Comment>(x => x.TaskDescriptionId).IsRequired(false);
+                entity.HasOne(x => x.Repo).WithMany(x => x.Comments).HasForeignKey(x => x.RepoId).IsRequired(false);
+                entity.HasOne(x => x.Voting).WithMany(x => x.Comments).HasForeignKey(x => x.VotingId).IsRequired(false);
                 entity.Property(x => x.CreateTime).HasColumnType("timestamp with time zone").IsRequired();
                 entity.Property(x => x.LastEditTime).HasColumnType("timestamp with time zone").IsRequired(false);
 
                 entity.Property(x => x.ConcurrencyToken).IsRowVersion().HasDefaultValueSql("gen_random_uuid()");
+                entity.Property(x => x.LastChanged).IsRowVersion().HasDefaultValueSql("now()");
             });
 
             modelBuilder.Entity<Tag>(entity =>
@@ -144,6 +152,7 @@ public class ClanDataContext : DbContext
                 entity.HasMany(x => x.Tasks).WithMany(x => x.Tags);
 
                 entity.Property(x => x.ConcurrencyToken).IsRowVersion().HasDefaultValueSql("gen_random_uuid()");
+                entity.Property(x => x.LastChanged).IsRowVersion().HasDefaultValueSql("now()");
             });
         }
 
@@ -165,6 +174,7 @@ public class ClanDataContext : DbContext
                 entity.Property(x => x.Description);
 
                 entity.Property(x => x.ConcurrencyToken).IsRowVersion().HasDefaultValueSql("gen_random_uuid()");
+                entity.Property(x => x.LastChanged).IsRowVersion().HasDefaultValueSql("now()");
             });
 
             modelBuilder.Entity<Member>(entity =>
@@ -213,6 +223,7 @@ public class ClanDataContext : DbContext
                 entity.HasMany(x => x.PendingSquadMembership).WithMany(x => x.Candidates);
 
                 entity.Property(x => x.ConcurrencyToken).IsRowVersion().HasDefaultValueSql("gen_random_uuid()");
+                entity.Property(x => x.LastChanged).IsRowVersion().HasDefaultValueSql("now()");
             });
 
             modelBuilder.Entity<Squad>(entity =>
@@ -232,6 +243,7 @@ public class ClanDataContext : DbContext
                 entity.HasMany(x => x.SquadParts).WithOne(x => x.Squad).HasForeignKey(x => new {x.Number, x.Part});
 
                 entity.Property(x => x.ConcurrencyToken).IsRowVersion().HasDefaultValueSql("gen_random_uuid()");
+                entity.Property(x => x.LastChanged).IsRowVersion().HasDefaultValueSql("now()");
             });
 
             modelBuilder.Entity<SquadPart>(entity =>
@@ -248,6 +260,9 @@ public class ClanDataContext : DbContext
 
                 entity.Property(x => x.Description);
                 entity.Property(x => x.Comment);
+
+                entity.Property(x => x.ConcurrencyToken).IsRowVersion().HasDefaultValueSql("gen_random_uuid()");
+                entity.Property(x => x.LastChanged).IsRowVersion().HasDefaultValueSql("now()");
             });
 
             modelBuilder.Entity<Task>(entity =>
@@ -255,8 +270,8 @@ public class ClanDataContext : DbContext
                 entity.HasKey(x => x.Id);
 
                 entity.Property(x => x.Title);
-                entity.Property(x => x.Description);
-                entity.HasMany(x => x.Comments);
+                entity.HasOne(x => x.Description).WithOne(x => x.TaskDescription).HasForeignKey<Task>(x => x.DescriptionId).IsRequired(true);
+                entity.HasMany(x => x.Comments).WithOne(x => x.Task);
                 entity.HasMany(x => x.Tags).WithMany(x => x.Tasks);
 
                 entity.HasMany(x => x.Files).WithMany(x => x.Tasks);
@@ -277,20 +292,21 @@ public class ClanDataContext : DbContext
                 entity.Property(x => x.StartTime);
                 entity.Property(x => x.LastEditTime).IsRequired(false);
                 entity.Property(x => x.EndTime);
-                entity.Property(x => x.Status);
-                entity.Property(x => x.Level);
+                entity.Property(x => x.Status).IsRequired();
+                entity.Property(x => x.Level).IsRequired();
                 entity.Property(x => x.Priority).IsRequired();
-                entity.Property(x => x.Award).IsRequired(false);
+                entity.Property(x => x.Award).IsRequired();
                 entity.Property(x => x.AllowAssignByMember).IsRequired();
 
                 entity.HasOne(x => x.Parent).WithMany(x => x.Children).HasForeignKey(x => x.ParentId)
                     .IsRequired(false);
-                entity.HasMany(x => x.Children).WithOne(x => x.Parent).IsRequired();
+                entity.HasMany(x => x.Children).WithOne(x => x.Parent).IsRequired(false);
 
                 entity.HasMany(x => x.Watchers).WithMany(x => x.WatchingTasks);
                 entity.Ignore(x => x.WatchersId);
 
                 entity.Property(x => x.ConcurrencyToken).IsRowVersion().HasDefaultValueSql("gen_random_uuid()");
+                entity.Property(x => x.LastChanged).IsRowVersion().HasDefaultValueSql("now()");
             });
         }
 
@@ -338,6 +354,7 @@ public class ClanDataContext : DbContext
                 entity.Property(x => x.ChannelFlags).IsRequired();
 
                 entity.Property(x => x.ConcurrencyToken).IsRowVersion().HasDefaultValueSql("gen_random_uuid()");
+                entity.Property(x => x.LastChanged).IsRowVersion().HasDefaultValueSql("now()");
             });
         }
 
@@ -349,7 +366,7 @@ public class ClanDataContext : DbContext
 
                 entity.Property(x => x.Title);
                 entity.Property(x => x.Description);
-                entity.HasMany(x => x.Comments);
+                entity.HasMany(x => x.Comments).WithOne(x => x.Voting);
 
                 entity.HasOne(x => x.ReadRule).WithMany().HasForeignKey(x => x.ReadRuleId);
                 entity.HasOne(x => x.EditRule).WithMany().HasForeignKey(x => x.EditRuleId);
@@ -365,6 +382,7 @@ public class ClanDataContext : DbContext
                 entity.Property(x => x.Result);
 
                 entity.Property(x => x.ConcurrencyToken).IsRowVersion().HasDefaultValueSql("gen_random_uuid()");
+                entity.Property(x => x.LastChanged).IsRowVersion().HasDefaultValueSql("now()");
             });
 
             modelBuilder.Entity<Vote>(entity =>
@@ -380,6 +398,7 @@ public class ClanDataContext : DbContext
                 entity.Property(x => x.Result);
 
                 entity.Property(x => x.ConcurrencyToken).IsRowVersion().HasDefaultValueSql("gen_random_uuid()");
+                entity.Property(x => x.LastChanged).IsRowVersion().HasDefaultValueSql("now()");
             });
         }
 
@@ -402,6 +421,7 @@ public class ClanDataContext : DbContext
                 entity.HasOne(x => x.WriteRule).WithMany().HasForeignKey(x => x.WriteRuleId).IsRequired();
 
                 entity.Property(x => x.ConcurrencyToken).IsRowVersion().HasDefaultValueSql("gen_random_uuid()");
+                entity.Property(x => x.LastChanged).IsRowVersion().HasDefaultValueSql("now()");
             });
 
             modelBuilder.Entity<RepoNode>(entity =>
@@ -420,8 +440,10 @@ public class ClanDataContext : DbContext
                 entity.HasOne(x => x.Repo).WithMany(x => x.Nodes).IsRequired();
                 entity.Ignore(x => x.Tag);
                 entity.Property(x => x.Description).IsRequired();
+                entity.Property(x => x.Official).IsRequired();
 
                 entity.Property(x => x.ConcurrencyToken).IsRowVersion().HasDefaultValueSql("gen_random_uuid()");
+                entity.Property(x => x.LastChanged).IsRowVersion().HasDefaultValueSql("now()");
             });
 
             modelBuilder.Entity<StaticFile>(entity =>
@@ -438,6 +460,7 @@ public class ClanDataContext : DbContext
                 entity.HasOne(x => x.ReadRule).WithMany().HasForeignKey(x => x.ReadRuleId);
 
                 entity.Property(x => x.ConcurrencyToken).IsRowVersion().HasDefaultValueSql("gen_random_uuid()");
+                entity.Property(x => x.LastChanged).IsRowVersion().HasDefaultValueSql("now()");
             });
         }
 

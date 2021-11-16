@@ -4,12 +4,15 @@ using System.Linq;
 using System.Threading.Tasks;
 using AndNetwork9.Server.Auth.Attributes;
 using AndNetwork9.Server.Extensions;
+using AndNetwork9.Server.Hubs;
 using AndNetwork9.Shared;
 using AndNetwork9.Shared.Backend;
+using AndNetwork9.Shared.Hubs;
 using AndNetwork9.Shared.Utility;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace AndNetwork9.Server.Controllers;
@@ -19,10 +22,12 @@ namespace AndNetwork9.Server.Controllers;
 public class AccessRuleController : ControllerBase
 {
     private readonly ClanDataContext _data;
+    private readonly IHubContext<ModelHub, IModelHub> _modelHub;
 
-    public AccessRuleController(ClanDataContext data)
+    public AccessRuleController(ClanDataContext data, IHubContext<ModelHub, IModelHub> modelHub)
     {
         _data = data;
+        _modelHub = modelHub;
     }
 
     [HttpGet("{id:int}")]
@@ -41,7 +46,7 @@ public class AccessRuleController : ControllerBase
     [ProducesResponseType(typeof(IList<Member>), 200)]
     [ProducesResponseType(typeof(void), 404)]
     [ProducesResponseType(typeof(void), 401)]
-    public async Task<ActionResult<IList<Member>>> GetOverrides(int id)
+    public async Task<ActionResult<IAsyncEnumerable<Member>>> GetOverrides(int id)
     {
         AccessRule? result = await _data.AccessRules.FindAsync(id).ConfigureAwait(false);
         return result is not null
@@ -60,6 +65,7 @@ public class AccessRuleController : ControllerBase
             .ToArray();
         EntityEntry<AccessRule> result = await _data.AccessRules.AddAsync(rule with {Id = 0}).ConfigureAwait(false);
         await _data.SaveChangesAsync().ConfigureAwait(false);
+        await _modelHub.Clients.All.ReceiveModelUpdate(typeof(AccessRule).FullName, result.Entity).ConfigureAwait(false);
         return Ok(result.Entity);
     }
 }

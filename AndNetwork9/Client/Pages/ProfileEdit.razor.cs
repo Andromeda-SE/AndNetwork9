@@ -2,10 +2,12 @@
 using System.Net.Http.Json;
 using AndNetwork9.Client.Services;
 using AndNetwork9.Shared.Enums;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components;
 
 namespace AndNetwork9.Client.Pages;
 
+[Authorize]
 public partial class ProfileEdit
 {
     private Direction _direction;

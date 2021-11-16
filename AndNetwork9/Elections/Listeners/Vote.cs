@@ -35,7 +35,7 @@ public class Vote : BaseRabbitListenerWithoutResponse<VoteArg>
     {
         try
         {
-            Logger.LogInformation("Start porcess voting…");
+            Logger.LogInformation("Start process voting…");
             Logger.LogInformation(
                 $"MemberId: {request.MemberId}{Environment.NewLine}{string.Join(Environment.NewLine, request.Bulletin.Select(x => $"{x.Key} {string.Join(", ", x.Value.Select(y => $"{y.Key}-{y.Value}"))}"))}");
             AsyncServiceScope scope = _scopeFactory.CreateAsyncScope();

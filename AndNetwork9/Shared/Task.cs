@@ -12,18 +12,19 @@ namespace AndNetwork9.Shared;
 public record Task : IId, IComparable<Task>
 {
     public string Title { get; set; } = string.Empty;
-    public virtual string Description { get; set; } = string.Empty;
-    public virtual IList<Comment> Comments { get; set; } = new List<Comment>();
-    public virtual IList<Tag> Tags { get; set; } = new List<Tag>(0);
+    public virtual int? DescriptionId { get; set; }
+    public virtual Comment? Description { get; set; }
+    public virtual IList<Comment>? Comments { get; set; } = new List<Comment>();
+    public virtual IList<Tag>? Tags { get; set; } = new List<Tag>(0);
 
-    public virtual IList<StaticFile> Files { get; set; } = new List<StaticFile>(0);
+    public virtual IList<StaticFile>? Files { get; set; } = new List<StaticFile>(0);
 
     public int ReadRuleId { get; set; }
     [JsonIgnore]
-    public virtual AccessRule ReadRule { get; set; } = null!;
+    public virtual AccessRule? ReadRule { get; set; } = null!;
     public int WriteRuleId { get; set; }
     [JsonIgnore]
-    public virtual AccessRule WriteRule { get; set; } = null!;
+    public virtual AccessRule? WriteRule { get; set; } = null!;
 
     public int? AssigneeId { get; set; }
     [JsonIgnore]
@@ -39,10 +40,7 @@ public record Task : IId, IComparable<Task>
     [JsonIgnore]
     public virtual Member? Reporter { get; set; }
 
-    public IEnumerable<int> WatchersId
-    {
-        get { return Watchers.Select(x => x.Id); }
-    }
+    public IEnumerable<int> WatchersId => Watchers.Select(x => x.Id);
 
     [JsonIgnore]
     public virtual IList<Member> Watchers { get; set; } = new List<Member>(0);
@@ -54,7 +52,7 @@ public record Task : IId, IComparable<Task>
     public TaskStatus Status { get; set; }
     public TaskPriority Priority { get; set; }
     public TaskLevel Level { get; set; }
-    public AwardType? Award { get; set; }
+    public AwardType Award { get; set; }
 
     public bool AllowAssignByMember { get; set; }
 
@@ -74,8 +72,6 @@ public record Task : IId, IComparable<Task>
     public int Id { get; set; }
     public Guid ConcurrencyToken { get; set; }
 
-    public virtual IEnumerable<Member> GetAllWatchers()
-    {
-        foreach (Member watcher in Watchers.Where(x => x.DiscordNotificationsEnabled)) yield return watcher;
-    }
+    public virtual IEnumerable<Member> GetAllWatchers() => Watchers.Where(x => x.DiscordNotificationsEnabled && (ReadRule?.HasAccess(x) ?? false)).DistinctBy(x => x.Id); 
+    public DateTime LastChanged { get; set; }
 }

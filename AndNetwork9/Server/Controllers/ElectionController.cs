@@ -1,16 +1,20 @@
 ﻿using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using AndNetwork9.Server.Auth.Attributes;
 using AndNetwork9.Server.Extensions;
+using AndNetwork9.Server.Hubs;
 using AndNetwork9.Shared;
 using AndNetwork9.Shared.Backend;
 using AndNetwork9.Shared.Backend.Elections;
 using AndNetwork9.Shared.Backend.Senders.Elections;
 using AndNetwork9.Shared.Elections;
 using AndNetwork9.Shared.Enums;
+using AndNetwork9.Shared.Hubs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 
 namespace AndNetwork9.Server.Controllers;
 
@@ -20,16 +24,19 @@ public class ElectionController : ControllerBase
 {
     private readonly ClanDataContext _data;
     private readonly VoteSender _voteSender;
+    private readonly IHubContext<ModelHub, IModelHub> _modelHub;
 
-    public ElectionController(ClanDataContext data, VoteSender voteSender)
+    public ElectionController(ClanDataContext data, VoteSender voteSender, IHubContext<ModelHub, IModelHub> modelHub)
     {
         _data = data;
         _voteSender = voteSender;
+        _modelHub = modelHub;
     }
 
     [HttpGet]
     [Authorize]
-    public async Task<ActionResult<CouncilElection>> Get()
+    [ResponseCache(Location = ResponseCacheLocation.Client, Duration = 30, NoStore = false)]
+    public async Task<ActionResult<IAsyncEnumerable<CouncilElection>>> Get()
     {
         Member? member = await this.GetCurrentMember(_data).ConfigureAwait(false);
         if (member is null) return Unauthorized();
@@ -49,6 +56,7 @@ public class ElectionController : ControllerBase
 
     [HttpGet("{id:int}")]
     [MinRankAuthorize]
+    [ResponseCache(Location = ResponseCacheLocation.Client, Duration = 30, NoStore = false)]
     public async Task<ActionResult<CouncilElection>> Get(int id)
     {
         Member? member = await this.GetCurrentMember(_data).ConfigureAwait(false);
@@ -77,6 +85,9 @@ public class ElectionController : ControllerBase
             return BadRequest();
         }
 
+        await _modelHub.Clients
+            .Users(await _data.Members.AsAsyncEnumerable().Where(x => x.Rank > Rank.None).Select(x => x.Id.ToString("D", CultureInfo.InvariantCulture)).ToArrayAsync().ConfigureAwait(false))
+            .ReceiveModelUpdate(typeof(CouncilElection).FullName, _data.Elections.Single(x => x.Stage != ElectionStage.Ended).GetCouncilElection(member)).ConfigureAwait(false);
         return Ok();
     }
 }

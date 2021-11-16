@@ -32,4 +32,5 @@ public record Repo : IId
     public virtual AccessRule? WriteRule { get; set; } = null!;
     public int Id { get; set; }
     public Guid ConcurrencyToken { get; set; }
+    public DateTime LastChanged { get; set; }
 }

@@ -25,4 +25,5 @@ public record CouncilElection : IId
     public List<CouncilElectionVote> Votes { get; set; } = new();
     public int Id { get; set; }
     public Guid ConcurrencyToken { get; set; }
+    public DateTime LastChanged { get; set; }
 }

@@ -22,21 +22,21 @@ public static class ClanRulesExtensions
             new KeyValuePair<Rank, int>(Rank.JuniorEmployee, 15),
             new KeyValuePair<Rank, int>(Rank.Employee, 20),
             new KeyValuePair<Rank, int>(Rank.SeniorEmployee, 25),
-            new KeyValuePair<Rank, int>(Rank.JuniorSpecialist, 30),
-            new KeyValuePair<Rank, int>(Rank.Specialist, 35),
-            new KeyValuePair<Rank, int>(Rank.SeniorSpecialist, 40),
-            new KeyValuePair<Rank, int>(Rank.JuniorIntercessor, 45),
-            new KeyValuePair<Rank, int>(Rank.Intercessor, 50),
-            new KeyValuePair<Rank, int>(Rank.SeniorIntercessor, 55),
-            new KeyValuePair<Rank, int>(Rank.JuniorSentinel, 60),
-            new KeyValuePair<Rank, int>(Rank.Sentinel, 65),
-            new KeyValuePair<Rank, int>(Rank.SeniorSentinel, 70),
+            new KeyValuePair<Rank, int>(Rank.JuniorSpecialist, 35),
+            new KeyValuePair<Rank, int>(Rank.Specialist, 45),
+            new KeyValuePair<Rank, int>(Rank.SeniorSpecialist, 55),
+            new KeyValuePair<Rank, int>(Rank.JuniorIntercessor, 70),
+            new KeyValuePair<Rank, int>(Rank.Intercessor, 85),
+            new KeyValuePair<Rank, int>(Rank.SeniorIntercessor, 105),
+            new KeyValuePair<Rank, int>(Rank.JuniorSentinel, 120),
+            new KeyValuePair<Rank, int>(Rank.Sentinel, 135),
+            new KeyValuePair<Rank, int>(Rank.SeniorSentinel, 150),
         }));
 
     public static Rank GetRank(this IEnumerable<Award> awards)
     {
         double result = awards.Sum(x => x.Points);
-        return RankPoints.Where(x => x.Value <= result).OrderByDescending(x => x.Value).First().Key;
+        return RankPoints.Where(x => x.Value <= result).MaxBy(x => x.Value).Key;
     }
 
     public static string? GetRankIcon(this Rank rank)
@@ -85,6 +85,7 @@ public static class ClanRulesExtensions
             Direction.Research => "Исследования и разработка",
             Direction.Military => "Атака и оборона",
             Direction.Agitation => "Агитация и внешние связи",
+            Direction.Auxiliary => "Ауксилия",
             _ => throw new ArgumentOutOfRangeException(nameof(department), department, null),
         };
     }
@@ -127,7 +128,10 @@ public static class ClanRulesExtensions
     {
         return type switch
         {
-            AwardType.None => string.Empty,
+            AwardType.LargePenalty => "Большой штраф",
+            AwardType.MediumPenalty => "Средний штраф",
+            AwardType.SmallPenalty => "Малый штраф",
+            AwardType.None => "(нет)",
             AwardType.Copper => "Медь",
             AwardType.Bronze => "Бронза",
             AwardType.Silver => "Серебро",
@@ -170,6 +174,9 @@ public static class ClanRulesExtensions
     {
         return awardType switch
         {
+            AwardType.LargePenalty => "⤋",
+            AwardType.MediumPenalty => "⇓",
+            AwardType.SmallPenalty => "↓",
             AwardType.None => string.Empty,
             AwardType.Copper => "\U0001f7e9",
             AwardType.Bronze => "\U0001F7EB",

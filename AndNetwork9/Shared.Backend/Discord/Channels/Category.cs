@@ -11,4 +11,5 @@ public class Category : IConcurrencyToken
     public string Name { get; set; } = string.Empty;
     public virtual IList<Channel> Channels { get; set; } = Array.Empty<Channel>();
     public Guid ConcurrencyToken { get; set; }
+    public DateTime LastChanged { get; set; }
 }

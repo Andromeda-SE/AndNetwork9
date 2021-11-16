@@ -4,14 +4,18 @@ using System.Linq;
 using System.Threading.Tasks;
 using AndNetwork9.Server.Auth.Attributes;
 using AndNetwork9.Server.Extensions;
+using AndNetwork9.Server.Hubs;
 using AndNetwork9.Shared;
 using AndNetwork9.Shared.Backend;
 using AndNetwork9.Shared.Backend.Senders.Discord;
 using AndNetwork9.Shared.Enums;
 using AndNetwork9.Shared.Extensions;
+using AndNetwork9.Shared.Hubs;
 using AndNetwork9.Shared.Utility;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace AndNetwork9.Server.Controllers;
@@ -23,12 +27,14 @@ public class MemberController : ControllerBase
     private readonly ClanDataContext _data;
     private readonly PublishSender _publishSender;
     private readonly UpdateUserSender _updateUserSender;
+    private readonly IHubContext<ModelHub, IModelHub> _modelHub;
 
-    public MemberController(ClanDataContext data, PublishSender publishSender, UpdateUserSender updateUserSender)
+    public MemberController(ClanDataContext data, PublishSender publishSender, UpdateUserSender updateUserSender, IHubContext<ModelHub, IModelHub> modelHub)
     {
         _data = data;
         _publishSender = publishSender;
         _updateUserSender = updateUserSender;
+        _modelHub = modelHub;
     }
 
     [HttpGet("all")]
@@ -36,15 +42,18 @@ public class MemberController : ControllerBase
     [ProducesResponseType(typeof(IEnumerable<Member>), 200)]
     [ProducesResponseType(typeof(void), 401)]
     [ProducesResponseType(typeof(void), 403)]
-    public ActionResult<IEnumerable<Member>> GetAll()
+    [ResponseCache(Location = ResponseCacheLocation.Client, Duration = 30, NoStore = false)]
+    public ActionResult<IAsyncEnumerable<Member>> GetAll()
     {
-        return Ok(_data.Members.Where(x => x.Rank > Rank.None).GetShort());
+        IQueryable<Member> result = _data.Members.Where(x => x.Rank > Rank.None);
+        return Ok(result.GetShort());
     }
 
     [HttpGet]
     [Authorize]
     [ProducesResponseType(typeof(Member), 200)]
     [ProducesResponseType(typeof(void), 401)]
+    [ResponseCache(Location = ResponseCacheLocation.Client, Duration = 30, NoStore = false)]
     public async Task<ActionResult<Member>> Get()
     {
         Member? member = await this.GetCurrentMember(_data).ConfigureAwait(false);
@@ -59,6 +68,7 @@ public class MemberController : ControllerBase
     [ProducesResponseType(typeof(void), 401)]
     [ProducesResponseType(typeof(void), 403)]
     [ProducesResponseType(typeof(void), 404)]
+    [ResponseCache(Location = ResponseCacheLocation.Client, Duration = 30, NoStore = false)]
     public async Task<ActionResult<Member>> Get(int id)
     {
         Member? result = await _data.Members.FindAsync(id).ConfigureAwait(false);
@@ -71,6 +81,7 @@ public class MemberController : ControllerBase
     [ProducesResponseType(typeof(void), 401)]
     [ProducesResponseType(typeof(void), 403)]
     [ProducesResponseType(typeof(void), 404)]
+    [ResponseCache(Location = ResponseCacheLocation.Client, Duration = 30, NoStore = false)]
     public async Task<ActionResult<Member>> GetComment(int id)
     {
         Member? result = await _data.Members.FindAsync(id).ConfigureAwait(false);
@@ -93,6 +104,7 @@ public class MemberController : ControllerBase
         await _data.SaveChangesAsync().ConfigureAwait(false);
         if (member.DiscordId is not null)
             await _updateUserSender.CallAsync(member.DiscordId.Value).ConfigureAwait(false);
+        await _modelHub.Clients.All.ReceiveModelUpdate(typeof(Member).FullName, result.Entity).ConfigureAwait(false);
         return Ok(result.Entity);
     }
 
@@ -117,6 +129,7 @@ public class MemberController : ControllerBase
             .ConfigureAwait(false);
         if (member.DiscordId is not null)
             await _updateUserSender.CallAsync(member.DiscordId.Value).ConfigureAwait(false);
+        await _modelHub.Clients.All.ReceiveModelUpdate(typeof(Member).FullName, member).ConfigureAwait(false);
         return Ok();
     }
 
@@ -138,6 +151,7 @@ public class MemberController : ControllerBase
             .ConfigureAwait(false);
         if (member.DiscordId is not null)
             await _updateUserSender.CallAsync(member.DiscordId.Value).ConfigureAwait(false);
+        await _modelHub.Clients.All.ReceiveModelUpdate(typeof(Member).FullName, member).ConfigureAwait(false);
         return Ok();
     }
 
@@ -152,6 +166,7 @@ public class MemberController : ControllerBase
         await _data.SaveChangesAsync().ConfigureAwait(false);
         if (member.DiscordId is not null)
             await _updateUserSender.CallAsync(member.DiscordId.Value).ConfigureAwait(false);
+        await _modelHub.Clients.All.ReceiveModelUpdate(typeof(Member).FullName, member).ConfigureAwait(false);
         return Ok();
     }
 
@@ -174,6 +189,7 @@ public class MemberController : ControllerBase
 
 
         await _data.SaveChangesAsync().ConfigureAwait(false);
+        await _modelHub.Clients.All.ReceiveModelUpdate(typeof(Member).FullName, member).ConfigureAwait(false);
         return Ok();
     }
 
@@ -222,6 +238,7 @@ public class MemberController : ControllerBase
         await _data.SaveChangesAsync().ConfigureAwait(false);
         if (resultMember.DiscordId is not null)
             await _updateUserSender.CallAsync(resultMember.DiscordId.Value).ConfigureAwait(false);
+        await _modelHub.Clients.All.ReceiveModelUpdate(typeof(Member).FullName, result.Entity).ConfigureAwait(false);
         return Ok(result.Entity);
     }
 }

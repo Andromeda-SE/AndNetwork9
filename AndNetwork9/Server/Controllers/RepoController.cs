@@ -1,16 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using AndNetwork9.Server.Extensions;
+using AndNetwork9.Server.Hubs;
 using AndNetwork9.Shared;
 using AndNetwork9.Shared.Backend;
 using AndNetwork9.Shared.Backend.Senders.Storage;
 using AndNetwork9.Shared.Extensions;
+using AndNetwork9.Shared.Hubs;
 using AndNetwork9.Shared.Storage;
+using AndNetwork9.Shared.Utility;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Net.Http.Headers;
 
@@ -24,24 +29,27 @@ public class RepoController : ControllerBase
     private readonly NewRepoSender _newRepoSender;
     private readonly RepoGetFileSender _repoGetFileSender;
     private readonly RepoSetFileSender _repoSetFileSender;
+    private readonly IHubContext<ModelHub, IModelHub> _modelHub;
 
     public RepoController(ClanDataContext data, RepoGetFileSender repoGetFileSender, NewRepoSender newRepoSender,
-        RepoSetFileSender repoSetFileSender)
+        RepoSetFileSender repoSetFileSender, IHubContext<ModelHub, IModelHub> modelHub)
     {
         _data = data;
         _repoGetFileSender = repoGetFileSender;
         _newRepoSender = newRepoSender;
         _repoSetFileSender = repoSetFileSender;
+        _modelHub = modelHub;
     }
 
     [HttpGet]
     [Authorize]
-    public async Task<ActionResult<IEnumerable<Repo>>> Get()
+    [ResponseCache(Location = ResponseCacheLocation.Client, Duration = 30, NoStore = false)]
+    public async Task<ActionResult<IAsyncEnumerable<Repo>>> Get()
     {
         Member? member = await this.GetCurrentMember(_data).ConfigureAwait(false);
         if (member is null) return Unauthorized();
 
-        return Ok(_data.Repos.ToArray().Where(x => x.CreatorId == member.Id || x.ReadRule.HasAccess(member)));
+        return Ok(await _data.Repos.AsAsyncEnumerable().Where(x => x.CreatorId == member.Id || x.ReadRule.HasAccess(member)).ToArrayAsync());
     }
 
     [HttpPost]
@@ -69,6 +77,13 @@ public class RepoController : ControllerBase
             Nodes = Array.Empty<RepoNode>(),
             CommentId = 0,
         }).ConfigureAwait(false);
+        if (result is not null)
+        {
+            AccessRule? rule = await _data.AccessRules.FindAsync(repo.ReadRuleId).ConfigureAwait(false);
+            if (rule is not null) await _modelHub.Clients
+            .Users(await _data.Members.AsAsyncEnumerable().Where(x => rule.HasAccess(x)).Select(x => x.Id.ToString("D", CultureInfo.InvariantCulture)).ToArrayAsync().ConfigureAwait(false))
+            .ReceiveModelUpdate(typeof(Repo).FullName, result).ConfigureAwait(false);
+        }
         return Ok(result);
     }
 
@@ -89,6 +104,9 @@ public class RepoController : ControllerBase
         oldRepo.Name = newRepo.Name;
 
         await _data.SaveChangesAsync().ConfigureAwait(false);
+        await _modelHub.Clients
+            .Users(await _data.Members.AsAsyncEnumerable().Where(x => oldRepo.ReadRule.HasAccess(x)).Select(x => x.Id.ToString("D", CultureInfo.InvariantCulture)).ToArrayAsync())
+            .ReceiveModelUpdate(typeof(Repo).FullName, oldRepo).ConfigureAwait(false);
         return Ok(oldRepo);
     }
 
@@ -108,7 +126,7 @@ public class RepoController : ControllerBase
 
     [HttpGet("{id:int}/nodes")]
     [Authorize]
-    public async Task<ActionResult<IEnumerable<RepoNode>>> GetNodes(int id)
+    public async Task<ActionResult<IAsyncEnumerable<RepoNode>>> GetNodes(int id)
     {
         Member? member = await this.GetCurrentMember(_data).ConfigureAwait(false);
         if (member is null) return Unauthorized();
@@ -156,9 +174,16 @@ public class RepoController : ControllerBase
             CreateTime = DateTime.UtcNow,
             Author = member,
             Repo = repo,
+            Official = false,
         };
 
         await _repoSetFileSender.CallAsync(resultNode).ConfigureAwait(false);
+        await _modelHub.Clients
+            .Users((await _data.Members.ToArrayAsync().ConfigureAwait(false))
+                .Where(x => repo.ReadRule.HasAccess(x))
+                .Select(x => x.Id.ToString("D", CultureInfo.InvariantCulture))
+                .ToArray())
+            .ReceiveModelUpdate(typeof(Repo).FullName, repo).ConfigureAwait(false);
         return Ok(resultNode);
     }
 

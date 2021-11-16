@@ -42,7 +42,7 @@ public class Register : BaseRabbitListenerWithoutResponse<int>
         Member? member = await data.Members.FindAsync(memberId).ConfigureAwait(false);
 
         if (member is null) throw new FailedCallException(HttpStatusCode.NotFound);
-        if (member.Rank < Rank.Assistant || member.Direction <= Direction.None)
+        if (member.Direction <= Direction.None)
             throw new FailedCallException(HttpStatusCode.Forbidden);
 
         Election? election;

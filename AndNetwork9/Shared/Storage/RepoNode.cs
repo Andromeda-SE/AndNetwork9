@@ -10,6 +10,7 @@ public record RepoNode : IComparable<RepoNode>, IConcurrencyToken
     public int Version { get; set; }
     public int Modification { get; set; }
     public int Prototype { get; set; }
+    public bool Official { get; set; }
 
     public int? AuthorId { get; set; }
     [JsonIgnore]
@@ -48,4 +49,5 @@ public record RepoNode : IComparable<RepoNode>, IConcurrencyToken
     }
 
     public Guid ConcurrencyToken { get; set; }
+    public DateTime LastChanged { get; set; }
 }

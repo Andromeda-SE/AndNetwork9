@@ -5,7 +5,7 @@ namespace AndNetwork9.Client.Shared;
 public partial class BaseBodyWithAside
 {
     [Parameter]
-    public string Title { get; set; }
+    public RenderFragment Title { get; set; }
 
     [Parameter]
     public RenderFragment Main { get; set; }

@@ -44,4 +44,6 @@ public record Voting : IId
     {
         return Reporter?.Id == member.Id || EditRule.HasAccess(member);
     }
+
+    public DateTime LastChanged { get; set; }
 }

@@ -12,4 +12,5 @@ public record CouncilElectionVote : IConcurrencyToken
     public Dictionary<int, uint> Votes { get; set; } = new();
     public bool VoteAllowed { get; set; }
     public Guid ConcurrencyToken { get; set; }
+    public DateTime LastChanged { get; set; }
 }

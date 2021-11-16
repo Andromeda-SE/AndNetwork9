@@ -142,4 +142,6 @@ public record Member : IComparable<Member>, IEquatable<Member?>, IId, IComparabl
     {
         return VkId.HasValue ? $"http://vk.com/id{VkId:D}" : null;
     }
+
+    public DateTime LastChanged { get; set; }
 }

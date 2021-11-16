@@ -19,7 +19,8 @@ namespace AndNetwork9.Shared.Backend.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     DiscordId = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
                     Name = table.Column<string>(type: "text", nullable: false),
-                    ConcurrencyToken = table.Column<Guid>(type: "uuid", nullable: false)
+                    ConcurrencyToken = table.Column<Guid>(type: "uuid", nullable: false),
+                    LastChanged = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -39,7 +40,8 @@ namespace AndNetwork9.Shared.Backend.Migrations
                     StartDate = table.Column<DateOnly>(type: "date", nullable: false),
                     EndDate = table.Column<DateOnly>(type: "date", nullable: false),
                     Stage = table.Column<int>(type: "integer", nullable: false),
-                    ConcurrencyToken = table.Column<Guid>(type: "uuid", rowVersion: true, nullable: false, defaultValueSql: "gen_random_uuid()")
+                    ConcurrencyToken = table.Column<Guid>(type: "uuid", rowVersion: true, nullable: false, defaultValueSql: "gen_random_uuid()"),
+                    LastChanged = table.Column<DateTime>(type: "timestamp with time zone", rowVersion: true, nullable: false, defaultValueSql: "now()")
                 },
                 constraints: table =>
                 {
@@ -52,13 +54,14 @@ namespace AndNetwork9.Shared.Backend.Migrations
                 {
                     Number = table.Column<short>(type: "smallint", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    ConcurrencyToken = table.Column<Guid>(type: "uuid", rowVersion: true, nullable: false, defaultValueSql: "gen_random_uuid()"),
                     Name = table.Column<string>(type: "text", nullable: true),
                     DiscordRoleId = table.Column<decimal>(type: "numeric(20,0)", nullable: true),
                     CreateDate = table.Column<DateOnly>(type: "date", nullable: false),
                     DisbandDate = table.Column<DateOnly>(type: "date", nullable: true),
                     Description = table.Column<string>(type: "text", nullable: true),
-                    Comment = table.Column<string>(type: "text", nullable: true)
+                    Comment = table.Column<string>(type: "text", nullable: true),
+                    ConcurrencyToken = table.Column<Guid>(type: "uuid", rowVersion: true, nullable: false, defaultValueSql: "gen_random_uuid()"),
+                    LastChanged = table.Column<DateTime>(type: "timestamp with time zone", rowVersion: true, nullable: false, defaultValueSql: "now()")
                 },
                 constraints: table =>
                 {
@@ -70,7 +73,8 @@ namespace AndNetwork9.Shared.Backend.Migrations
                 columns: table => new
                 {
                     Name = table.Column<string>(type: "text", nullable: false),
-                    ConcurrencyToken = table.Column<Guid>(type: "uuid", rowVersion: true, nullable: false, defaultValueSql: "gen_random_uuid()")
+                    ConcurrencyToken = table.Column<Guid>(type: "uuid", rowVersion: true, nullable: false, defaultValueSql: "gen_random_uuid()"),
+                    LastChanged = table.Column<DateTime>(type: "timestamp with time zone", rowVersion: true, nullable: false, defaultValueSql: "now()")
                 },
                 constraints: table =>
                 {
@@ -84,7 +88,8 @@ namespace AndNetwork9.Shared.Backend.Migrations
                     ElectionId = table.Column<int>(type: "integer", nullable: false),
                     Direction = table.Column<int>(type: "integer", nullable: false),
                     AgainstAll = table.Column<int>(type: "integer", nullable: false),
-                    ConcurrencyToken = table.Column<Guid>(type: "uuid", rowVersion: true, nullable: false, defaultValueSql: "gen_random_uuid()")
+                    ConcurrencyToken = table.Column<Guid>(type: "uuid", rowVersion: true, nullable: false, defaultValueSql: "gen_random_uuid()"),
+                    LastChanged = table.Column<DateTime>(type: "timestamp with time zone", rowVersion: true, nullable: false, defaultValueSql: "now()")
                 },
                 constraints: table =>
                 {
@@ -103,10 +108,11 @@ namespace AndNetwork9.Shared.Backend.Migrations
                 {
                     Number = table.Column<short>(type: "smallint", nullable: false),
                     Part = table.Column<short>(type: "smallint", nullable: false),
-                    ConcurrencyToken = table.Column<Guid>(type: "uuid", nullable: false),
                     DiscordRoleId = table.Column<decimal>(type: "numeric(20,0)", nullable: true),
                     Description = table.Column<string>(type: "text", nullable: true),
-                    Comment = table.Column<string>(type: "text", nullable: true)
+                    Comment = table.Column<string>(type: "text", nullable: true),
+                    ConcurrencyToken = table.Column<Guid>(type: "uuid", rowVersion: true, nullable: false, defaultValueSql: "gen_random_uuid()"),
+                    LastChanged = table.Column<DateTime>(type: "timestamp with time zone", rowVersion: true, nullable: false, defaultValueSql: "now()")
                 },
                 constraints: table =>
                 {
@@ -132,7 +138,8 @@ namespace AndNetwork9.Shared.Backend.Migrations
                     SquadPartId = table.Column<short>(type: "smallint", nullable: true),
                     SquadPartNumber = table.Column<short>(type: "smallint", nullable: true),
                     SquadPartPart = table.Column<short>(type: "smallint", nullable: true),
-                    ConcurrencyToken = table.Column<Guid>(type: "uuid", rowVersion: true, nullable: false, defaultValueSql: "gen_random_uuid()")
+                    ConcurrencyToken = table.Column<Guid>(type: "uuid", rowVersion: true, nullable: false, defaultValueSql: "gen_random_uuid()"),
+                    LastChanged = table.Column<DateTime>(type: "timestamp with time zone", rowVersion: true, nullable: false, defaultValueSql: "now()")
                 },
                 constraints: table =>
                 {
@@ -166,7 +173,8 @@ namespace AndNetwork9.Shared.Backend.Migrations
                     SquadPermissions = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
                     SquadCommandersPermissions = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
                     ChannelFlags = table.Column<int>(type: "integer", nullable: false),
-                    ConcurrencyToken = table.Column<Guid>(type: "uuid", rowVersion: true, nullable: false, defaultValueSql: "gen_random_uuid()")
+                    ConcurrencyToken = table.Column<Guid>(type: "uuid", rowVersion: true, nullable: false, defaultValueSql: "gen_random_uuid()"),
+                    LastChanged = table.Column<DateTime>(type: "timestamp with time zone", rowVersion: true, nullable: false, defaultValueSql: "now()")
                 },
                 constraints: table =>
                 {
@@ -212,7 +220,8 @@ namespace AndNetwork9.Shared.Backend.Migrations
                     Comment = table.Column<string>(type: "text", nullable: true),
                     DiscordNotificationsEnabled = table.Column<bool>(type: "boolean", nullable: false),
                     PasswordHash = table.Column<byte[]>(type: "bytea", nullable: true),
-                    ConcurrencyToken = table.Column<Guid>(type: "uuid", rowVersion: true, nullable: false, defaultValueSql: "gen_random_uuid()")
+                    ConcurrencyToken = table.Column<Guid>(type: "uuid", rowVersion: true, nullable: false, defaultValueSql: "gen_random_uuid()"),
+                    LastChanged = table.Column<DateTime>(type: "timestamp with time zone", rowVersion: true, nullable: false, defaultValueSql: "now()")
                 },
                 constraints: table =>
                 {
@@ -260,7 +269,8 @@ namespace AndNetwork9.Shared.Backend.Migrations
                     AutomationTag = table.Column<int>(type: "integer", nullable: true),
                     GaveById = table.Column<int>(type: "integer", nullable: true),
                     Description = table.Column<string>(type: "text", nullable: true),
-                    ConcurrencyToken = table.Column<Guid>(type: "uuid", rowVersion: true, nullable: false, defaultValueSql: "gen_random_uuid()")
+                    ConcurrencyToken = table.Column<Guid>(type: "uuid", rowVersion: true, nullable: false, defaultValueSql: "gen_random_uuid()"),
+                    LastChanged = table.Column<DateTime>(type: "timestamp with time zone", rowVersion: true, nullable: false, defaultValueSql: "now()")
                 },
                 constraints: table =>
                 {
@@ -288,7 +298,8 @@ namespace AndNetwork9.Shared.Backend.Migrations
                     Votes = table.Column<int>(type: "integer", nullable: true),
                     VotedTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     Voted = table.Column<bool>(type: "boolean", nullable: false),
-                    ConcurrencyToken = table.Column<Guid>(type: "uuid", rowVersion: true, nullable: false, defaultValueSql: "gen_random_uuid()")
+                    ConcurrencyToken = table.Column<Guid>(type: "uuid", rowVersion: true, nullable: false, defaultValueSql: "gen_random_uuid()"),
+                    LastChanged = table.Column<DateTime>(type: "timestamp with time zone", rowVersion: true, nullable: false, defaultValueSql: "now()")
                 },
                 constraints: table =>
                 {
@@ -336,7 +347,7 @@ namespace AndNetwork9.Shared.Backend.Migrations
                 columns: table => new
                 {
                     SessionId = table.Column<Guid>(type: "uuid", nullable: false),
-                    MemberId = table.Column<int>(type: "integer", nullable: true),
+                    MemberId = table.Column<int>(type: "integer", nullable: false),
                     Address = table.Column<IPAddress>(type: "inet", nullable: false),
                     UserAgent = table.Column<string>(type: "text", nullable: false),
                     CreateTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
@@ -351,72 +362,39 @@ namespace AndNetwork9.Shared.Backend.Migrations
                         name: "FK_Sessions_Members_MemberId",
                         column: x => x.MemberId,
                         principalTable: "Members",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Tasks",
+                name: "StaticFiles",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    ConcurrencyToken = table.Column<Guid>(type: "uuid", rowVersion: true, nullable: false, defaultValueSql: "gen_random_uuid()"),
-                    Title = table.Column<string>(type: "text", nullable: false),
-                    Description = table.Column<string>(type: "text", nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: true),
+                    Extension = table.Column<string>(type: "text", nullable: true),
+                    Path = table.Column<string>(type: "text", nullable: false),
+                    OwnerId = table.Column<int>(type: "integer", nullable: true),
                     ReadRuleId = table.Column<int>(type: "integer", nullable: false),
-                    WriteRuleId = table.Column<int>(type: "integer", nullable: false),
-                    AssigneeId = table.Column<int>(type: "integer", nullable: true),
-                    SquadAssigneeId = table.Column<short>(type: "smallint", nullable: true),
-                    SquadPartAssigneeId = table.Column<short>(type: "smallint", nullable: true),
-                    DirectionAssignee = table.Column<int>(type: "integer", nullable: true),
-                    ReporterId = table.Column<int>(type: "integer", nullable: true),
-                    CreateTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    StartTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    LastEditTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    EndTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    Status = table.Column<int>(type: "integer", nullable: false),
-                    Priority = table.Column<int>(type: "integer", nullable: false),
-                    Level = table.Column<int>(type: "integer", nullable: false),
-                    Award = table.Column<int>(type: "integer", nullable: true),
-                    AllowAssignByMember = table.Column<bool>(type: "boolean", nullable: false),
-                    ParentId = table.Column<int>(type: "integer", nullable: false)
+                    ConcurrencyToken = table.Column<Guid>(type: "uuid", rowVersion: true, nullable: false, defaultValueSql: "gen_random_uuid()"),
+                    LastChanged = table.Column<DateTime>(type: "timestamp with time zone", rowVersion: true, nullable: false, defaultValueSql: "now()")
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Tasks", x => x.Id);
+                    table.PrimaryKey("PK_StaticFiles", x => x.Id);
+                    table.UniqueConstraint("AK_StaticFiles_Path", x => x.Path);
                     table.ForeignKey(
-                        name: "FK_Tasks_AccessRules_ReadRuleId",
+                        name: "FK_StaticFiles_AccessRules_ReadRuleId",
                         column: x => x.ReadRuleId,
                         principalTable: "AccessRules",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Tasks_AccessRules_WriteRuleId",
-                        column: x => x.WriteRuleId,
-                        principalTable: "AccessRules",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Tasks_Members_AssigneeId",
-                        column: x => x.AssigneeId,
+                        name: "FK_StaticFiles_Members_OwnerId",
+                        column: x => x.OwnerId,
                         principalTable: "Members",
                         principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Tasks_Members_ReporterId",
-                        column: x => x.ReporterId,
-                        principalTable: "Members",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Tasks_Squads_SquadAssigneeId",
-                        column: x => x.SquadAssigneeId,
-                        principalTable: "Squads",
-                        principalColumn: "Number");
-                    table.ForeignKey(
-                        name: "FK_Tasks_Tasks_ParentId",
-                        column: x => x.ParentId,
-                        principalTable: "Tasks",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -435,7 +413,8 @@ namespace AndNetwork9.Shared.Backend.Migrations
                     LastEditTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     EndTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     Result = table.Column<int>(type: "integer", nullable: false),
-                    ConcurrencyToken = table.Column<Guid>(type: "uuid", rowVersion: true, nullable: false, defaultValueSql: "gen_random_uuid()")
+                    ConcurrencyToken = table.Column<Guid>(type: "uuid", rowVersion: true, nullable: false, defaultValueSql: "gen_random_uuid()"),
+                    LastChanged = table.Column<DateTime>(type: "timestamp with time zone", rowVersion: true, nullable: false, defaultValueSql: "now()")
                 },
                 constraints: table =>
                 {
@@ -460,54 +439,6 @@ namespace AndNetwork9.Shared.Backend.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "MemberTask",
-                columns: table => new
-                {
-                    WatchersId = table.Column<int>(type: "integer", nullable: false),
-                    WatchingTasksId = table.Column<int>(type: "integer", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_MemberTask", x => new { x.WatchersId, x.WatchingTasksId });
-                    table.ForeignKey(
-                        name: "FK_MemberTask_Members_WatchersId",
-                        column: x => x.WatchersId,
-                        principalTable: "Members",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_MemberTask_Tasks_WatchingTasksId",
-                        column: x => x.WatchingTasksId,
-                        principalTable: "Tasks",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "TagTask",
-                columns: table => new
-                {
-                    TagsName = table.Column<string>(type: "text", nullable: false),
-                    TasksId = table.Column<int>(type: "integer", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_TagTask", x => new { x.TagsName, x.TasksId });
-                    table.ForeignKey(
-                        name: "FK_TagTask_Tags_TagsName",
-                        column: x => x.TagsName,
-                        principalTable: "Tags",
-                        principalColumn: "Name",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_TagTask_Tasks_TasksId",
-                        column: x => x.TasksId,
-                        principalTable: "Tasks",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Vote",
                 columns: table => new
                 {
@@ -515,7 +446,8 @@ namespace AndNetwork9.Shared.Backend.Migrations
                     MemberId = table.Column<int>(type: "integer", nullable: false),
                     VoteTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     Result = table.Column<int>(type: "integer", nullable: false),
-                    ConcurrencyToken = table.Column<Guid>(type: "uuid", rowVersion: true, nullable: false, defaultValueSql: "gen_random_uuid()")
+                    ConcurrencyToken = table.Column<Guid>(type: "uuid", rowVersion: true, nullable: false, defaultValueSql: "gen_random_uuid()"),
+                    LastChanged = table.Column<DateTime>(type: "timestamp with time zone", rowVersion: true, nullable: false, defaultValueSql: "now()")
                 },
                 constraints: table =>
                 {
@@ -535,6 +467,49 @@ namespace AndNetwork9.Shared.Backend.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "MemberTask",
+                columns: table => new
+                {
+                    WatchersId = table.Column<int>(type: "integer", nullable: false),
+                    WatchingTasksId = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_MemberTask", x => new { x.WatchersId, x.WatchingTasksId });
+                    table.ForeignKey(
+                        name: "FK_MemberTask_Members_WatchersId",
+                        column: x => x.WatchersId,
+                        principalTable: "Members",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "RepoNodes",
+                columns: table => new
+                {
+                    RepoId = table.Column<int>(type: "integer", nullable: false),
+                    Version = table.Column<int>(type: "integer", nullable: false),
+                    Modification = table.Column<int>(type: "integer", nullable: false),
+                    Prototype = table.Column<int>(type: "integer", nullable: false),
+                    Official = table.Column<bool>(type: "boolean", nullable: false),
+                    AuthorId = table.Column<int>(type: "integer", nullable: true),
+                    CreateTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "now()"),
+                    Description = table.Column<string>(type: "text", nullable: false),
+                    ConcurrencyToken = table.Column<Guid>(type: "uuid", rowVersion: true, nullable: false, defaultValueSql: "gen_random_uuid()"),
+                    LastChanged = table.Column<DateTime>(type: "timestamp with time zone", rowVersion: true, nullable: false, defaultValueSql: "now()")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RepoNodes", x => new { x.RepoId, x.Version, x.Modification, x.Prototype });
+                    table.ForeignKey(
+                        name: "FK_RepoNodes_Members_AuthorId",
+                        column: x => x.AuthorId,
+                        principalTable: "Members",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Repos",
                 columns: table => new
                 {
@@ -547,7 +522,8 @@ namespace AndNetwork9.Shared.Backend.Migrations
                     CommentId = table.Column<int>(type: "integer", nullable: false),
                     ReadRuleId = table.Column<int>(type: "integer", nullable: false),
                     WriteRuleId = table.Column<int>(type: "integer", nullable: false),
-                    ConcurrencyToken = table.Column<Guid>(type: "uuid", rowVersion: true, nullable: false, defaultValueSql: "gen_random_uuid()")
+                    ConcurrencyToken = table.Column<Guid>(type: "uuid", rowVersion: true, nullable: false, defaultValueSql: "gen_random_uuid()"),
+                    LastChanged = table.Column<DateTime>(type: "timestamp with time zone", rowVersion: true, nullable: false, defaultValueSql: "now()")
                 },
                 constraints: table =>
                 {
@@ -581,13 +557,15 @@ namespace AndNetwork9.Shared.Backend.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     AuthorId = table.Column<int>(type: "integer", nullable: true),
                     Text = table.Column<string>(type: "text", nullable: false),
+                    TaskDescriptionId = table.Column<int>(type: "integer", nullable: true),
+                    TaskId = table.Column<int>(type: "integer", nullable: true),
+                    RepoId = table.Column<int>(type: "integer", nullable: true),
+                    VotingId = table.Column<int>(type: "integer", nullable: true),
                     CreateTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     LastEditTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     ParentId = table.Column<int>(type: "integer", nullable: true),
                     ConcurrencyToken = table.Column<Guid>(type: "uuid", rowVersion: true, nullable: false, defaultValueSql: "gen_random_uuid()"),
-                    RepoId = table.Column<int>(type: "integer", nullable: true),
-                    TaskId = table.Column<int>(type: "integer", nullable: true),
-                    VotingId = table.Column<int>(type: "integer", nullable: true)
+                    LastChanged = table.Column<DateTime>(type: "timestamp with time zone", rowVersion: true, nullable: false, defaultValueSql: "now()")
                 },
                 constraints: table =>
                 {
@@ -608,11 +586,6 @@ namespace AndNetwork9.Shared.Backend.Migrations
                         principalTable: "Repos",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_Comments_Tasks_TaskId",
-                        column: x => x.TaskId,
-                        principalTable: "Tasks",
-                        principalColumn: "Id");
-                    table.ForeignKey(
                         name: "FK_Comments_Votings_VotingId",
                         column: x => x.VotingId,
                         principalTable: "Votings",
@@ -620,67 +593,78 @@ namespace AndNetwork9.Shared.Backend.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "RepoNodes",
-                columns: table => new
-                {
-                    RepoId = table.Column<int>(type: "integer", nullable: false),
-                    Version = table.Column<int>(type: "integer", nullable: false),
-                    Modification = table.Column<int>(type: "integer", nullable: false),
-                    Prototype = table.Column<int>(type: "integer", nullable: false),
-                    AuthorId = table.Column<int>(type: "integer", nullable: true),
-                    CreateTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "now()"),
-                    Description = table.Column<string>(type: "text", nullable: false),
-                    ConcurrencyToken = table.Column<Guid>(type: "uuid", rowVersion: true, nullable: false, defaultValueSql: "gen_random_uuid()")
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_RepoNodes", x => new { x.RepoId, x.Version, x.Modification, x.Prototype });
-                    table.ForeignKey(
-                        name: "FK_RepoNodes_Members_AuthorId",
-                        column: x => x.AuthorId,
-                        principalTable: "Members",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_RepoNodes_Repos_RepoId",
-                        column: x => x.RepoId,
-                        principalTable: "Repos",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "StaticFiles",
+                name: "Tasks",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Name = table.Column<string>(type: "text", nullable: true),
-                    Extension = table.Column<string>(type: "text", nullable: true),
-                    Path = table.Column<string>(type: "text", nullable: false),
-                    OwnerId = table.Column<int>(type: "integer", nullable: true),
+                    Title = table.Column<string>(type: "text", nullable: false),
+                    DescriptionId = table.Column<int>(type: "integer", nullable: false),
                     ReadRuleId = table.Column<int>(type: "integer", nullable: false),
+                    WriteRuleId = table.Column<int>(type: "integer", nullable: false),
+                    AssigneeId = table.Column<int>(type: "integer", nullable: true),
+                    SquadAssigneeId = table.Column<short>(type: "smallint", nullable: true),
+                    SquadPartAssigneeId = table.Column<short>(type: "smallint", nullable: true),
+                    DirectionAssignee = table.Column<int>(type: "integer", nullable: true),
+                    ReporterId = table.Column<int>(type: "integer", nullable: true),
+                    CreateTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    StartTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    LastEditTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    EndTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    Status = table.Column<int>(type: "integer", nullable: false),
+                    Priority = table.Column<int>(type: "integer", nullable: false),
+                    Level = table.Column<int>(type: "integer", nullable: false),
+                    Award = table.Column<int>(type: "integer", nullable: true),
+                    AllowAssignByMember = table.Column<bool>(type: "boolean", nullable: false),
+                    ParentId = table.Column<int>(type: "integer", nullable: true),
                     ConcurrencyToken = table.Column<Guid>(type: "uuid", rowVersion: true, nullable: false, defaultValueSql: "gen_random_uuid()"),
-                    CommentId = table.Column<int>(type: "integer", nullable: true)
+                    LastChanged = table.Column<DateTime>(type: "timestamp with time zone", rowVersion: true, nullable: false, defaultValueSql: "now()")
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_StaticFiles", x => x.Id);
-                    table.UniqueConstraint("AK_StaticFiles_Path", x => x.Path);
+                    table.PrimaryKey("PK_Tasks", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_StaticFiles_AccessRules_ReadRuleId",
+                        name: "FK_Tasks_AccessRules_ReadRuleId",
                         column: x => x.ReadRuleId,
                         principalTable: "AccessRules",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_StaticFiles_Comments_CommentId",
-                        column: x => x.CommentId,
+                        name: "FK_Tasks_AccessRules_WriteRuleId",
+                        column: x => x.WriteRuleId,
+                        principalTable: "AccessRules",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Tasks_Comments_DescriptionId",
+                        column: x => x.DescriptionId,
                         principalTable: "Comments",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Tasks_Members_AssigneeId",
+                        column: x => x.AssigneeId,
+                        principalTable: "Members",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_StaticFiles_Members_OwnerId",
-                        column: x => x.OwnerId,
+                        name: "FK_Tasks_Members_ReporterId",
+                        column: x => x.ReporterId,
                         principalTable: "Members",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Tasks_SquadPart_SquadAssigneeId_SquadPartAssigneeId",
+                        columns: x => new { x.SquadAssigneeId, x.SquadPartAssigneeId },
+                        principalTable: "SquadPart",
+                        principalColumns: new[] { "Number", "Part" });
+                    table.ForeignKey(
+                        name: "FK_Tasks_Squads_SquadAssigneeId",
+                        column: x => x.SquadAssigneeId,
+                        principalTable: "Squads",
+                        principalColumn: "Number");
+                    table.ForeignKey(
+                        name: "FK_Tasks_Tasks_ParentId",
+                        column: x => x.ParentId,
+                        principalTable: "Tasks",
                         principalColumn: "Id");
                 });
 
@@ -702,6 +686,30 @@ namespace AndNetwork9.Shared.Backend.Migrations
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_StaticFileTask_Tasks_TasksId",
+                        column: x => x.TasksId,
+                        principalTable: "Tasks",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "TagTask",
+                columns: table => new
+                {
+                    TagsName = table.Column<string>(type: "text", nullable: false),
+                    TasksId = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TagTask", x => new { x.TagsName, x.TasksId });
+                    table.ForeignKey(
+                        name: "FK_TagTask_Tags_TagsName",
+                        column: x => x.TagsName,
+                        principalTable: "Tags",
+                        principalColumn: "Name",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_TagTask_Tasks_TasksId",
                         column: x => x.TasksId,
                         principalTable: "Tasks",
                         principalColumn: "Id",
@@ -863,11 +871,6 @@ namespace AndNetwork9.Shared.Backend.Migrations
                 column: "MemberId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_StaticFiles_CommentId",
-                table: "StaticFiles",
-                column: "CommentId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_StaticFiles_OwnerId",
                 table: "StaticFiles",
                 column: "OwnerId");
@@ -893,6 +896,12 @@ namespace AndNetwork9.Shared.Backend.Migrations
                 column: "AssigneeId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Tasks_DescriptionId",
+                table: "Tasks",
+                column: "DescriptionId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Tasks_ParentId",
                 table: "Tasks",
                 column: "ParentId");
@@ -908,9 +917,9 @@ namespace AndNetwork9.Shared.Backend.Migrations
                 column: "ReporterId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Tasks_SquadAssigneeId",
+                name: "IX_Tasks_SquadAssigneeId_SquadPartAssigneeId",
                 table: "Tasks",
-                column: "SquadAssigneeId");
+                columns: new[] { "SquadAssigneeId", "SquadPartAssigneeId" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Tasks_WriteRuleId",
@@ -938,66 +947,45 @@ namespace AndNetwork9.Shared.Backend.Migrations
                 column: "ReporterId");
 
             migrationBuilder.AddForeignKey(
+                name: "FK_MemberTask_Tasks_WatchingTasksId",
+                table: "MemberTask",
+                column: "WatchingTasksId",
+                principalTable: "Tasks",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Cascade);
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_RepoNodes_Repos_RepoId",
+                table: "RepoNodes",
+                column: "RepoId",
+                principalTable: "Repos",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Cascade);
+
+            migrationBuilder.AddForeignKey(
                 name: "FK_Repos_Comments_CommentId",
                 table: "Repos",
                 column: "CommentId",
                 principalTable: "Comments",
                 principalColumn: "Id",
                 onDelete: ReferentialAction.Cascade);
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_Comments_Tasks_TaskId",
+                table: "Comments",
+                column: "TaskId",
+                principalTable: "Tasks",
+                principalColumn: "Id");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropForeignKey(
-                name: "FK_Repos_AccessRules_ReadRuleId",
-                table: "Repos");
-
-            migrationBuilder.DropForeignKey(
-                name: "FK_Repos_AccessRules_WriteRuleId",
-                table: "Repos");
-
-            migrationBuilder.DropForeignKey(
-                name: "FK_Tasks_AccessRules_ReadRuleId",
-                table: "Tasks");
-
-            migrationBuilder.DropForeignKey(
-                name: "FK_Tasks_AccessRules_WriteRuleId",
-                table: "Tasks");
-
-            migrationBuilder.DropForeignKey(
-                name: "FK_Votings_AccessRules_EditRuleId",
-                table: "Votings");
-
-            migrationBuilder.DropForeignKey(
-                name: "FK_Votings_AccessRules_ReadRuleId",
-                table: "Votings");
-
-            migrationBuilder.DropForeignKey(
-                name: "FK_Comments_Members_AuthorId",
+                name: "FK_Comments_Repos_RepoId",
                 table: "Comments");
 
             migrationBuilder.DropForeignKey(
-                name: "FK_Repos_Members_CreatorId",
-                table: "Repos");
-
-            migrationBuilder.DropForeignKey(
-                name: "FK_Tasks_Members_AssigneeId",
-                table: "Tasks");
-
-            migrationBuilder.DropForeignKey(
-                name: "FK_Tasks_Members_ReporterId",
-                table: "Tasks");
-
-            migrationBuilder.DropForeignKey(
-                name: "FK_Votings_Members_ReporterId",
-                table: "Votings");
-
-            migrationBuilder.DropForeignKey(
-                name: "FK_Tasks_Squads_SquadAssigneeId",
-                table: "Tasks");
-
-            migrationBuilder.DropForeignKey(
-                name: "FK_Comments_Repos_RepoId",
+                name: "FK_Comments_Tasks_TaskId",
                 table: "Comments");
 
             migrationBuilder.DropTable(
@@ -1049,6 +1037,18 @@ namespace AndNetwork9.Shared.Backend.Migrations
                 name: "Elections");
 
             migrationBuilder.DropTable(
+                name: "Repos");
+
+            migrationBuilder.DropTable(
+                name: "Tasks");
+
+            migrationBuilder.DropTable(
+                name: "Comments");
+
+            migrationBuilder.DropTable(
+                name: "Votings");
+
+            migrationBuilder.DropTable(
                 name: "AccessRules");
 
             migrationBuilder.DropTable(
@@ -1059,18 +1059,6 @@ namespace AndNetwork9.Shared.Backend.Migrations
 
             migrationBuilder.DropTable(
                 name: "Squads");
-
-            migrationBuilder.DropTable(
-                name: "Repos");
-
-            migrationBuilder.DropTable(
-                name: "Comments");
-
-            migrationBuilder.DropTable(
-                name: "Tasks");
-
-            migrationBuilder.DropTable(
-                name: "Votings");
         }
     }
 }

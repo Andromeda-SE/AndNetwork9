@@ -6,7 +6,7 @@ namespace AndNetwork9.Client.Shared;
 public partial class MarkdownEditor
 {
     [Parameter]
-    public bool PreviewEnabled { get; set; }
+    public bool PreviewEnabled { get; set; } = true;
     [Parameter]
     public Action<string> SetterFunc { get; set; }
     [Parameter]

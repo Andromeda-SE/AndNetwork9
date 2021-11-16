@@ -117,4 +117,6 @@ public class Channel : IEquatable<Channel>, IComparable<Channel>, IComparable, I
     {
         return !Equals(left, right);
     }
+
+    public DateTime LastChanged { get; set; }
 }

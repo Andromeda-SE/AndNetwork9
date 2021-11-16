@@ -29,4 +29,5 @@ public record ElectionsMember : IComparable<ElectionsMember>, IConcurrencyToken
     }
 
     public Guid ConcurrencyToken { get; set; }
+    public DateTime LastChanged { get; set; }
 }

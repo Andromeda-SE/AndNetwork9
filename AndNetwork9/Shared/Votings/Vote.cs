@@ -13,4 +13,5 @@ public record Vote : IConcurrencyToken
     public DateTime? VoteTime { get; set; }
     public MemberVote Result { get; set; }
     public Guid ConcurrencyToken { get; set; }
+    public DateTime LastChanged { get; set; }
 }

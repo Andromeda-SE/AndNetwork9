@@ -2,21 +2,38 @@
 <html lang="ru">
 
 <head>
-    <meta charset="utf-8"/>
-    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport" />
     <title>Клан "Андромеда"</title>
-    <base href="/"/>
-    <link href="AndNetwork9.Client.styles.css" rel="stylesheet"/>
+    <base href="/" />
+    <link href="AndNetwork9.Client.styles.css" rel="stylesheet" />
     <link crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        body {
+            background-image: url(images/logo.svg);
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: 50% 50%;
+            background-attachment: scroll;
+            background-color: rgba(255,255,255,0.6);
+            background-blend-mode: lighten;
+        }
+    </style>
 </head>
 
 <body>
-<div id="app">Загрузка…</div>
+    <div id="app">Загрузка…</div>
 
-<script src="_framework/blazor.webassembly.js"></script>
-<script crossorigin="anonymous" src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
-<script crossorigin="anonymous" src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"></script>
+    <script src="_framework/blazor.webassembly.js" autostart="false"></script>
+    <script crossorigin="anonymous" src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script crossorigin="anonymous" src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"></script>
+<script>
+    Blazor.start({
+        applicationCulture: 'ru'
+    });
+</script>
+
 </body>
 
 </html>

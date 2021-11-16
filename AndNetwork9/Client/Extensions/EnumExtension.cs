@@ -26,6 +26,7 @@ public static class EnumExtension
     {
         return direction switch
         {
+            Direction.Auxiliary => "#00FFFF",
             Direction.Reserve => "#dee2e6",
             Direction.None => "#dc3545",
             Direction.Training => "#ffc107",
@@ -33,6 +34,7 @@ public static class EnumExtension
             Direction.Research => "#198754",
             Direction.Military => "#0d6efd",
             Direction.Agitation => "#6f42c1",
+            
             _ => throw new ArgumentOutOfRangeException(nameof(direction), direction, null),
         };
     }

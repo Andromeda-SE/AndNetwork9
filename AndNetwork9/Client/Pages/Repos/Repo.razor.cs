@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
 using AndNetwork9.Client.Extensions;
@@ -53,13 +54,15 @@ public partial class Repo
 
     protected override async System.Threading.Tasks.Task OnInitializedAsync()
     {
-        Entity = await Client.GetFromJsonAsync<AndNetwork9.Shared.Storage.Repo>($"api/repo/{EntityId}");
-        EditedText = Entity.Description.Text;
-        Entity.Nodes = await Client.GetFromJsonAsync<RepoNode[]>($"api/repo/{EntityId}/nodes");
-        Entity.ReadRule = await Client.GetFromJsonAsync<AccessRule>($"api/AccessRule/{Entity.ReadRuleId}");
-        Entity.WriteRule = await Client.GetFromJsonAsync<AccessRule>($"api/AccessRule/{Entity.WriteRuleId}");
+        var entity = await Client.GetFromJsonAsync<AndNetwork9.Shared.Storage.Repo>($"api/repo/{EntityId}");
+        EditedText = entity.Description.Text;
+        entity.Nodes = await Client.GetFromJsonAsync<RepoNode[]>($"api/repo/{EntityId}/nodes");
+        entity.ReadRule = await Client.GetFromJsonAsync<AccessRule>($"api/AccessRule/{entity.ReadRuleId}");
+        entity.WriteRule = await Client.GetFromJsonAsync<AccessRule>($"api/AccessRule/{entity.WriteRuleId}");
 
-        SelectedNodeIndex = Entity.Nodes.IndexOf(Entity.Nodes.MaxBy(x => x));
+        SelectedNodeIndex = entity.Nodes.IndexOf(entity.Nodes.MaxBy(x => x));
+        Console.WriteLine(Entity is null);
+        Entity = entity;
     }
 
     private async void UpdateReadRule(AccessRule rule)

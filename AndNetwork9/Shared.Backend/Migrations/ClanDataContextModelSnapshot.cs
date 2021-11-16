@@ -18,7 +18,7 @@ namespace AndNetwork9.Shared.Backend.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.0-rc.1.21452.10")
+                .HasAnnotation("ProductVersion", "6.0.0-rc.2.21480.5")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -64,6 +64,12 @@ namespace AndNetwork9.Shared.Backend.Migrations
                     b.Property<int?>("GaveById")
                         .HasColumnType("integer");
 
+                    b.Property<DateTime>("LastChanged")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("now()");
+
                     b.Property<int>("MemberId")
                         .HasColumnType("integer");
 
@@ -103,7 +109,7 @@ namespace AndNetwork9.Shared.Backend.Migrations
                     b.Property<DateTime?>("ExpireTime")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int?>("MemberId")
+                    b.Property<int>("MemberId")
                         .HasColumnType("integer");
 
                     b.Property<string>("UserAgent")
@@ -132,6 +138,9 @@ namespace AndNetwork9.Shared.Backend.Migrations
 
                     b.Property<decimal>("DiscordId")
                         .HasColumnType("numeric(20,0)");
+
+                    b.Property<DateTime>("LastChanged")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -170,6 +179,12 @@ namespace AndNetwork9.Shared.Backend.Migrations
 
                     b.Property<decimal>("EveryonePermissions")
                         .HasColumnType("numeric(20,0)");
+
+                    b.Property<DateTime>("LastChanged")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("now()");
 
                     b.Property<decimal>("MemberPermissions")
                         .HasColumnType("numeric(20,0)");
@@ -225,6 +240,12 @@ namespace AndNetwork9.Shared.Backend.Migrations
                     b.Property<DateOnly>("EndDate")
                         .HasColumnType("date");
 
+                    b.Property<DateTime>("LastChanged")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("now()");
+
                     b.Property<DateOnly>("RegistrationDate")
                         .HasColumnType("date");
 
@@ -259,6 +280,12 @@ namespace AndNetwork9.Shared.Backend.Migrations
                         .HasColumnType("uuid")
                         .HasDefaultValueSql("gen_random_uuid()");
 
+                    b.Property<DateTime>("LastChanged")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("now()");
+
                     b.Property<bool>("Voted")
                         .HasColumnType("boolean");
 
@@ -291,6 +318,12 @@ namespace AndNetwork9.Shared.Backend.Migrations
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("uuid")
                         .HasDefaultValueSql("gen_random_uuid()");
+
+                    b.Property<DateTime>("LastChanged")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("now()");
 
                     b.HasKey("ElectionId", "Direction");
 
@@ -328,6 +361,12 @@ namespace AndNetwork9.Shared.Backend.Migrations
 
                     b.Property<DateOnly>("JoinDate")
                         .HasColumnType("date");
+
+                    b.Property<DateTime>("LastChanged")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("now()");
 
                     b.Property<DateOnly>("LastDirectionChange")
                         .HasColumnType("date");
@@ -415,6 +454,12 @@ namespace AndNetwork9.Shared.Backend.Migrations
                     b.Property<decimal?>("DiscordRoleId")
                         .HasColumnType("numeric(20,0)");
 
+                    b.Property<DateTime>("LastChanged")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("now()");
+
                     b.Property<string>("Name")
                         .HasColumnType("text");
 
@@ -435,13 +480,22 @@ namespace AndNetwork9.Shared.Backend.Migrations
                         .HasColumnType("text");
 
                     b.Property<Guid>("ConcurrencyToken")
-                        .HasColumnType("uuid");
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("uuid")
+                        .HasDefaultValueSql("gen_random_uuid()");
 
                     b.Property<string>("Description")
                         .HasColumnType("text");
 
                     b.Property<decimal?>("DiscordRoleId")
                         .HasColumnType("numeric(20,0)");
+
+                    b.Property<DateTime>("LastChanged")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("now()");
 
                     b.HasKey("Number", "Part");
 
@@ -467,6 +521,12 @@ namespace AndNetwork9.Shared.Backend.Migrations
 
                     b.Property<int?>("CreatorId")
                         .HasColumnType("integer");
+
+                    b.Property<DateTime>("LastChanged")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("now()");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -534,6 +594,15 @@ namespace AndNetwork9.Shared.Backend.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<DateTime>("LastChanged")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("now()");
+
+                    b.Property<bool>("Official")
+                        .HasColumnType("boolean");
+
                     b.HasKey("RepoId", "Version", "Modification", "Prototype");
 
                     b.HasIndex("AuthorId");
@@ -549,9 +618,6 @@ namespace AndNetwork9.Shared.Backend.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("CommentId")
-                        .HasColumnType("integer");
-
                     b.Property<Guid>("ConcurrencyToken")
                         .IsConcurrencyToken()
                         .ValueGeneratedOnAddOrUpdate()
@@ -560,6 +626,12 @@ namespace AndNetwork9.Shared.Backend.Migrations
 
                     b.Property<string>("Extension")
                         .HasColumnType("text");
+
+                    b.Property<DateTime>("LastChanged")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("now()");
 
                     b.Property<string>("Name")
                         .HasColumnType("text");
@@ -577,8 +649,6 @@ namespace AndNetwork9.Shared.Backend.Migrations
                     b.HasKey("Id");
 
                     b.HasAlternateKey("Path");
-
-                    b.HasIndex("CommentId");
 
                     b.HasIndex("OwnerId");
 
@@ -613,15 +683,21 @@ namespace AndNetwork9.Shared.Backend.Migrations
                     b.Property<DateTime>("CreateTime")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("Description")
+                    b.Property<int?>("DescriptionId")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("integer");
 
                     b.Property<int?>("DirectionAssignee")
                         .HasColumnType("integer");
 
                     b.Property<DateTime?>("EndTime")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("LastChanged")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("now()");
 
                     b.Property<DateTime?>("LastEditTime")
                         .HasColumnType("timestamp with time zone");
@@ -630,7 +706,6 @@ namespace AndNetwork9.Shared.Backend.Migrations
                         .HasColumnType("integer");
 
                     b.Property<int?>("ParentId")
-                        .IsRequired()
                         .HasColumnType("integer");
 
                     b.Property<int>("Priority")
@@ -665,15 +740,18 @@ namespace AndNetwork9.Shared.Backend.Migrations
 
                     b.HasIndex("AssigneeId");
 
+                    b.HasIndex("DescriptionId")
+                        .IsUnique();
+
                     b.HasIndex("ParentId");
 
                     b.HasIndex("ReadRuleId");
 
                     b.HasIndex("ReporterId");
 
-                    b.HasIndex("SquadAssigneeId");
-
                     b.HasIndex("WriteRuleId");
+
+                    b.HasIndex("SquadAssigneeId", "SquadPartAssigneeId");
 
                     b.ToTable("Tasks");
                 });
@@ -695,6 +773,12 @@ namespace AndNetwork9.Shared.Backend.Migrations
                     b.Property<int[]>("Directions")
                         .IsRequired()
                         .HasColumnType("integer[]");
+
+                    b.Property<DateTime>("LastChanged")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("now()");
 
                     b.Property<int>("MinRank")
                         .HasColumnType("integer");
@@ -743,6 +827,12 @@ namespace AndNetwork9.Shared.Backend.Migrations
                     b.Property<DateTime>("CreateTime")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<DateTime>("LastChanged")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("now()");
+
                     b.Property<DateTime?>("LastEditTime")
                         .HasColumnType("timestamp with time zone");
 
@@ -750,6 +840,9 @@ namespace AndNetwork9.Shared.Backend.Migrations
                         .HasColumnType("integer");
 
                     b.Property<int?>("RepoId")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("TaskDescriptionId")
                         .HasColumnType("integer");
 
                     b.Property<int?>("TaskId")
@@ -788,6 +881,12 @@ namespace AndNetwork9.Shared.Backend.Migrations
                         .HasColumnType("uuid")
                         .HasDefaultValueSql("gen_random_uuid()");
 
+                    b.Property<DateTime>("LastChanged")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("now()");
+
                     b.HasKey("Name");
 
                     b.ToTable("Tags");
@@ -806,6 +905,12 @@ namespace AndNetwork9.Shared.Backend.Migrations
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("uuid")
                         .HasDefaultValueSql("gen_random_uuid()");
+
+                    b.Property<DateTime>("LastChanged")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("now()");
 
                     b.Property<int>("Result")
                         .HasColumnType("integer");
@@ -849,6 +954,12 @@ namespace AndNetwork9.Shared.Backend.Migrations
 
                     b.Property<DateTime?>("EndTime")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("LastChanged")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("now()");
 
                     b.Property<DateTime>("LastEditTime")
                         .HasColumnType("timestamp with time zone");
@@ -973,7 +1084,9 @@ namespace AndNetwork9.Shared.Backend.Migrations
                 {
                     b.HasOne("AndNetwork9.Shared.Member", "Member")
                         .WithMany()
-                        .HasForeignKey("MemberId");
+                        .HasForeignKey("MemberId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Member");
                 });
@@ -1101,10 +1214,6 @@ namespace AndNetwork9.Shared.Backend.Migrations
 
             modelBuilder.Entity("AndNetwork9.Shared.Storage.StaticFile", b =>
                 {
-                    b.HasOne("AndNetwork9.Shared.Utility.Comment", null)
-                        .WithMany("Files")
-                        .HasForeignKey("CommentId");
-
                     b.HasOne("AndNetwork9.Shared.Member", "Owner")
                         .WithMany("StaticFiles")
                         .HasForeignKey("OwnerId");
@@ -1126,11 +1235,15 @@ namespace AndNetwork9.Shared.Backend.Migrations
                         .WithMany("Tasks")
                         .HasForeignKey("AssigneeId");
 
-                    b.HasOne("AndNetwork9.Shared.Task", "Parent")
-                        .WithMany("Children")
-                        .HasForeignKey("ParentId")
+                    b.HasOne("AndNetwork9.Shared.Utility.Comment", "Description")
+                        .WithOne("TaskDescription")
+                        .HasForeignKey("AndNetwork9.Shared.Task", "DescriptionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("AndNetwork9.Shared.Task", "Parent")
+                        .WithMany("Children")
+                        .HasForeignKey("ParentId");
 
                     b.HasOne("AndNetwork9.Shared.Utility.AccessRule", "ReadRule")
                         .WithMany()
@@ -1152,7 +1265,13 @@ namespace AndNetwork9.Shared.Backend.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("AndNetwork9.Shared.SquadPart", "SquadPartAssignee")
+                        .WithMany()
+                        .HasForeignKey("SquadAssigneeId", "SquadPartAssigneeId");
+
                     b.Navigation("Assignee");
+
+                    b.Navigation("Description");
 
                     b.Navigation("Parent");
 
@@ -1161,6 +1280,8 @@ namespace AndNetwork9.Shared.Backend.Migrations
                     b.Navigation("Reporter");
 
                     b.Navigation("SquadAssignee");
+
+                    b.Navigation("SquadPartAssignee");
 
                     b.Navigation("WriteRule");
                 });
@@ -1190,21 +1311,27 @@ namespace AndNetwork9.Shared.Backend.Migrations
                         .WithMany("Children")
                         .HasForeignKey("ParentId");
 
-                    b.HasOne("AndNetwork9.Shared.Storage.Repo", null)
+                    b.HasOne("AndNetwork9.Shared.Storage.Repo", "Repo")
                         .WithMany("Comments")
                         .HasForeignKey("RepoId");
 
-                    b.HasOne("AndNetwork9.Shared.Task", null)
+                    b.HasOne("AndNetwork9.Shared.Task", "Task")
                         .WithMany("Comments")
                         .HasForeignKey("TaskId");
 
-                    b.HasOne("AndNetwork9.Shared.Votings.Voting", null)
+                    b.HasOne("AndNetwork9.Shared.Votings.Voting", "Voting")
                         .WithMany("Comments")
                         .HasForeignKey("VotingId");
 
                     b.Navigation("Author");
 
                     b.Navigation("Parent");
+
+                    b.Navigation("Repo");
+
+                    b.Navigation("Task");
+
+                    b.Navigation("Voting");
                 });
 
             modelBuilder.Entity("AndNetwork9.Shared.Votings.Vote", b =>
@@ -1373,7 +1500,7 @@ namespace AndNetwork9.Shared.Backend.Migrations
                 {
                     b.Navigation("Children");
 
-                    b.Navigation("Files");
+                    b.Navigation("TaskDescription");
                 });
 
             modelBuilder.Entity("AndNetwork9.Shared.Votings.Voting", b =>

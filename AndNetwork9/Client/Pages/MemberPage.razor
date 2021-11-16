@@ -2,7 +2,10 @@
 @attribute [Authorize]
 @inherits ElementPageBase<Member>
 
-<BaseBodyWithAside Title="Игроки">
+<BaseBodyWithAside>
+    <Title>
+        Игроки
+    </Title>
     <Main>
         @if (Entities is null)
         {

@@ -39,6 +39,7 @@ public static class DiscordExtensions
             Direction.Research => Color.Green,
             Direction.Military => Color.Blue,
             Direction.Agitation => Color.Purple,
+            Direction.Auxiliary => new Color(0x00FFFFu),
             _ => throw new ArgumentOutOfRangeException(nameof(department), department, null),
         };
     }

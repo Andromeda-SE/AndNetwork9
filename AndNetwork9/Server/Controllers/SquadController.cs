@@ -4,11 +4,15 @@ using System.Linq;
 using System.Threading.Tasks;
 using AndNetwork9.Server.Auth.Attributes;
 using AndNetwork9.Server.Extensions;
+using AndNetwork9.Server.Hubs;
 using AndNetwork9.Shared;
 using AndNetwork9.Shared.Backend;
 using AndNetwork9.Shared.Backend.Senders.Discord;
 using AndNetwork9.Shared.Enums;
+using AndNetwork9.Shared.Hubs;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace AndNetwork9.Server.Controllers;
@@ -19,19 +23,21 @@ public class SquadController : ControllerBase
 {
     private readonly ClanDataContext _data;
     private readonly PublishSender _publishSender;
+    private readonly IHubContext<ModelHub, IModelHub> _modelHub;
 
-    public SquadController(ClanDataContext data, PublishSender publishSender)
+    public SquadController(ClanDataContext data, PublishSender publishSender, IHubContext<ModelHub, IModelHub> modelHub)
     {
         _data = data;
         _publishSender = publishSender;
+        _modelHub = modelHub;
     }
 
     [HttpGet("all")]
     [MinRankAuthorize]
-    public ActionResult<Squad[]> GetAll()
+    public ActionResult<IAsyncEnumerable<Squad>> GetAll()
     {
         DateOnly today = DateOnly.FromDateTime(DateTime.Today);
-        return Ok(_data.Squads.Where(x => x.DisbandDate == null || x.DisbandDate > today).ToArray());
+        return Ok(_data.Squads.Where(x => x.DisbandDate == null || x.DisbandDate > today).AsAsyncEnumerable());
     }
 
     [HttpGet]
@@ -55,7 +61,7 @@ public class SquadController : ControllerBase
 
     [HttpGet("{id:int}/parts")]
     [MinRankAuthorize]
-    public async Task<ActionResult<SquadPart[]>> GetParts(short id)
+    public async Task<ActionResult<IAsyncEnumerable<SquadPart>>> GetParts(short id)
     {
         Squad? squad = await _data.Squads.FindAsync(id).ConfigureAwait(false);
         return squad is not null ? Ok(squad.SquadParts) : NotFound();
@@ -114,6 +120,7 @@ public class SquadController : ControllerBase
 
         _data.Squads.Update(newSquad);
         await _data.SaveChangesAsync().ConfigureAwait(false);
+        await _modelHub.Clients.All.ReceiveModelUpdate(typeof(Squad).FullName, newSquad).ConfigureAwait(false);
         return newSquad;
     }
 
@@ -133,6 +140,7 @@ public class SquadController : ControllerBase
 
         _data.Squads.Update(newSquad);
         await _data.SaveChangesAsync().ConfigureAwait(false);
+        await _modelHub.Clients.All.ReceiveModelUpdate(typeof(Squad).FullName, newSquad).ConfigureAwait(false);
         return newSquad;
     }
 
@@ -171,6 +179,7 @@ public class SquadController : ControllerBase
         //todo: add discord role creation
         await _publishSender.CallAsync($"Игроком {member.GetDiscordMention()} созван новый, {addResult.Entity}!")
             .ConfigureAwait(false);
+        await _modelHub.Clients.All.ReceiveModelUpdate(typeof(Squad).FullName, addResult.Entity).ConfigureAwait(false);
         return addResult.Entity;
     }
 
@@ -187,6 +196,7 @@ public class SquadController : ControllerBase
 
         squad.Candidates!.Add(member);
         await _data.SaveChangesAsync().ConfigureAwait(false);
+        await _modelHub.Clients.All.ReceiveModelUpdate(typeof(Squad).FullName, squad).ConfigureAwait(false);
         return Ok();
     }
 
@@ -203,6 +213,7 @@ public class SquadController : ControllerBase
 
         bool result = squad.Candidates!.Remove(member);
         if (result) await _data.SaveChangesAsync().ConfigureAwait(false);
+        await _modelHub.Clients.All.ReceiveModelUpdate(typeof(Squad).FullName, squad).ConfigureAwait(false);
         return result ? Ok() : NoContent();
     }
 
@@ -229,6 +240,7 @@ public class SquadController : ControllerBase
         await _data.SaveChangesAsync().ConfigureAwait(false);
         await _publishSender.CallAsync($"{squad} пополняется игроком {candidate.GetDiscordMention()}")
             .ConfigureAwait(false);
+        await _modelHub.Clients.All.ReceiveModelUpdate(typeof(Squad).FullName, squad).ConfigureAwait(false);
         return Ok();
     }
 
@@ -245,6 +257,7 @@ public class SquadController : ControllerBase
 
         member.SquadPart?.Squad.Candidates!.Remove(candidate);
         await _data.SaveChangesAsync().ConfigureAwait(false);
+        await _modelHub.Clients.All.ReceiveModelUpdate(typeof(Squad).FullName, member.SquadPart?.Squad).ConfigureAwait(false);
         return Ok();
     }
 }

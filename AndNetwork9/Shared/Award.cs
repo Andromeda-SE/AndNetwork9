@@ -55,4 +55,5 @@ public record Award : IComparable<Award>, IComparable, IId
     public int Id { get; set; }
 
     public Guid ConcurrencyToken { get; set; }
+    public DateTime LastChanged { get; set; }
 }

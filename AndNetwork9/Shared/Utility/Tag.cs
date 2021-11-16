@@ -23,4 +23,6 @@ public record Tag : IEquatable<Tag?>, IConcurrencyToken
     {
         return Name.GetHashCode();
     }
+
+    public DateTime LastChanged { get; set; }
 }

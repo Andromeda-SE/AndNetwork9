@@ -1,10 +1,11 @@
 ﻿<ul class="nav nav-tabs">
     <li class="nav-item">
-        <button class="nav-link @(PreviewEnabled ? string.Empty : "active")" @onclick="() => PreviewEnabled = false">Редактирование</button>
-    </li>
-    <li class="nav-item">
         <button class="nav-link @(PreviewEnabled ? "active" : string.Empty)" @onclick="() => PreviewEnabled = true">Предпросмотр</button>
     </li>
+    <li class="nav-item">
+        <button class="nav-link @(PreviewEnabled ? string.Empty : "active")" @onclick="() => PreviewEnabled = false">Редактирование</button>
+    </li>
+
 </ul>
 @if (PreviewEnabled)
 {

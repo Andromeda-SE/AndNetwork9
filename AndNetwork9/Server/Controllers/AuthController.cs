@@ -34,7 +34,7 @@ public class AuthController : ControllerBase
     // POST api/<AuthController>
     [HttpPost]
     [AllowAnonymous]
-    public async Task<IActionResult> Post([FromBody] AuthCredentials value)
+    public async Task<ActionResult<List<Claim>>> Post([FromBody] AuthCredentials value)
     {
         Member? member = await _data.Members.FirstOrDefaultAsync(x => x.Nickname == value.Nickname)
             .ConfigureAwait(false);
@@ -72,7 +72,7 @@ public class AuthController : ControllerBase
             new(claimsIdentity),
             authProperties).ConfigureAwait(false);
         await _data.SaveChangesAsync().ConfigureAwait(false);
-        return Ok();
+        return Ok(claims);
     }
 
     [HttpPut]

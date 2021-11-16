@@ -15,12 +15,15 @@
     <None Include=".env" />
     <None Include=".env.template" />
     <None Include="docker-compose.monitoring.yml">
-	  <DependentUpon>docker-compose.yml</DependentUpon>
+      <DependentUpon>docker-compose.yml</DependentUpon>
     </None>
     <None Include="docker-compose.override.yml">
       <DependentUpon>docker-compose.yml</DependentUpon>
     </None>
     <None Include="docker-compose.yml" />
     <None Include=".dockerignore" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="AndNetwork9\**" />
   </ItemGroup>
 </Project>

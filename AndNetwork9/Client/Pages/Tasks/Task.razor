@@ -1,6 +1,183 @@
-﻿@page "/Task/{TaskId}"
-<h3>Task</h3>
+﻿@page "/Task/{TaskId:int}"
+@using TaskStatus = AndNetwork9.Shared.Enums.TaskStatus
 
-@code {
+@if (Model is null)
+{
+    <LoadingSpinner/>
+}
+else
+{
+    <BaseBodyWithAside>
+        <Title>
+            <div class="d-grid">
+                <textarea @bind="Model.Title" rows="1"/>
+            </div>
+        </Title>
+        <Main>
+            @if (Model.WriteRule.HasAccess(AuthStateProvider.CurrentMember)
+                 && Model.ReporterId == AuthStateProvider.CurrentMember.Id)
+            {
+                <MarkdownEditor
+                    GetterFunc="() => EditedText"
+                    ResetFunc="() => EditedText = Model.Description?.Text"
+                    SaveFunc="async _ => await UpdateDescription()"
+                    SetterFunc="x => EditedText = x">
+                </MarkdownEditor>
+            }
+            else
+            {
+                @Description
+            }
+            @if (Model.ParentId is not null || Model.Children.Any())
+            {
+                <div class="accordion">
+                    @if (Model.ParentId is not null)
+                    {
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button" data-bs-target="#collapseOne" data-bs-toggle="collapse" type="button">
+                                    Родительская задача
+                                </button>
+                            </h2>
+                            <div class="accordion-collapse collapse show" id="collapseOne">
+                                <div class="accordion-body" style="max-height: 50vh; overflow-y: scroll">
+                                    @if (Model.Parent is not null)
+                                    {
+                                        <TaskShortCard Task="Model.Parent"/>
+                                    }
+                                    else
+                                    {
+                                        <LoadingSpinner/>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    @if (Model.Children.Any())
+                    {
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" data-bs-target="#collapseTwo" data-bs-toggle="collapse" type="button">
+                                    Дочерние задачи
+                                </button>
+                            </h2>
+                            <div class="accordion-collapse collapse" id="collapseTwo">
+                                <div class="accordion-body" style="max-height: 50vh; overflow-y: scroll">
+                                    <Virtualize Items="Model.Children" Context="task" OverscanCount="2">
+                                        <TaskShortCard Task="task"/>
+                                    </Virtualize>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+        </Main>
+        <Aside>
+            <b>Исполнитель: </b>
+            <select @bind="@Model.AssigneeId" class="form-select" disabled="@(!Model.WriteRule.HasAccess(AuthStateProvider.CurrentMember))">
+                <option value="0">Не назначено</option>
+                @foreach (Member member in AllMembers)
+                {
+                    <option value="@member.Id">@member.ToString()</option>
+                }
+            </select>
+            <b>Инициатор: </b>
+            <select @bind="@Model.ReporterId" class="form-select mb-3" disabled>
+                <option value="0">Совет клана</option>
+                @foreach (Member member in AllMembers)
+                {
+                    <option value="@member.Id">@member.ToString()</option>
+                }
+            </select>
 
+            <b>Направление: </b>
+            <select @bind="@Model.DirectionAssignee" class="form-select" disabled="@(!Model.WriteRule.HasAccess(AuthStateProvider.CurrentMember))">
+                <option value="0">(нет)</option>
+                @foreach (Direction direction in Enum.GetValues<Direction>().OrderByDescending(x => x))
+                {
+                    <option value="@direction">@direction.GetName()</option>
+                }
+            </select>
+            <b>Отряд: </b>
+            <select @bind="@Model.SquadAssigneeId" class="form-select" disabled="@(!Model.WriteRule.HasAccess(AuthStateProvider.CurrentMember))">
+                <option value="0">(нет)</option>
+                @foreach (Squad squad in AllSquads)
+                {
+                    <option value="@squad">@squad.ToString()</option>
+                }
+            </select>
+            <b>Отделение: </b>
+            <select @bind="@Model.SquadPartAssigneeId" class="form-select mb-3" disabled="@(!Model.WriteRule.HasAccess(AuthStateProvider.CurrentMember))">
+                <option value="0">(нет)</option>
+                @if (Model.SquadAssigneeId is not null)
+                {
+                    @foreach (SquadPart squadPart in AllSquads.First(x => x.Number == Model.SquadAssigneeId).SquadParts)
+                    {
+                        <option value="@squadPart.Part">@squadPart.Part</option>
+                    }
+                }
+            </select>
+
+            <b>Статус: </b>
+            <select @bind="@Model.Status" class="form-select" disabled="@(!Model.WriteRule.HasAccess(AuthStateProvider.CurrentMember))">
+                @foreach (TaskStatus status in Enum.GetValues<TaskStatus>().OrderByDescending(x => x))
+                {
+                    <option value="@status">@status.ToLocalString()</option>
+                }
+            </select>
+            <b>Приоритет: </b>
+            <select @bind="@Model.Priority" class="form-select" disabled="@(!Model.WriteRule.HasAccess(AuthStateProvider.CurrentMember))">
+                @foreach (TaskPriority priority in Enum.GetValues<TaskPriority>().OrderByDescending(x => x))
+                {
+                    <option value="@priority">@priority.ToLocalString()</option>
+                }
+            </select>
+            <b>Уровень: </b>
+            <select @bind="@Model.Level" class="form-select" disabled="@(!Model.WriteRule.HasAccess(AuthStateProvider.CurrentMember))">
+                @foreach (TaskLevel level in Enum.GetValues<TaskLevel>().OrderByDescending(x => x))
+                {
+                    <option value="@level">@level.ToLocalString()</option>
+                }
+            </select>
+            <b>Награда: </b>
+            <select @bind="@Model.Award" class="form-select mb-3" disabled="@(!Model.WriteRule.HasAccess(AuthStateProvider.CurrentMember))">
+                @foreach (AwardType awardType in Enum.GetValues<AwardType>().OrderByDescending(x => x))
+                {
+                    <option value="@awardType">@awardType.GetTypeName()</option>
+                }
+            </select>
+
+            <b>Время создания: </b>
+            <input class="form-control" type="datetime-local" @bind="@Model.CreateTime" disabled>
+            @if (Model.LastEditTime is not null)
+            {
+                <b>Время изменения: </b>
+                <input class="form-control" type="datetime-local" @bind="@Model.LastEditTime" disabled>
+            }
+            <b>Время начала задачи: </b>
+            <input class="form-control" type="datetime-local" @bind="@Model.StartTime" disabled="@(!Model.WriteRule.HasAccess(AuthStateProvider.CurrentMember))">
+            <b>Время конца задачи: </b>
+            <input class="form-control mb-3" type="datetime-local" @bind="@Model.EndTime" disabled="@(!Model.WriteRule.HasAccess(AuthStateProvider.CurrentMember))">
+            @if (Model.WriteRule.HasAccess(AuthStateProvider.CurrentMember))
+            {
+                <b>Родительская задача: </b>
+                <input class="form-control mb-3" type="number" @bind="@Model.ParentId">
+                <div class="d-grid">
+                    @if (Model.ReadRule is not null)
+                    {
+                        <AccessRuleEditor Id="readRuleEdiorId" Model="Model.ReadRule" RuleUpdated="UpdateReadRule"/>
+                        <button class="btn btn-info mb-1" data-bs-toggle="modal" data-bs-target="#readRuleEdiorId" type="button">Изменить права чтения</button>
+                    }
+                    @if (Model.WriteRule is not null)
+                    {
+                        <AccessRuleEditor Id="writeRuleEdiorId" Model="Model.WriteRule" RuleUpdated="UpdateWriteRule"/>
+                        <button class="btn btn-info mb-1" data-bs-toggle="modal" data-bs-target="#writeRuleEdiorId" type="button">Изменить права записи</button>
+                    }
+
+                    <button class="btn btn-primary mb-1" type="button" disabled="@(!SendEnabled)" @onclick="async () => await Send()">Сохранить изменения</button>
+                </div>
+            }
+        </Aside>
+    </BaseBodyWithAside>
 }

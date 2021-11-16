@@ -13,10 +13,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="6.0.0-rc.2.21480.10" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="6.0.0-rc.2.21480.5" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.0-rc.2.21480.5" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.0-rc.2.21480.5">
+    <PackageReference Include="AspNetCoreRateLimit" Version="4.0.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="6.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="6.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
@@ -24,13 +25,19 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
     <PackageReference Include="System.Interactive.Async" Version="5.0.0" />
     <PackageReference Include="System.Runtime" Version="4.3.1" />
-    <PackageReference Include="System.Text.Json" Version="6.0.0-rc.2.21480.5" />
+    <PackageReference Include="System.Text.Json" Version="6.0.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Client\AndNetwork9.Client.csproj" />
     <ProjectReference Include="..\Shared.Backend\AndNetwork9.Shared.Backend.csproj" />
     <ProjectReference Include="..\Shared\AndNetwork9.Shared.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Controllers\Public\" />
+    <Folder Include="Hubs\" />
+    <Folder Include="Utility\" />
   </ItemGroup>
 
 

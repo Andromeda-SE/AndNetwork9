@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Security.Claims;
@@ -20,7 +23,7 @@ public class AuthStateProvider : AuthenticationStateProvider
 
     [Inject]
     public HttpClient Client { get; set; }
-    public static Member CurrentMember { get; set; }
+    public static Member CurrentMember { get; private set; }
 
     public override async Task<AuthenticationState> GetAuthenticationStateAsync()
     {

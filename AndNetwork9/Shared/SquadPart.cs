@@ -57,4 +57,6 @@ public record SquadPart : IId
     {
         return ToString(true);
     }
+
+    public DateTime LastChanged { get; set; }
 }

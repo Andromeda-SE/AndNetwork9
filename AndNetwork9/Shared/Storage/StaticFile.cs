@@ -29,4 +29,6 @@ public record StaticFile : IId
     {
         return string.IsNullOrWhiteSpace(Extension) ? Name : $"{Name}.{Extension}";
     }
+
+    public DateTime LastChanged { get; set; }
 }

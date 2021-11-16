@@ -1,13 +1,19 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using AndNetwork9.Server.Auth;
 using AndNetwork9.Server.Extensions;
+using AndNetwork9.Server.Hubs;
+using AndNetwork9.Server.Utility;
 using AndNetwork9.Shared.Backend;
 using AndNetwork9.Shared.Backend.Rabbit;
 using AndNetwork9.Shared.Backend.Senders.AwardDispenser;
 using AndNetwork9.Shared.Backend.Senders.Discord;
 using AndNetwork9.Shared.Backend.Senders.Elections;
 using AndNetwork9.Shared.Backend.Senders.Storage;
+using AspNetCoreRateLimit;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
@@ -15,6 +21,8 @@ using Microsoft.AspNetCore.CookiePolicy;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Formatters;
+using Microsoft.AspNetCore.ResponseCompression;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -35,14 +43,63 @@ public class Startup
     // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
     public void ConfigureServices(IServiceCollection services)
     {
+        services.AddMemoryCache();
+        services.AddInMemoryRateLimiting();
+        services.Configure<ClientRateLimitOptions>(options =>
+        {
+            options.GeneralRules = new List<RateLimitRule>
+            {
+                new RateLimitRule()
+                {
+                    Endpoint = "get:/public/api/",
+                    Limit = 5,
+                    PeriodTimespan = TimeSpan.FromMinutes(15)
+                },
+                new RateLimitRule()
+                {
+                    Endpoint = "*",
+                    Limit = 120,
+                    PeriodTimespan = TimeSpan.FromMinutes(1)
+                },
+                new RateLimitRule()
+                {
+                    Endpoint = "*",
+                    Limit = 1500,
+                    PeriodTimespan = TimeSpan.FromHours(1)
+                },
+                new RateLimitRule()
+                {
+                    Endpoint = "*",
+                    Limit = 5000,
+                    PeriodTimespan = TimeSpan.FromDays(1)
+                },
+                new RateLimitRule()
+                {
+                    Endpoint = "*",
+                    Limit = 5000,
+                    PeriodTimespan = TimeSpan.FromDays(1)
+                },
+
+            };
+        });
+        services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
+        services.AddSingleton<IUserIdProvider, MemberIdProvider>();
         services.AddControllers(options =>
         {
             options.OutputFormatters.RemoveType<SystemTextJsonOutputFormatter>();
             options.OutputFormatters.Add(new CustomSystemTextJsonOutputFormatter(new(JsonSerializerDefaults.Web)));
         });
+        services.AddResponseCaching();
         services.AddRazorPages();
 
+        services.AddSignalR();
         services.AddSwaggerGen();
+
+        services.AddResponseCompression(opts =>
+        {
+            opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
+                new[] { "application/octet-stream" });
+        });
 
         services.AddDbContext<ClanDataContext>(x =>
             x.UseNpgsql(Configuration["Postgres:ConnectionString"])
@@ -77,24 +134,31 @@ public class Startup
             };
         });
         services.AddAuthorization();
+
+
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
     {
+        app.UseClientRateLimiting();
+        app.UseWebSockets();
+        app.UseResponseCompression();
+
+        app.UseSwagger();
+
         if (env.IsDevelopment())
         {
             app.UseDeveloperExceptionPage();
             app.UseWebAssemblyDebugging();
+            app.UseSwaggerUI(c => { c.SwaggerEndpoint("/swagger/v1/swagger.json", "AndNetwork9"); });
         }
 
         app.UseBlazorFrameworkFiles();
         app.UseStaticFiles();
 
-        app.UseSwagger();
-        app.UseSwaggerUI(c => { c.SwaggerEndpoint("/swagger/v1/swagger.json", "AndNetwork9"); });
-
         app.UseRouting();
+        app.UseResponseCaching();
 
         app.UseCookiePolicy(new()
         {
@@ -108,6 +172,7 @@ public class Startup
         {
             endpoints.MapRazorPages();
             endpoints.MapControllers();
+            endpoints.MapHub<ModelHub>("hub/model");
             endpoints.MapFallbackToFile("index.html");
         });
     }
