@@ -13,7 +13,6 @@ using AndNetwork9.Shared.Extensions;
 using AndNetwork9.Shared.Hubs;
 using AndNetwork9.Shared.Utility;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Connections;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
@@ -28,9 +27,9 @@ namespace AndNetwork9.Server.Controllers;
 public class TaskController : ControllerBase
 {
     private readonly ClanDataContext _data;
+    private readonly IHubContext<ModelHub, IModelHub> _modelHub;
     private readonly SendSender _sendSender;
     private readonly IEqualityComparer<Tag> _tagComparer = new GenericEqualityComparer<Tag, string>(x => x.Name);
-    private readonly IHubContext<ModelHub, IModelHub> _modelHub;
 
     public TaskController(ClanDataContext data, SendSender sendSender, IHubContext<ModelHub, IModelHub> modelHub)
     {
@@ -125,7 +124,8 @@ public class TaskController : ControllerBase
         Member? member = await this.GetCurrentMember(_data).ConfigureAwait(false);
         if (member is null) return Unauthorized();
 
-        return Ok(await _data.Tasks.Where(x => x.AssigneeId == member.Id).OrderBy(x => x).ToArrayAsync().ConfigureAwait(false));
+        return Ok(await _data.Tasks.Where(x => x.AssigneeId == member.Id).OrderBy(x => x).ToArrayAsync()
+            .ConfigureAwait(false));
     }
 
     [HttpGet("me/assignee/analysis")]
@@ -136,9 +136,8 @@ public class TaskController : ControllerBase
         if (member is null) return Unauthorized();
 
         return Ok(await _data.Tasks.Where(x =>
-            x.AssigneeId == member.Id 
-            && (x.Status >= TaskStatus.New 
-                && x.Status < TaskStatus.ToDo)).OrderBy(x => x).ToArrayAsync().ConfigureAwait(false));
+                x.AssigneeId == member.Id && x.Status >= TaskStatus.New && x.Status < TaskStatus.ToDo).OrderBy(x => x)
+            .ToArrayAsync().ConfigureAwait(false));
     }
 
     [HttpGet("me/assignee/active")]
@@ -148,9 +147,10 @@ public class TaskController : ControllerBase
         Member? member = await this.GetCurrentMember(_data).ConfigureAwait(false);
         if (member is null) return Unauthorized();
 
-        return Ok(await _data.Tasks.Where(x => x.AssigneeId == member.Id 
-                                               && (x.Status == TaskStatus.ToDo 
-                                                   || x.Status == TaskStatus.InProgress)).OrderBy(x => x).ToArrayAsync().ConfigureAwait(false));
+        return Ok(await _data.Tasks.Where(x => x.AssigneeId == member.Id
+                                               && (x.Status == TaskStatus.ToDo
+                                                   || x.Status == TaskStatus.InProgress)).OrderBy(x => x).ToArrayAsync()
+            .ConfigureAwait(false));
     }
 
 
@@ -161,9 +161,10 @@ public class TaskController : ControllerBase
         Member? member = await this.GetCurrentMember(_data).ConfigureAwait(false);
         if (member is null) return Unauthorized();
 
-        return Ok(await _data.Tasks.Where(x => x.AssigneeId == member.Id 
-                                               && (x.Status <= TaskStatus.Canceled 
-                                                   || x.Status >= TaskStatus.Resolved)).OrderBy(x => x).ToArrayAsync().ConfigureAwait(false));
+        return Ok(await _data.Tasks.Where(x => x.AssigneeId == member.Id
+                                               && (x.Status <= TaskStatus.Canceled
+                                                   || x.Status >= TaskStatus.Resolved)).OrderBy(x => x).ToArrayAsync()
+            .ConfigureAwait(false));
     }
 
     [HttpGet("squadpart/assignee/analysis")]
@@ -173,10 +174,11 @@ public class TaskController : ControllerBase
         Member? member = await this.GetCurrentMember(_data).ConfigureAwait(false);
         if (member is null) return Unauthorized();
 
-        return Ok(await _data.Tasks.Where(x => x.SquadAssigneeId == member.SquadNumber 
-                                               && x.SquadPartAssigneeId == member.SquadPartNumber 
-                                               && (x.Status >= TaskStatus.New
-                                                   && x.Status < TaskStatus.ToDo)).OrderBy(x => x).ToArrayAsync().ConfigureAwait(false));
+        return Ok(await _data.Tasks.Where(x => x.SquadAssigneeId == member.SquadNumber
+                                               && x.SquadPartAssigneeId == member.SquadPartNumber
+                                               && x.Status >= TaskStatus.New
+                                               && x.Status < TaskStatus.ToDo).OrderBy(x => x).ToArrayAsync()
+            .ConfigureAwait(false));
     }
 
     [HttpGet("squadpart/assignee/active")]
@@ -189,7 +191,8 @@ public class TaskController : ControllerBase
         return Ok(await _data.Tasks.Where(x => x.SquadAssigneeId == member.SquadNumber
                                                && x.SquadPartAssigneeId == member.SquadPartNumber
                                                && (x.Status == TaskStatus.ToDo
-                                                   || x.Status == TaskStatus.InProgress)).OrderBy(x => x).ToArrayAsync().ConfigureAwait(false));
+                                                   || x.Status == TaskStatus.InProgress)).OrderBy(x => x).ToArrayAsync()
+            .ConfigureAwait(false));
     }
 
 
@@ -203,7 +206,8 @@ public class TaskController : ControllerBase
         return Ok(await _data.Tasks.Where(x => x.SquadAssigneeId == member.SquadNumber
                                                && x.SquadPartAssigneeId == member.SquadPartNumber
                                                && (x.Status <= TaskStatus.Canceled
-                                                   || x.Status >= TaskStatus.Resolved)).OrderBy(x => x).ToArrayAsync().ConfigureAwait(false));
+                                                   || x.Status >= TaskStatus.Resolved)).OrderBy(x => x).ToArrayAsync()
+            .ConfigureAwait(false));
     }
 
     [HttpGet("squad/assignee/analysis")]
@@ -213,9 +217,10 @@ public class TaskController : ControllerBase
         Member? member = await this.GetCurrentMember(_data).ConfigureAwait(false);
         if (member is null) return Unauthorized();
 
-        return Ok(await _data.Tasks.Where(x => x.SquadAssigneeId == member.SquadNumber
-                                               && (x.Status >= TaskStatus.New
-                                                   && x.Status < TaskStatus.ToDo)).OrderBy(x => x).ToArrayAsync().ConfigureAwait(false));
+        return Ok(await _data.Tasks
+            .Where(x => x.SquadAssigneeId == member.SquadNumber
+                        && x.Status >= TaskStatus.New
+                        && x.Status < TaskStatus.ToDo).OrderBy(x => x).ToArrayAsync().ConfigureAwait(false));
     }
 
     [HttpGet("squad/assignee/active")]
@@ -227,7 +232,8 @@ public class TaskController : ControllerBase
 
         return Ok(await _data.Tasks.Where(x => x.SquadAssigneeId == member.SquadNumber
                                                && (x.Status == TaskStatus.ToDo
-                                                   || x.Status == TaskStatus.InProgress)).OrderBy(x => x).ToArrayAsync().ConfigureAwait(false));
+                                                   || x.Status == TaskStatus.InProgress)).OrderBy(x => x).ToArrayAsync()
+            .ConfigureAwait(false));
     }
 
 
@@ -240,7 +246,8 @@ public class TaskController : ControllerBase
 
         return Ok(await _data.Tasks.Where(x => x.SquadAssigneeId == member.SquadNumber
                                                && (x.Status <= TaskStatus.Canceled
-                                                   || x.Status >= TaskStatus.Resolved)).OrderBy(x => x).ToArrayAsync().ConfigureAwait(false));
+                                                   || x.Status >= TaskStatus.Resolved)).OrderBy(x => x).ToArrayAsync()
+            .ConfigureAwait(false));
     }
 
     [HttpGet("direction/assignee/analysis")]
@@ -250,9 +257,10 @@ public class TaskController : ControllerBase
         Member? member = await this.GetCurrentMember(_data).ConfigureAwait(false);
         if (member is null) return Unauthorized();
 
-        return Ok(await _data.Tasks.Where(x => x.DirectionAssignee == member.Direction
-                                               && (x.Status >= TaskStatus.New
-                                                   && x.Status < TaskStatus.ToDo)).OrderBy(x => x).ToArrayAsync().ConfigureAwait(false));
+        return Ok(await _data.Tasks
+            .Where(x => x.DirectionAssignee == member.Direction
+                        && x.Status >= TaskStatus.New
+                        && x.Status < TaskStatus.ToDo).OrderBy(x => x).ToArrayAsync().ConfigureAwait(false));
     }
 
     [HttpGet("direction/assignee/active")]
@@ -264,7 +272,8 @@ public class TaskController : ControllerBase
 
         return Ok(await _data.Tasks.Where(x => x.DirectionAssignee == member.Direction
                                                && (x.Status == TaskStatus.ToDo
-                                                   || x.Status == TaskStatus.InProgress)).OrderBy(x => x).ToArrayAsync().ConfigureAwait(false));
+                                                   || x.Status == TaskStatus.InProgress)).OrderBy(x => x).ToArrayAsync()
+            .ConfigureAwait(false));
     }
 
 
@@ -277,7 +286,8 @@ public class TaskController : ControllerBase
 
         return Ok(await _data.Tasks.Where(x => x.DirectionAssignee == member.Direction
                                                && (x.Status <= TaskStatus.Canceled
-                                                   || x.Status >= TaskStatus.Resolved)).OrderBy(x => x).ToArrayAsync().ConfigureAwait(false));
+                                                   || x.Status >= TaskStatus.Resolved)).OrderBy(x => x).ToArrayAsync()
+            .ConfigureAwait(false));
     }
 
     [HttpGet("me/reporter")]
@@ -287,7 +297,8 @@ public class TaskController : ControllerBase
         Member? member = await this.GetCurrentMember(_data).ConfigureAwait(false);
         if (member is null) return Unauthorized();
 
-        return Ok(await _data.Tasks.Where(x => x.ReporterId == member.Id).OrderBy(x => x).ToArrayAsync().ConfigureAwait(false));
+        return Ok(await _data.Tasks.Where(x => x.ReporterId == member.Id).OrderBy(x => x).ToArrayAsync()
+            .ConfigureAwait(false));
     }
 
     [HttpGet("me/watcher")]
@@ -297,7 +308,8 @@ public class TaskController : ControllerBase
         Member? member = await this.GetCurrentMember(_data).ConfigureAwait(false);
         if (member is null) return Unauthorized();
 
-        return Ok(await _data.Tasks.AsAsyncEnumerable().Where(x => x.WatchersId.Any(y => y == member.Id) && x.ReadRule.HasAccess(member))
+        return Ok(await _data.Tasks.AsAsyncEnumerable()
+            .Where(x => x.WatchersId.Any(y => y == member.Id) && x.ReadRule.HasAccess(member))
             .OrderBy(x => x).ToArrayAsync().ConfigureAwait(false));
     }
 
@@ -309,10 +321,11 @@ public class TaskController : ControllerBase
         if (member is null) return Unauthorized();
 
         return Ok(await _data.Tasks.AsAsyncEnumerable().Where(x =>
-            x.AssigneeId == null
-            && x.ReadRule.HasAccess(member)
-            && (x.AllowAssignByMember || x.WriteRule.HasAccess(member))
-            && x.Status is >= TaskStatus.New and < TaskStatus.Resolved).OrderBy(x => x).ToArrayAsync().ConfigureAwait(false));
+                x.AssigneeId == null
+                && x.ReadRule.HasAccess(member)
+                && (x.AllowAssignByMember || x.WriteRule.HasAccess(member))
+                && x.Status is >= TaskStatus.New and < TaskStatus.Resolved).OrderBy(x => x).ToArrayAsync()
+            .ConfigureAwait(false));
     }
 
     [HttpPost]
@@ -414,15 +427,15 @@ public class TaskController : ControllerBase
             RepoId = null,
             Children = new List<Comment>(0),
             TaskId = null,
-            VotingId = null
-
+            VotingId = null,
         }).ConfigureAwait(false)).Entity;
         await _data.SaveChangesAsync().ConfigureAwait(false);
         entity.Entity.DescriptionId = description.Id;
         await _data.SaveChangesAsync().ConfigureAwait(false);
         _sendSender.NewTask(task, member);
         await _modelHub.Clients
-            .Users(await _data.Members.AsAsyncEnumerable().Where(x => task.ReadRule.HasAccess(x)).Select(x => x.Id.ToString("D", CultureInfo.InvariantCulture)).ToArrayAsync().ConfigureAwait(false))
+            .Users(await _data.Members.AsAsyncEnumerable().Where(x => task.ReadRule.HasAccess(x))
+                .Select(x => x.Id.ToString("D", CultureInfo.InvariantCulture)).ToArrayAsync().ConfigureAwait(false))
             .ReceiveModelUpdate(typeof(Task).FullName, task).ConfigureAwait(false);
         return Ok(task);
     }
@@ -442,11 +455,12 @@ public class TaskController : ControllerBase
         {
             int id = comment.ParentId.Value;
             comment.Parent = null;
-            if (task.Comments is not null) foreach (Comment votingComment in task.Comments)
-            {
-                comment.Parent = votingComment.FindComment(id);
-                if (comment.Parent is not null) break;
-            }
+            if (task.Comments is not null)
+                foreach (Comment votingComment in task.Comments)
+                {
+                    comment.Parent = votingComment.FindComment(id);
+                    if (comment.Parent is not null) break;
+                }
 
             if (comment.Parent is null) return BadRequest();
         }
@@ -466,10 +480,12 @@ public class TaskController : ControllerBase
         await _data.SaveChangesAsync().ConfigureAwait(false);
         _sendSender.NewComment(task, member);
         await _modelHub.Clients
-            .Users(_data.Members.Where(x => task.ReadRule.HasAccess(x)).Select(x => x.Id.ToString("D", CultureInfo.InvariantCulture)))
+            .Users(_data.Members.Where(x => task.ReadRule.HasAccess(x))
+                .Select(x => x.Id.ToString("D", CultureInfo.InvariantCulture)))
             .ReceiveModelUpdate(typeof(Comment).FullName, result).ConfigureAwait(false);
         await _modelHub.Clients
-            .Users(_data.Members.Where(x => task.ReadRule.HasAccess(x)).Select(x => x.Id.ToString("D", CultureInfo.InvariantCulture)))
+            .Users(_data.Members.Where(x => task.ReadRule.HasAccess(x))
+                .Select(x => x.Id.ToString("D", CultureInfo.InvariantCulture)))
             .ReceiveModelUpdate(typeof(Task).FullName, task).ConfigureAwait(false);
         return Ok(result);
     }
@@ -554,9 +570,10 @@ public class TaskController : ControllerBase
         if (oldTask.Priority != newTask.Priority) _sendSender.NewPriority(oldTask, member);
         if (oldTask.Status != newTask.Status) _sendSender.NewStatus(oldTask, member);
 
-        
+
         await _modelHub.Clients
-            .Users(await _data.Members.AsAsyncEnumerable().Where(x => oldTask.ReadRule.HasAccess(x)).Select(x => x.Id.ToString("D", CultureInfo.InvariantCulture)).ToArrayAsync().ConfigureAwait(false))
+            .Users(await _data.Members.AsAsyncEnumerable().Where(x => oldTask.ReadRule.HasAccess(x))
+                .Select(x => x.Id.ToString("D", CultureInfo.InvariantCulture)).ToArrayAsync().ConfigureAwait(false))
             .ReceiveModelUpdate(typeof(Task).FullName, oldTask).ConfigureAwait(false);
         return Ok(oldTask);
     }
@@ -570,7 +587,9 @@ public class TaskController : ControllerBase
 
         Task? task = await _data.Tasks.FindAsync(id).ConfigureAwait(false);
         if (task is null) return NotFound();
-        if ((!task.WriteRule?.HasAccess(member) ?? false) && task.AssigneeId != member.Id && task.ReporterId != member.Id)
+        if ((!task.WriteRule?.HasAccess(member) ?? false)
+            && task.AssigneeId != member.Id
+            && task.ReporterId != member.Id)
             return Forbid();
         if (task.Status == status) return Ok(task);
         task.Status = status;
@@ -578,7 +597,8 @@ public class TaskController : ControllerBase
         await _data.SaveChangesAsync().ConfigureAwait(false);
         _sendSender.NewStatus(task, member);
         await _modelHub.Clients
-            .Users(_data.Members.Where(x => task.ReadRule.HasAccess(x)).Select(x => x.Id.ToString("D", CultureInfo.InvariantCulture)))
+            .Users(_data.Members.Where(x => task.ReadRule.HasAccess(x))
+                .Select(x => x.Id.ToString("D", CultureInfo.InvariantCulture)))
             .ReceiveModelUpdate(typeof(Task).FullName, task).ConfigureAwait(false);
         return Ok(task);
     }
@@ -600,7 +620,8 @@ public class TaskController : ControllerBase
         await _data.SaveChangesAsync().ConfigureAwait(false);
         _sendSender.NewAssignee(task);
         await _modelHub.Clients
-            .Users(_data.Members.Where(x => task.ReadRule.HasAccess(x)).Select(x => x.Id.ToString("D", CultureInfo.InvariantCulture)))
+            .Users(_data.Members.Where(x => task.ReadRule.HasAccess(x))
+                .Select(x => x.Id.ToString("D", CultureInfo.InvariantCulture)))
             .ReceiveModelUpdate(typeof(Task).FullName, task).ConfigureAwait(false);
         return Ok(task);
     }
@@ -623,7 +644,8 @@ public class TaskController : ControllerBase
         await _data.SaveChangesAsync().ConfigureAwait(false);
         _sendSender.NewAssignee(task);
         await _modelHub.Clients
-            .Users(_data.Members.Where(x => task.ReadRule.HasAccess(x)).Select(x => x.Id.ToString("D", CultureInfo.InvariantCulture)))
+            .Users(_data.Members.Where(x => task.ReadRule.HasAccess(x))
+                .Select(x => x.Id.ToString("D", CultureInfo.InvariantCulture)))
             .ReceiveModelUpdate(typeof(Task).FullName, task).ConfigureAwait(false);
         return Ok(task);
     }

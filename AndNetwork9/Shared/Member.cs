@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Text.Json.Serialization;
 using AndNetwork9.Shared.Converters;
 using AndNetwork9.Shared.Enums;
@@ -16,6 +15,8 @@ public record Member : IComparable<Member>, IEquatable<Member?>, IId, IComparabl
 {
     public ulong? SteamId { get; set; }
     public ulong? DiscordId { get; set; }
+
+    public long? MicrosoftId { get; set; }
     public long? VkId { get; set; }
     public long? TelegramId { get; set; }
 
@@ -37,19 +38,18 @@ public record Member : IComparable<Member>, IEquatable<Member?>, IId, IComparabl
     public short? SquadNumber { get; set; }
     public short SquadPartNumber { get; set; }
 
-    public bool SquadCommander { get; set; }
-
     [JsonIgnore]
     public SquadCommander CommanderLevel
     {
         get
         {
-            if (SquadNumber is null && !SquadCommander) return Enums.SquadCommander.None;
-            return SquadPartNumber == 0 ? Enums.SquadCommander.Captain : Enums.SquadCommander.Lieutenant;
+            if (SquadNumber is null) return SquadCommander.None;
+            if (SquadPart is null) throw new("SquadPart is null");
+            if (SquadPart.CommanderId != Id) return SquadCommander.None;
+            return SquadPartNumber == 0 ? SquadCommander.Captain : SquadCommander.Lieutenant;
         }
     }
 
-    [JsonIgnore]
     public virtual SquadPart? SquadPart { get; set; }
 
     public string? Description { get; set; }
@@ -112,6 +112,8 @@ public record Member : IComparable<Member>, IEquatable<Member?>, IId, IComparabl
     public int Id { get; set; }
     public Guid ConcurrencyToken { get; set; }
 
+    public DateTime LastChanged { get; set; }
+
     public override string ToString()
     {
         string? rankIcon = Rank.GetRankIcon();
@@ -119,29 +121,24 @@ public record Member : IComparable<Member>, IEquatable<Member?>, IId, IComparabl
         string result = string.Empty;
         if (rankIcon is not null) result += Rank > Rank.None ? $"[{commanderIcon}{rankIcon}] " : $"{{{rankIcon}}} ";
         result += Nickname;
-        if (RealName is not null) result += $" ({RealName})";
+        if (RealName is not null && result.Length + RealName.Length < 32) result += $" ({RealName})";
         return result;
     }
 
-    public override int GetHashCode()
+    public string ToTagString()
     {
-        return Id;
+        string result = string.Empty;
+        result += "[AND] ";
+        result += Nickname;
+        if (RealName is not null && result.Length + RealName.Length < 32) result += $" ({RealName})";
+        return result;
     }
 
-    public string GetDiscordMention()
-    {
-        return DiscordId.HasValue ? $"<@{DiscordId.Value:D}>" : Nickname;
-    }
+    public override int GetHashCode() => Id;
 
-    public string? GetSteamLink()
-    {
-        return SteamId.HasValue ? $"http://steamcommunity.com/profiles/{SteamId:D}" : null;
-    }
+    public string GetDiscordMention() => DiscordId.HasValue ? $"<@{DiscordId.Value:D}>" : Nickname;
 
-    public string? GetVkLink()
-    {
-        return VkId.HasValue ? $"http://vk.com/id{VkId:D}" : null;
-    }
+    public string? GetSteamLink() => SteamId.HasValue ? $"http://steamcommunity.com/profiles/{SteamId:D}" : null;
 
-    public DateTime LastChanged { get; set; }
+    public string? GetVkLink() => VkId.HasValue ? $"http://vk.com/id{VkId:D}" : null;
 }

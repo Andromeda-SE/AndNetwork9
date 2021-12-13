@@ -34,10 +34,7 @@ public partial class SendMessage
         StateHasChanged();
     }
 
-    private bool Validate()
-    {
-        return SelectedMembers.Any() && !string.IsNullOrWhiteSpace(Text) && Text.Length <= 2000;
-    }
+    private bool Validate() => SelectedMembers.Any() && !string.IsNullOrWhiteSpace(Text) && Text.Length <= 2000;
 
     private async void Send()
     {

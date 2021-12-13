@@ -16,7 +16,7 @@ public partial class TaskShortCard
     protected override async System.Threading.Tasks.Task OnInitializedAsync()
     {
         Task.Assignee ??= Task.AssigneeId is not null
-                ? await Client.GetFromJsonAsync<Member>($"api/member/{Task.AssigneeId}")
-                : null;
+            ? await Client.GetFromJsonAsync<Member>($"api/member/{Task.AssigneeId}")
+            : null;
     }
 }

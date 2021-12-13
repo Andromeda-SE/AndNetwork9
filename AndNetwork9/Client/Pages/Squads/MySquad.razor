@@ -1,0 +1,31 @@
+﻿@page "/squad/manage"
+@attribute [Authorize]
+@inherits ElementPageBase<Member>
+@if (_isInitialized)
+{
+    <select class="form-select" @bind="SelectedPartNumber">
+        @foreach (var part in Squad.SquadParts)
+        {
+            <option value="@part.Part" selected="@(part.Part == 0)">@part.ToString(false)</option>
+        }
+    </select>
+    <BaseBodyWithAside>
+        <Main>
+            @if (Entities is null)
+            {
+                <LoadingSpinner/>
+            }
+            else
+            {
+                <Table Columns="ColumnDefinitions" InitialSort="(0, true)" SelectionChanged="SelectionChanged" Source="@Entities" TItem="Member"></Table>
+            }
+        </Main>
+        <Aside>
+
+        </Aside>
+    </BaseBodyWithAside>
+}
+else
+{
+    <LoadingSpinner/>
+}

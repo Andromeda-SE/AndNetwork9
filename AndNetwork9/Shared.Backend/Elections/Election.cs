@@ -30,6 +30,8 @@ public record Election : IConcurrencyToken
 
     public Guid ConcurrencyToken { get; set; }
 
+    public DateTime LastChanged { get; set; }
+
     public CouncilElection GetCouncilElection(Member member)
     {
         List<CouncilElectionVote>? votes = Votings.Select(x => new CouncilElectionVote
@@ -38,7 +40,7 @@ public record Election : IConcurrencyToken
             Votes = x.Members.Where(y => y.Votes is not null).ToDictionary(y => y.MemberId, y => (uint)y.Votes!),
         }).ToList();
         foreach ((CouncilElectionVote councilElectionVote, ElectionVoting electionVoting) in
-            votes.Join(Votings, x => x.Direction, x => x.Direction, (vote, voting) => (vote, voting)))
+                 votes.Join(Votings, x => x.Direction, x => x.Direction, (vote, voting) => (vote, voting)))
         {
             councilElectionVote.Votes.Add(0, (uint)electionVoting.AgainstAll);
             councilElectionVote.VoteAllowed = electionVoting.Members.Any(x => x.MemberId == member.Id && !x.Voted);
@@ -58,6 +60,4 @@ public record Election : IConcurrencyToken
             Votes = votes,
         };
     }
-
-    public DateTime LastChanged { get; set; }
 }

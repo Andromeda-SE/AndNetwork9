@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Security.Claims;
@@ -16,10 +13,7 @@ namespace AndNetwork9.Client.Services;
 
 public class AuthStateProvider : AuthenticationStateProvider
 {
-    public AuthStateProvider(HttpClient client)
-    {
-        Client = client;
-    }
+    public AuthStateProvider(HttpClient client) => Client = client;
 
     [Inject]
     public HttpClient Client { get; set; }

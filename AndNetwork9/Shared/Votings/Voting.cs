@@ -35,15 +35,12 @@ public record Voting : IId
     public int Id { get; set; }
     public Guid ConcurrencyToken { get; set; }
 
+    public DateTime LastChanged { get; set; }
+
     public bool HasReadAccess(Member member)
     {
         return Votes.Any(x => x.MemberId == member.Id) || ReadRule.HasAccess(member);
     }
 
-    public bool HasWriteAccess(Member member)
-    {
-        return Reporter?.Id == member.Id || EditRule.HasAccess(member);
-    }
-
-    public DateTime LastChanged { get; set; }
+    public bool HasWriteAccess(Member member) => Reporter?.Id == member.Id || EditRule.HasAccess(member);
 }

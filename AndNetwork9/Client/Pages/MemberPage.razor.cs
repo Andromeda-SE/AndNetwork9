@@ -4,6 +4,7 @@ using AndNetwork9.Client.Shared;
 using AndNetwork9.Client.Utility;
 using AndNetwork9.Shared;
 using AndNetwork9.Shared.Extensions;
+using Task = System.Threading.Tasks.Task;
 
 namespace AndNetwork9.Client.Pages;
 
@@ -34,7 +35,7 @@ public partial class MemberPage : ElementPageBase<Member>
         new("Отряд",
             x => x.SquadNumber,
             x => x.SquadNumber is not null ? RomanExtensions.ToRoman(x.SquadNumber) : "—",
-            x => x.SquadNumber is not null && x.IsSquadCommander,
+            x => x.SquadNumber is not null && x.SquadPartNumber == 0 && x.SquadPart.CommanderId == x.Id,
             (SortType.Numeric, false)),
     };
 
@@ -45,7 +46,7 @@ public partial class MemberPage : ElementPageBase<Member>
         if (SelectedEntity is not null)
         {
             SelectedEntity.Awards = (await Client.GetFromJsonAsync<Award[]>($"api/Award/{value}"))!;
-            SelectedEntity.SquadPart = SelectedEntity.SquadNumber is null
+            SelectedEntity.SquadPart ??= SelectedEntity.SquadNumber is null
                 ? null
                 : await Client.GetFromJsonAsync<SquadPart>(
                     $"api/squad/{SelectedEntity.SquadNumber}/part/{SelectedEntity.SquadPartNumber}");
@@ -54,9 +55,14 @@ public partial class MemberPage : ElementPageBase<Member>
         StateHasChanged();
     }
 
-    protected override async System.Threading.Tasks.Task OnInitializedAsync()
+    protected override async Task OnInitializedAsync()
     {
         Entities = await Client.GetFromJsonAsync<Member[]>("api/member/all");
+        foreach (Member entity in Entities)
+            entity.SquadPart = entity.SquadNumber is null
+                ? null
+                : await Client.GetFromJsonAsync<SquadPart>(
+                    $"api/squad/{entity.SquadNumber}/part/{entity.SquadPartNumber}");
     }
 
     private void SelectionChanged(int? value)

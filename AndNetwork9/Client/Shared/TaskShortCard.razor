@@ -1,35 +1,35 @@
 ﻿<div class="card mb-3">
-    <div class="card-header d-flex justify-content-between align-items-center">
+    <div class="align-items-center card-header d-flex justify-content-between">
         <h6 class="card-subtitle text-muted">
             @if (Task.Parent is not null)
             {
                 <a href="@Task.Parent.GetLink()">#@Task.Parent.Id.ToString("D")</a>
                 <span> → </span>
             }
-            <a href="@Task.GetLink()">#@Task.Id.ToString("D")</a> 
+            <a href="@Task.GetLink()">#@Task.Id.ToString("D")</a>
         </h6>
-        <div class="d-flex justify-content-end align-items-center">
-            <i class="mx-1 bi @Task.Priority.GetIconStyle()" 
-               style="color: @Task.Priority.GetIconColor()" 
+        <div class="align-items-center d-flex justify-content-end">
+            <i class="mx-1 bi @Task.Priority.GetIconStyle()"
+               style="color: @Task.Priority.GetIconColor()"
                title="Приоритет: @Task.Priority.ToLocalString()"/>
-            <i class="mx-1 bi bi-circle-fill" 
-               style="color: @Task.DirectionAssignee.GetValueOrDefault(Direction.Reserve).GetColorStyle()" 
+            <i class="bi bi-circle-fill mx-1"
+               style="color: @Task.DirectionAssignee.GetValueOrDefault(Direction.Reserve).GetColorStyle()"
                title="Направление: @Task.DirectionAssignee.GetValueOrDefault(Direction.None).GetName()"/>
-            <i class="mx-1 bi bi-square-fill" 
+            <i class="bi bi-square-fill mx-1"
                style="color: @Task.Level.GetIconColor()"
                title="Уровень: @Task.Level.ToLocalString()"/>
         </div>
     </div>
     <div class="card-body">
-        <div class="d-flex justify-content-between align-items-center">
+        <div class="align-items-center d-flex justify-content-between">
             <h5 class="card-title">@Task.Title</h5>
-            <h6 class="card-subtitle text-muted align-center">
-                <span class="badge align-center " style="background: @Task.Status.GetColorStyle()">@Task.Status.GetString()</span>
+            <h6 class="align-center card-subtitle text-muted">
+                <span class="align-center badge" style="background: @Task.Status.GetColorStyle()">@Task.Status.GetString()</span>
             </h6>
         </div>
     </div>
     <div class="card-footer d-flex justify-content-end">
-        @if(Task.Assignee is not null)
+        @if (Task.Assignee is not null)
         {
             @Task.Assignee.GetHtml()
         }

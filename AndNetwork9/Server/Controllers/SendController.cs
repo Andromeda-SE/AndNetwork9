@@ -36,11 +36,12 @@ public class SendController : ControllerBase
             Ids = args.Ids.Distinct().ToArray(),
         };
         await foreach (ulong id in _data.Members.Where(x => x.DiscordId != null).AsAsyncEnumerable().Join(
-                args.Ids.ToAsyncEnumerable(),
-                x => x.Id,
-                x => x,
-                (member, _) => member.DiscordId!.Value)
-            .ConfigureAwait(false)) await _sendSender.CallAsync(new(id, args.Message)).ConfigureAwait(false);
+                               args.Ids.ToAsyncEnumerable(),
+                               x => x.Id,
+                               x => x,
+                               (member, _) => member.DiscordId!.Value)
+                           .ConfigureAwait(false))
+            await _sendSender.CallAsync(new(id, args.Message)).ConfigureAwait(false);
 
         return Accepted();
     }

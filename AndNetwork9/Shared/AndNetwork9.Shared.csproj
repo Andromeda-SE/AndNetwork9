@@ -1,13 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFrameworks>net6.0</TargetFrameworks>
     <Nullable>enable</Nullable>
 	  <LangLevel>preview</LangLevel>
 	  <DisableImplicitNamespaceImports>true</DisableImplicitNamespaceImports>
   </PropertyGroup>
-
-  <ItemGroup>
+	<ItemGroup>
     <SupportedPlatform Include="browser" />
   </ItemGroup>
 </Project>

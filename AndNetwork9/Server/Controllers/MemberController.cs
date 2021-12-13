@@ -15,7 +15,6 @@ using AndNetwork9.Shared.Utility;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace AndNetwork9.Server.Controllers;
@@ -25,11 +24,12 @@ namespace AndNetwork9.Server.Controllers;
 public class MemberController : ControllerBase
 {
     private readonly ClanDataContext _data;
+    private readonly IHubContext<ModelHub, IModelHub> _modelHub;
     private readonly PublishSender _publishSender;
     private readonly UpdateUserSender _updateUserSender;
-    private readonly IHubContext<ModelHub, IModelHub> _modelHub;
 
-    public MemberController(ClanDataContext data, PublishSender publishSender, UpdateUserSender updateUserSender, IHubContext<ModelHub, IModelHub> modelHub)
+    public MemberController(ClanDataContext data, PublishSender publishSender, UpdateUserSender updateUserSender,
+        IHubContext<ModelHub, IModelHub> modelHub)
     {
         _data = data;
         _publishSender = publishSender;
@@ -49,16 +49,27 @@ public class MemberController : ControllerBase
         return Ok(result.GetShort());
     }
 
+    [HttpGet("auxiliary")]
+    [MinRankAuthorize]
+    [ProducesResponseType(typeof(IEnumerable<Member>), 200)]
+    [ProducesResponseType(typeof(void), 401)]
+    [ProducesResponseType(typeof(void), 403)]
+    [ResponseCache(Location = ResponseCacheLocation.Client, Duration = 30, NoStore = false)]
+    public ActionResult<IAsyncEnumerable<Member>> GetAuxiliary()
+    {
+        IQueryable<Member> result = _data.Members.Where(x => x.Rank >= Rank.Auxiliary && x.Rank <= Rank.Candidate);
+        return Ok(result.GetShort());
+    }
+
     [HttpGet]
     [Authorize]
     [ProducesResponseType(typeof(Member), 200)]
     [ProducesResponseType(typeof(void), 401)]
-    [ResponseCache(Location = ResponseCacheLocation.Client, Duration = 30, NoStore = false)]
+    [ResponseCache(Location = ResponseCacheLocation.Client, Duration = 30, NoStore = true)]
     public async Task<ActionResult<Member>> Get()
     {
         Member? member = await this.GetCurrentMember(_data).ConfigureAwait(false);
         if (member is null) return Unauthorized();
-
         return Ok(member);
     }
 
@@ -179,7 +190,9 @@ public class MemberController : ControllerBase
 
         try
         {
-            TimeZoneInfo zone = TimeZoneInfo.FindSystemTimeZoneById(newTimezone);
+            TimeZoneInfo? zone = string.IsNullOrEmpty(newTimezone)
+                ? null
+                : TimeZoneInfo.FindSystemTimeZoneById(newTimezone);
             member.TimeZone = zone;
         }
         catch (TimeZoneNotFoundException)

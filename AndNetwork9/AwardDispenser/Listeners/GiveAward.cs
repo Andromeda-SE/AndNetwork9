@@ -7,6 +7,7 @@ using AndNetwork9.Shared.Backend;
 using AndNetwork9.Shared.Backend.Rabbit;
 using AndNetwork9.Shared.Backend.Senders.AwardDispenser;
 using AndNetwork9.Shared.Backend.Senders.Discord;
+using AndNetwork9.Shared.Enums;
 using AndNetwork9.Shared.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -68,8 +69,9 @@ public class GiveAward : BaseRabbitListenerWithoutResponse<Award>
             _awards.Reverse();
             if (cancellationToken.IsCancellationRequested) return;
             text = string.Join(Environment.NewLine,
-                _awards.Select(x =>
-                    $"{x.Type.GetAwardSymbol()}: {x.Type.GetTypeName()} «{x.Description}» достается игроку {x.Member!.GetDiscordMention()}"));
+                _awards.Select(x => x.Type > AwardType.None
+                    ? $"{x.Type.GetAwardSymbol()}: {x.Type.GetTypeName()} «{x.Description}» достается игроку {x.Member!.GetDiscordMention()}"
+                    : $"{x.Type.GetAwardSymbol()}: {x.Type.GetTypeName()} «{x.Description}» присужден игроку {x.Member!.GetDiscordMention()}"));
             _awards.Clear();
         }
 

@@ -5,8 +5,5 @@ namespace AndNetwork9.Server.Auth.Attributes;
 
 public class SquadMemberAuthorizeAttribute : AuthorizeAttribute, IAuthorizationRequirement, IAuthPass
 {
-    public bool Pass(Member member)
-    {
-        return member.SquadPart is not null;
-    }
+    public bool Pass(Member member) => member.SquadPart is not null;
 }

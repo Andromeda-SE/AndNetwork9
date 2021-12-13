@@ -4,6 +4,7 @@
     <tr>
         @foreach (ColumnDefinition column in Columns)
         {
+            Console.WriteLine(column.Name);
             <th class="user-select-none" @onclick="() => SelectedColumn = Array.IndexOf(Columns, column)" scope="col">
                 @column.Name
                 <i class="@(SelectedColumn == Array.IndexOf(Columns, column) ? column.SortType.Type.GetIconStyle(column.SortType.Reverse ? !View.Descending : View.Descending) : string.Empty)"></i>
@@ -14,6 +15,7 @@
     <tbody>
     @foreach (TItem item in View)
     {
+        Console.WriteLine(item.Id);
         <tr class="@(item.Id == SelectedRow ? "table-secondary" : string.Empty)" @onclick="() => SelectedRow = item.Id">
             @foreach (ColumnDefinition column in Columns)
             {

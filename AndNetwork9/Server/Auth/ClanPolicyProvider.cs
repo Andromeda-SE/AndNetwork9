@@ -16,10 +16,7 @@ public class ClanPolicyProvider : IAuthorizationPolicyProvider, IAuthorizationHa
 {
     private readonly IServiceScopeFactory _scopeFactory;
 
-    public ClanPolicyProvider(IServiceScopeFactory scopeFactory)
-    {
-        _scopeFactory = scopeFactory;
-    }
+    public ClanPolicyProvider(IServiceScopeFactory scopeFactory) => _scopeFactory = scopeFactory;
 
     public async Task HandleAsync(AuthorizationHandlerContext context)
     {
@@ -39,8 +36,9 @@ public class ClanPolicyProvider : IAuthorizationPolicyProvider, IAuthorizationHa
         }
 
         foreach (IAuthorizationRequirement requirement in context.PendingRequirements)
-            if (requirement is IAuthPass authPass && authPass.Pass(member))
-                context.Succeed(requirement);
+            if (requirement is IAuthPass authPass)
+                if (authPass.Pass(member)) context.Succeed(requirement);
+                else context.Fail();
     }
 
     public Task<AuthorizationPolicy?> GetPolicyAsync(string policyName)
@@ -63,17 +61,12 @@ public class ClanPolicyProvider : IAuthorizationPolicyProvider, IAuthorizationHa
         return Task.FromResult(builder.Build())!;
     }
 
-    public async Task<AuthorizationPolicy> GetDefaultPolicyAsync()
-    {
-        return await
-            Task.FromResult(
-                new AuthorizationPolicyBuilder(CookieAuthenticationDefaults.AuthenticationScheme)
-                    .RequireAuthenticatedUser()
-                    .Build()).ConfigureAwait(false);
-    }
+    public async Task<AuthorizationPolicy> GetDefaultPolicyAsync() => await
+        Task.FromResult(
+            new AuthorizationPolicyBuilder(CookieAuthenticationDefaults.AuthenticationScheme)
+                .RequireAuthenticatedUser()
+                .Build()).ConfigureAwait(false);
 
-    public async Task<AuthorizationPolicy?> GetFallbackPolicyAsync()
-    {
-        return await Task.FromResult(default(AuthorizationPolicy)).ConfigureAwait(false);
-    }
+    public async Task<AuthorizationPolicy?> GetFallbackPolicyAsync() =>
+        await Task.FromResult(default(AuthorizationPolicy)).ConfigureAwait(false);
 }

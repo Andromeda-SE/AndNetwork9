@@ -6,7 +6,8 @@ namespace AndNetwork9.Shared.Backend.Extensions;
 
 public static class HostExtensions
 {
-    public static IHostBuilder ConfigureAndNetConsole(this IHostBuilder builder, LogLevel logLevel = LogLevel.Information)
+    public static IHostBuilder ConfigureAndNetConsole(this IHostBuilder builder,
+        LogLevel logLevel = LogLevel.Information)
     {
         return builder.ConfigureLogging(logging =>
         {

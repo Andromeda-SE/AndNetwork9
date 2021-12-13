@@ -38,5 +38,7 @@ public static class Startup
         services.AddHostedService<Publish>();
         services.AddHostedService<RewriteElectionsChannel>();
         services.AddHostedService<UpdateUser>();
+        services.AddHostedService<NewCandidate>();
+        services.AddHostedService<ResolveDiscordUserName>();
     }
 }

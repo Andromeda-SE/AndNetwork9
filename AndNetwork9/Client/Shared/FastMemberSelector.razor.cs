@@ -46,6 +46,14 @@ public partial class FastMemberSelector
         set { SelectedSquad = AllSquads.FirstOrDefault(x => x.Number == value); }
     }
 
+    public SquadPart SelectedSquadPart { get; set; }
+
+    public int SelectedSquadPartId
+    {
+        get => ((IId)SelectedSquadPart)?.Id ?? 0;
+        set => SelectedSquadPart = AllSquads.SelectMany(x => x.SquadParts).FirstOrDefault(x => ((IId)x).Id == value);
+    }
+
     [Parameter]
     public IReadOnlyCollection<Member> AllMembers { get; set; }
     public Member SelectedMember { get; set; }
@@ -68,7 +76,6 @@ public partial class FastMemberSelector
 
     protected override async Task OnInitializedAsync()
     {
-        Members = InitialMembers.ToList();
         AllSquads ??= await Client.GetFromJsonAsync<Squad[]>("api/squad/all");
         AllMembers ??= await Client.GetFromJsonAsync<Member[]>("api/member/all");
 
@@ -79,7 +86,16 @@ public partial class FastMemberSelector
                 squadPart.Members = AllMembers
                     .Where(x => x.SquadNumber == squadPart.Number && x.SquadPartNumber == squadPart.Part).ToList();
         }
+
+        foreach (Member member in AllMembers.Where(x => x.SquadNumber is not null))
+            member.SquadPart = AllSquads.First(x => x.Number == member.SquadNumber).SquadParts
+                .First(x => x.Part == member.SquadPartNumber);
+
+        RevertMembers();
     }
+
+    private void RevertMembers() =>
+        Members = AllMembers.Join(InitialMembers, x => x.Id, x => x.Id, (_, outer) => outer).ToList();
 
     private void AddMembers(IEnumerable<Member> members)
     {

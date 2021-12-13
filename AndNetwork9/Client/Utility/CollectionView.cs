@@ -10,10 +10,7 @@ public class CollectionView<T> : IEnumerable<T>
     private Func<T, bool> _filterPredicate = _ => true;
     private Func<dynamic, IComparable> _sortSelector;
 
-    public CollectionView(IReadOnlyCollection<T> source)
-    {
-        Source = source;
-    }
+    public CollectionView(IReadOnlyCollection<T> source) => Source = source;
 
     public IReadOnlyCollection<T> Source { get; set; }
 
@@ -51,10 +48,7 @@ public class CollectionView<T> : IEnumerable<T>
         return result.GetEnumerator();
     }
 
-    IEnumerator IEnumerable.GetEnumerator()
-    {
-        return GetEnumerator();
-    }
+    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
     public event Action Updated;
 }

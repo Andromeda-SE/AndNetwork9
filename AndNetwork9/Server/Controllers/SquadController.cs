@@ -10,6 +10,7 @@ using AndNetwork9.Shared.Backend;
 using AndNetwork9.Shared.Backend.Senders.Discord;
 using AndNetwork9.Shared.Enums;
 using AndNetwork9.Shared.Hubs;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
@@ -22,8 +23,8 @@ namespace AndNetwork9.Server.Controllers;
 public class SquadController : ControllerBase
 {
     private readonly ClanDataContext _data;
-    private readonly PublishSender _publishSender;
     private readonly IHubContext<ModelHub, IModelHub> _modelHub;
+    private readonly PublishSender _publishSender;
 
     public SquadController(ClanDataContext data, PublishSender publishSender, IHubContext<ModelHub, IModelHub> modelHub)
     {
@@ -34,6 +35,7 @@ public class SquadController : ControllerBase
 
     [HttpGet("all")]
     [MinRankAuthorize]
+    [ResponseCache(Location = ResponseCacheLocation.Client, Duration = 30, NoStore = false)]
     public ActionResult<IAsyncEnumerable<Squad>> GetAll()
     {
         DateOnly today = DateOnly.FromDateTime(DateTime.Today);
@@ -42,17 +44,19 @@ public class SquadController : ControllerBase
 
     [HttpGet]
     [MinRankAuthorize]
+    [ResponseCache(Location = ResponseCacheLocation.Client, Duration = 30, NoStore = false)]
     public async Task<ActionResult<Squad>> Get()
     {
         Member? member = await this.GetCurrentMember(_data).ConfigureAwait(false);
         if (member is null) return Unauthorized();
-        
+
         if (member.SquadPart is null) return NoContent();
         return Ok(member.SquadPart.Squad);
     }
 
     [HttpGet("{id:int}")]
     [MinRankAuthorize]
+    [ResponseCache(Location = ResponseCacheLocation.Client, Duration = 30, NoStore = false)]
     public async Task<ActionResult<Squad>> Get(short id)
     {
         Squad? squad = await _data.Squads.FindAsync(id).ConfigureAwait(false);
@@ -61,6 +65,7 @@ public class SquadController : ControllerBase
 
     [HttpGet("{id:int}/parts")]
     [MinRankAuthorize]
+    [ResponseCache(Location = ResponseCacheLocation.Client, Duration = 30, NoStore = false)]
     public async Task<ActionResult<IAsyncEnumerable<SquadPart>>> GetParts(short id)
     {
         Squad? squad = await _data.Squads.FindAsync(id).ConfigureAwait(false);
@@ -69,6 +74,7 @@ public class SquadController : ControllerBase
 
     [HttpGet("{id:int}/part/{part:int}")]
     [MinRankAuthorize]
+    [ResponseCache(Location = ResponseCacheLocation.Client, Duration = 30, NoStore = false)]
     public async Task<ActionResult<SquadPart>> GetPart(short id, short part)
     {
         Squad? squad = await _data.Squads.FindAsync(id).ConfigureAwait(false);
@@ -77,6 +83,7 @@ public class SquadController : ControllerBase
 
     [HttpGet("{id:int}/comment")]
     [MinRankAuthorize(Rank.Advisor)]
+    [ResponseCache(Location = ResponseCacheLocation.Client, Duration = 30, NoStore = false)]
     public async Task<ActionResult> GetComment(short id)
     {
         Squad? squad = await _data.Squads.FindAsync(id).ConfigureAwait(false);
@@ -84,6 +91,7 @@ public class SquadController : ControllerBase
     }
 
     [HttpGet("{id:int}/members")]
+    [ResponseCache(Location = ResponseCacheLocation.Client, Duration = 30, NoStore = false)]
     [MinRankAuthorize]
     public async Task<ActionResult> GetMembers(short id)
     {
@@ -173,7 +181,8 @@ public class SquadController : ControllerBase
         addResult.Entity.SquadParts = new List<SquadPart>();
         addResult.Entity.SquadParts.Add(leadPart);
         leadPart.Members.Add(member);
-        member.SquadCommander = true;
+        leadPart.CommanderId = member.Id;
+        leadPart.Commander = member;
 
         await _data.SaveChangesAsync().ConfigureAwait(false);
         //todo: add discord role creation
@@ -184,7 +193,7 @@ public class SquadController : ControllerBase
     }
 
     [HttpPatch("{id:int}/join")]
-    [MinRankAuthorize]
+    [Authorize]
     public async Task<ActionResult> PatchJoin(short squadNumber)
     {
         Member? member = await this.GetCurrentMember(_data).ConfigureAwait(false);
@@ -201,7 +210,7 @@ public class SquadController : ControllerBase
     }
 
     [HttpPatch("{squadNumber:int}/cancelJoin")]
-    [MinRankAuthorize]
+    [Authorize]
     public async Task<ActionResult> PatchCancelJoin(short squadNumber)
     {
         Member? member = await this.GetCurrentMember(_data).ConfigureAwait(false);
@@ -224,7 +233,6 @@ public class SquadController : ControllerBase
     {
         Member? member = await this.GetCurrentMember(_data).ConfigureAwait(false);
         if (member is null) return Unauthorized();
-        if (member.SquadNumber is null || member.SquadPartNumber != 0 || !member.SquadCommander) return Forbid();
 
         Squad? squad = member.SquadPart?.Squad;
         if (squad is null) return NotFound();
@@ -257,7 +265,8 @@ public class SquadController : ControllerBase
 
         member.SquadPart?.Squad.Candidates!.Remove(candidate);
         await _data.SaveChangesAsync().ConfigureAwait(false);
-        await _modelHub.Clients.All.ReceiveModelUpdate(typeof(Squad).FullName, member.SquadPart?.Squad).ConfigureAwait(false);
+        await _modelHub.Clients.All.ReceiveModelUpdate(typeof(Squad).FullName, member.SquadPart?.Squad)
+            .ConfigureAwait(false);
         return Ok();
     }
 }

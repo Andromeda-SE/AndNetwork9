@@ -46,25 +46,19 @@ public class Base : ModuleBase<DiscordCommandContext>
         AllowedMentions? allowedMentions = null, MessageReference? messageReference = null,
         MessageComponent? component = null,
         ISticker[]? stickers = null,
-        Embed[]? embeds = null)
-    {
-        return await Context.Message
-            .ReplyAsync(message, isTTS, embed, allowedMentions, options, component, stickers, embeds)
-            .ConfigureAwait(false);
-    }
+        Embed[]? embeds = null) => await Context.Message
+        .ReplyAsync(message, isTTS, embed, allowedMentions, options, component, stickers, embeds)
+        .ConfigureAwait(false);
 
     protected async Task<IUserMessage> ReplyFileAsync(Stream stream, string fileName, string? messageText = null,
         bool isTts = false, Embed? embed = null, RequestOptions? options = null, bool spoiler = false,
-        AllowedMentions? allowedMentions = null)
-    {
-        return await Context.Message.Channel.SendFileAsync(stream,
-            fileName,
-            messageText,
-            isTts,
-            embed,
-            options,
-            spoiler,
-            allowedMentions,
-            new(Context.Message.Id, Context.Message.Channel.Id)).ConfigureAwait(false);
-    }
+        AllowedMentions? allowedMentions = null) => await Context.Message.Channel.SendFileAsync(stream,
+        fileName,
+        messageText,
+        isTts,
+        embed,
+        options,
+        spoiler,
+        allowedMentions,
+        new(Context.Message.Id, Context.Message.Channel.Id)).ConfigureAwait(false);
 }

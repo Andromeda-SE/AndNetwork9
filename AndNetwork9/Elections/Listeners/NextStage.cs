@@ -101,7 +101,7 @@ public class NextStage : BaseRabbitListenerWithoutResponse<ElectionStage>
         {
             Member[] candidates = voting.Members.Select(x => x.Member).ToArray();
             foreach (Member member in data.Members.AsEnumerable()
-                .Where(x => x.Rank > Rank.None).ToArray())
+                         .Where(x => x.Rank > Rank.None).ToArray())
                 voting.Members.Add(new()
                 {
                     Direction = voting.Direction,

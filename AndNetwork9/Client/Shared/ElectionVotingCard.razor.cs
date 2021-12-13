@@ -37,10 +37,7 @@ public partial class ElectionVotingCard
 
     public bool AllowSend => UsedVotes == MaxVotes || ReadOnly;
 
-    public bool AllowMinus(int memberId)
-    {
-        return Bulletin[memberId] > 0 && !ReadOnly;
-    }
+    public bool AllowMinus(int memberId) => Bulletin[memberId] > 0 && !ReadOnly;
 
     public void Add(int memberId, MouseEventArgs e)
     {

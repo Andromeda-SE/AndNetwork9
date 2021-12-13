@@ -20,10 +20,7 @@ public class VotingController : ControllerBase
 {
     private readonly ClanDataContext _data;
 
-    public VotingController(ClanDataContext data)
-    {
-        _data = data;
-    }
+    public VotingController(ClanDataContext data) => _data = data;
 
     [HttpGet]
     [Authorize]

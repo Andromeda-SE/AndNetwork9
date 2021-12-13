@@ -1,0 +1,97 @@
+@layout MainLayoutWithoutBar
+@page "/candidate"
+
+<h1>Заявка на вступление в клан</h1>
+@if (Model is not null)
+{
+    <EditForm Model="Model" OnValidSubmit="ValidSumbit">
+        <DataAnnotationsValidator/>
+        <ValidationSummary/>
+
+        <div class="mb-3 row">
+            <label class="col-form-label col-sm-4">Никнейм *</label>
+            <div class="col-sm-8">
+                <InputText @bind-Value="Model.Nickname" maxlength="24" class="form-control"/>
+            </div>
+        </div>
+        <div class="mb-3 row">
+            <label class="col-form-label col-sm-4">Имя</label>
+            <div class="col-sm-8">
+                <InputText @bind-Value="Model.RealName" class="form-control"/>
+            </div>
+        </div>
+        <div class="mb-3 row">
+            <label class="col-form-label col-sm-4">Ссылка на профиль Steam *</label>
+            <div class="col-sm-8">
+                <InputText @bind-Value="SteamInput" class="form-control"/>
+                <div class="form-text">@SteamOutput</div>
+            </div>
+        </div>
+        <div class="mb-3 row">
+            <label class="col-form-label col-sm-4">Никнейм в Discord (формат Nickname#1234) *</label>
+            <div class="col-sm-8">
+                <InputText @bind-Value="DiscordInput" class="form-control"/>
+                <div class="form-text">@DiscordOutput</div>
+            </div>
+        </div>
+        <div class="mb-3 row">
+            <label class="col-form-label col-sm-4">Ссылка на страницу ВК</label>
+            <div class="col-sm-8">
+                <InputText @bind-Value="VkInput" class="form-control"/>
+                <div class="form-text">@VkOutput</div>
+            </div>
+        </div>
+        <div class="mb-3 row">
+            <label class="col-form-label col-sm-4">Возраст *</label>
+            <div class="col-sm-8">
+                <InputNumber @bind-Value="Model.Age" class="form-control"/>
+            </div>
+        </div>
+        <div class="mb-3 row">
+            <label class="col-form-label col-sm-4">Часов в игре</label>
+            <div class="col-sm-8">
+                <InputNumber @bind-Value="Model.HoursCount" class="form-control"/>
+            </div>
+        </div>
+        <div class="mb-3 row">
+            <label class="col-form-label col-sm-4">Часовой пояс</label>
+            <div class="col-sm-8">
+                <InputSelect @bind-Value="Model.TimeZone" class="form-select" TValue="TimeZoneInfo">
+                    @foreach (TimeZoneInfo timeZoneInfo in TimeZoneInfo.GetSystemTimeZones())
+                    {
+                        <option selected="@(timeZoneInfo.Id == TimeZoneInfo.Local.Id)" value="@timeZoneInfo">@timeZoneInfo.DisplayName</option>
+                    }
+                </InputSelect>
+            </div>
+        </div>
+        <div class="mb-3 row">
+            <label class="col-form-label col-sm-4">Откуда или от кого вы узнали о клане?</label>
+            <div class="col-sm-8">
+                <InputText @bind-Value="Model.Recommendation" class="form-control"/>
+            </div>
+        </div>
+        <div class="mb-3 row">
+            <label class="col-form-label col-sm-4">Дополнительная информация</label>
+            <div class="col-sm-8">
+                <InputTextArea @bind-Value="Model.Description" class="form-control"/>
+            </div>
+        </div>
+        <div class="mb-3 form-check">
+            <input type="checkbox" class="form-check-input" id="ruleCheck" @bind="RuleChecked">
+            <label class="form-check-label" for="ruleCheck">Соглашаюсь выполнять правила, устанавливаемые уставом клана *</label>
+        </div>
+        <div class="mb-3 form-check">
+            <input type="checkbox" class="form-check-input" id="dataCheck" @bind="DataChecked">
+            <label class="form-check-label" for="dataCheck">Соглашаюсь на обработку кланом предоставленных данных *</label>
+        </div>
+        <div class="mb-3 form-check">
+            <input type="checkbox" class="form-check-input" id="clanCkeck" @bind="ClanChecked">
+            <label class="form-check-label" for="clanCkeck">Не состою в иных организованных группах игроков в Space Engineers *</label>
+        </div>
+        
+        <div class="mb-3 row d-flex flex-column">
+            <button type="submit" class="btn btn-primary align-self-stretch" disabled="@SumbitDisabled">Отправить заявку в клан</button>
+            <div class="form-text">Заявка в большинстве случаев рассматривается от 3 до 48 часов. Решение по заявке будет отправлено в личные сообщения Discord</div>
+        </div>
+    </EditForm>
+}

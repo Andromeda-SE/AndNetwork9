@@ -1,12 +1,8 @@
-﻿using System.Text.Json;
-using AndNetwork9.Server.Auth.Attributes;
+﻿using AndNetwork9.Server.Auth.Attributes;
 using AndNetwork9.Server.Extensions;
 using AndNetwork9.Shared;
 using AndNetwork9.Shared.Backend;
-using AndNetwork9.Shared.Backend.Auth;
 using AndNetwork9.Shared.Hubs;
-using AndNetwork9.Shared.Interfaces;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 using Task = System.Threading.Tasks.Task;
 

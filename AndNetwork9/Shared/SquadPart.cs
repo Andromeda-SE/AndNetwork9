@@ -22,20 +22,13 @@ public record SquadPart : IId
     public virtual IList<Member> Members { get; set; } = new List<Member>();
 
     [JsonIgnore]
-    public Member Captain
-    {
-        get
-        {
-            return Squad?.SquadParts?.Single(x => x.Part == 0).Members.Single(x => x.SquadCommander)
-                   ?? throw new();
-        }
-    }
+    public Member Captain =>
+        Squad.SquadParts.Single(x => x.Part == 0).Captain
+        ?? throw new();
 
+    public int CommanderId { get; set; }
     [JsonIgnore]
-    public Member Lieutenant
-    {
-        get { return Members.Single(x => x.SquadCommander) ?? throw new(); }
-    }
+    public virtual Member Commander { get; set; }
 
 
     public string? Description { get; set; }
@@ -43,7 +36,9 @@ public record SquadPart : IId
     public string? Comment { get; set; }
     public Guid ConcurrencyToken { get; set; }
     [JsonIgnore]
-    int IId.Id => Number << (16 + Part);
+    int IId.Id => (Number << 16) + Part;
+
+    public DateTime LastChanged { get; set; }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ToString(bool includeSquad)
@@ -53,10 +48,5 @@ public record SquadPart : IId
         return result + (Part == 0 ? "головное" : Part.ToString("D")) + " отделение";
     }
 
-    public override string ToString()
-    {
-        return ToString(true);
-    }
-
-    public DateTime LastChanged { get; set; }
+    public override string ToString() => ToString(true);
 }

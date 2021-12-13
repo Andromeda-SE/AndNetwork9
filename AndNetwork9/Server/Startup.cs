@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -12,7 +11,9 @@ using AndNetwork9.Shared.Backend.Rabbit;
 using AndNetwork9.Shared.Backend.Senders.AwardDispenser;
 using AndNetwork9.Shared.Backend.Senders.Discord;
 using AndNetwork9.Shared.Backend.Senders.Elections;
+using AndNetwork9.Shared.Backend.Senders.Steam;
 using AndNetwork9.Shared.Backend.Senders.Storage;
+using AndNetwork9.Shared.Backend.Senders.VK;
 using AspNetCoreRateLimit;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
@@ -32,10 +33,7 @@ namespace AndNetwork9.Server;
 
 public class Startup
 {
-    public Startup(IConfiguration configuration)
-    {
-        Configuration = configuration;
-    }
+    public Startup(IConfiguration configuration) => Configuration = configuration;
 
     public IConfiguration Configuration { get; }
 
@@ -47,39 +45,38 @@ public class Startup
         services.AddInMemoryRateLimiting();
         services.Configure<ClientRateLimitOptions>(options =>
         {
-            options.GeneralRules = new List<RateLimitRule>
+            options.GeneralRules = new()
             {
-                new RateLimitRule()
+                new()
                 {
-                    Endpoint = "get:/public/api/",
+                    Endpoint = "get:/public/api/*",
                     Limit = 5,
-                    PeriodTimespan = TimeSpan.FromMinutes(15)
+                    PeriodTimespan = TimeSpan.FromMinutes(15),
                 },
-                new RateLimitRule()
+                new()
                 {
-                    Endpoint = "*",
+                    Endpoint = "*:/api/*",
                     Limit = 120,
-                    PeriodTimespan = TimeSpan.FromMinutes(1)
+                    PeriodTimespan = TimeSpan.FromMinutes(1),
                 },
-                new RateLimitRule()
+                new()
                 {
-                    Endpoint = "*",
+                    Endpoint = "*:/api/*",
                     Limit = 1500,
-                    PeriodTimespan = TimeSpan.FromHours(1)
+                    PeriodTimespan = TimeSpan.FromHours(1),
                 },
-                new RateLimitRule()
+                new()
+                {
+                    Endpoint = "*:/api/*",
+                    Limit = 5000,
+                    PeriodTimespan = TimeSpan.FromDays(1),
+                },
+                new()
                 {
                     Endpoint = "*",
-                    Limit = 5000,
-                    PeriodTimespan = TimeSpan.FromDays(1)
+                    Limit = 6000,
+                    PeriodTimespan = TimeSpan.FromDays(1),
                 },
-                new RateLimitRule()
-                {
-                    Endpoint = "*",
-                    Limit = 5000,
-                    PeriodTimespan = TimeSpan.FromDays(1)
-                },
-
             };
         });
         services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
@@ -98,7 +95,7 @@ public class Startup
         services.AddResponseCompression(opts =>
         {
             opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
-                new[] { "application/octet-stream" });
+                new[] {"application/octet-stream"});
         });
 
         services.AddDbContext<ClanDataContext>(x =>
@@ -117,6 +114,10 @@ public class Startup
         services.AddScoped<SendSender>();
         services.AddScoped<GiveAwardSender>();
         services.AddScoped<UpdateUserSender>();
+        services.AddScoped<ResolveDiscordUserNameSender>();
+        services.AddScoped<ResolveVkUrlSender>();
+        services.AddScoped<ResolveSteamUrlSender>();
+        services.AddScoped<NewCandidateSender>();
 
         services.AddSingleton<IAuthorizationPolicyProvider, ClanPolicyProvider>();
         services.AddSingleton<IAuthorizationHandler, ClanPolicyProvider>();
@@ -134,8 +135,6 @@ public class Startup
             };
         });
         services.AddAuthorization();
-
-
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

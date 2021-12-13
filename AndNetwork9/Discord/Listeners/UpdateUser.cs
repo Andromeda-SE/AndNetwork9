@@ -26,7 +26,8 @@ public class UpdateUser : BaseRabbitListenerWithoutResponse<ulong>
     private readonly UpdateUserSender _updateUserSender;
 
     public UpdateUser(IConnection connection, DiscordBot bot, ILogger<UpdateUser> logger,
-        IServiceScopeFactory scopeFactory, RoleManager roleManager, UpdateUserSender updateUserSender) : base(connection,
+        IServiceScopeFactory scopeFactory, RoleManager roleManager, UpdateUserSender updateUserSender) : base(
+        connection,
         UpdateUserSender.QUEUE_NAME,
         logger)
     {
@@ -34,11 +35,11 @@ public class UpdateUser : BaseRabbitListenerWithoutResponse<ulong>
         _scopeFactory = scopeFactory;
         _roleManager = roleManager;
         _updateUserSender = updateUserSender;
+        _roleManager.Initialized += BotOnConnected;
     }
 
     public override async Task StartAsync(CancellationToken cancellationToken)
     {
-        _bot.Connected += BotOnConnected;
         await base.StartAsync(cancellationToken).ConfigureAwait(false);
     }
 
@@ -49,10 +50,10 @@ public class UpdateUser : BaseRabbitListenerWithoutResponse<ulong>
         await using ConfiguredAsyncDisposable _ = scope.ConfigureAwait(false);
         ClanDataContext data = scope.ServiceProvider.GetRequiredService<ClanDataContext>();
 
-        await foreach (Member member in data.Members.Where(x => x.DiscordId.HasValue).ToAsyncEnumerable().ConfigureAwait(false))
-        {
+        await foreach (Member member in data.Members.Where(x => x.DiscordId.HasValue).ToAsyncEnumerable()
+                           .ConfigureAwait(false))
             await _updateUserSender.CallAsync(member.DiscordId!.Value).ConfigureAwait(false);
-        }
+        _bot.Connected += BotOnConnected;
     }
 
     public override async Task Run(ulong arg)

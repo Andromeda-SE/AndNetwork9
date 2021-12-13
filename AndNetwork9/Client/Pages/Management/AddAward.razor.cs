@@ -7,6 +7,7 @@ using AndNetwork9.Client.Services;
 using AndNetwork9.Shared;
 using AndNetwork9.Shared.Enums;
 using Microsoft.AspNetCore.Components;
+using Task = System.Threading.Tasks.Task;
 
 namespace AndNetwork9.Client.Pages.Management;
 
@@ -23,18 +24,40 @@ public partial class AddAward
     [Parameter]
     public List<Member> SelectedMembers { get; set; } = new();
 
+    public AwardType[] AvailableTypes { get; set; }
+
     private void UpdateMembersList(IReadOnlyCollection<Member> members)
     {
         SelectedMembers = members.ToList();
         StateHasChanged();
     }
 
-    private bool Validate()
+    protected override Task OnInitializedAsync()
     {
-        return SelectedMembers.Any() && !string.IsNullOrWhiteSpace(Description);
+        switch (AuthStateProvider.CurrentMember.Rank)
+        {
+            case Rank.FirstAdvisor:
+                AvailableTypes = Enum.GetValues<AwardType>().Where(x => x != AwardType.None).ToArray();
+                return Task.CompletedTask;
+            case Rank.Advisor:
+                AvailableTypes = new[] {AwardType.Copper, AwardType.Bronze};
+                return Task.CompletedTask;
+            default:
+            {
+                if (AuthStateProvider.CurrentMember.CommanderLevel == SquadCommander.Captain)
+                {
+                    AvailableTypes = new[] {AwardType.Copper};
+                    return Task.CompletedTask;
+                }
+
+                throw new();
+            }
+        }
     }
 
-    private async System.Threading.Tasks.Task Create()
+    private bool Validate() => SelectedMembers.Any() && !string.IsNullOrWhiteSpace(Description);
+
+    private async Task Create()
     {
         Award[] awards = SelectedMembers.Select(x => new Award
         {

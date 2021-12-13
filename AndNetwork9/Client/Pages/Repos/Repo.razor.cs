@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
+using System.Threading.Tasks;
 using AndNetwork9.Client.Extensions;
 using AndNetwork9.Shared.Storage;
 using AndNetwork9.Shared.Utility;
@@ -52,9 +53,10 @@ public partial class Repo
         }
     }
 
-    protected override async System.Threading.Tasks.Task OnInitializedAsync()
+    protected override async Task OnInitializedAsync()
     {
-        var entity = await Client.GetFromJsonAsync<AndNetwork9.Shared.Storage.Repo>($"api/repo/{EntityId}");
+        AndNetwork9.Shared.Storage.Repo entity =
+            await Client.GetFromJsonAsync<AndNetwork9.Shared.Storage.Repo>($"api/repo/{EntityId}");
         EditedText = entity.Description.Text;
         entity.Nodes = await Client.GetFromJsonAsync<RepoNode[]>($"api/repo/{EntityId}/nodes");
         entity.ReadRule = await Client.GetFromJsonAsync<AccessRule>($"api/AccessRule/{entity.ReadRuleId}");
@@ -83,7 +85,7 @@ public partial class Repo
         NavigationManager.NavigateTo(NavigationManager.Uri, true);
     }
 
-    private async System.Threading.Tasks.Task UpdateDescription()
+    private async Task UpdateDescription()
     {
         Entity.Description = await (await Client.PutAsJsonAsync($"api/comment/{Entity.Description.Id}",
             Entity.Description with

@@ -5,9 +5,7 @@
     <label class="col-form-label col-sm-2">Тип</label>
     <div class="col-sm-10">
         <select @bind="Type" class="form-control form-select">
-            @foreach (AwardType awardType in AuthStateProvider.CurrentMember.Rank <= Rank.Advisor
-                ? new[] {AwardType.Bronze}
-                : Enum.GetValues<AwardType>().Where(x => x > AwardType.None))
+            @foreach (AwardType awardType in AvailableTypes)
             {
                 <option value="@awardType">@awardType.GetTypeName()</option>
             }

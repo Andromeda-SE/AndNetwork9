@@ -50,7 +50,8 @@
     </div>
     <div class="col">
         <div class="d-flex">
-            <select @bind="SelectedTimeZoneId" class="form-select" placeholder="@AuthStateProvider.CurrentMember.Direction.GetName()">
+            <select @bind="SelectedTimeZoneId" class="form-select">
+                <option selected="@(AuthStateProvider.CurrentMember.TimeZone is null)" value="null">(не выбран)</option>
                 @foreach (TimeZoneInfo timeZone in TimeZoneInfo.GetSystemTimeZones())
                 {
                     @if (timeZone.Id == AuthStateProvider.CurrentMember.TimeZone?.Id)

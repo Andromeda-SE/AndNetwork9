@@ -7,10 +7,7 @@ public class GenericEqualityComparer<T, TArg> : IEqualityComparer<T>
 {
     private readonly Func<T, IEquatable<TArg>> _delegate;
 
-    public GenericEqualityComparer(Func<T, IEquatable<TArg>> @delegate)
-    {
-        _delegate = @delegate;
-    }
+    public GenericEqualityComparer(Func<T, IEquatable<TArg>> @delegate) => _delegate = @delegate;
 
 
     public bool Equals(T? x, T? y)
@@ -20,8 +17,5 @@ public class GenericEqualityComparer<T, TArg> : IEqualityComparer<T>
         return _delegate(x).Equals(y);
     }
 
-    public int GetHashCode(T obj)
-    {
-        return _delegate(obj).GetHashCode();
-    }
+    public int GetHashCode(T obj) => _delegate(obj).GetHashCode();
 }

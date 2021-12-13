@@ -24,11 +24,8 @@ public record StaticFile : IId
     public int Id { get; set; }
     public Guid ConcurrencyToken { get; set; }
 
-
-    public override string ToString()
-    {
-        return string.IsNullOrWhiteSpace(Extension) ? Name : $"{Name}.{Extension}";
-    }
-
     public DateTime LastChanged { get; set; }
+
+
+    public override string ToString() => string.IsNullOrWhiteSpace(Extension) ? Name : $"{Name}.{Extension}";
 }

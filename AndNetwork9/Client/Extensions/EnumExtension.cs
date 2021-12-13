@@ -34,7 +34,7 @@ public static class EnumExtension
             Direction.Research => "#198754",
             Direction.Military => "#0d6efd",
             Direction.Agitation => "#6f42c1",
-            
+
             _ => throw new ArgumentOutOfRangeException(nameof(direction), direction, null),
         };
     }
@@ -97,7 +97,7 @@ public static class EnumExtension
                 TaskLevel.Story => "history.svg",
                 TaskLevel.Epic => "epic.svg",
                 TaskLevel.Initiative => "initiative.svg",
-                _ => throw new ArgumentOutOfRangeException(nameof(taskLevel), taskLevel, null)
+                _ => throw new ArgumentOutOfRangeException(nameof(taskLevel), taskLevel, null),
             });
     }
 
@@ -112,7 +112,7 @@ public static class EnumExtension
             TaskPriority.High => "bi-chevron-up",
             TaskPriority.Highest => "bi-chevron-double-up",
             TaskPriority.Vital => "bi-exclamation-square-fill",
-            _ => throw new ArgumentOutOfRangeException(nameof(taskPriority), taskPriority, null)
+            _ => throw new ArgumentOutOfRangeException(nameof(taskPriority), taskPriority, null),
         };
     }
 
@@ -127,7 +127,7 @@ public static class EnumExtension
             TaskPriority.High => "#ffc107",
             TaskPriority.Highest => "#fd7e14",
             TaskPriority.Vital => "#dc3545",
-            _ => throw new ArgumentOutOfRangeException(nameof(taskPriority), taskPriority, null)
+            _ => throw new ArgumentOutOfRangeException(nameof(taskPriority), taskPriority, null),
         };
     }
 
@@ -142,7 +142,7 @@ public static class EnumExtension
             TaskLevel.Story => "#ffc107",
             TaskLevel.Epic => "#fd7e14",
             TaskLevel.Initiative => "#dc3545",
-            _ => throw new ArgumentOutOfRangeException(nameof(taskLevel), taskLevel, null)
+            _ => throw new ArgumentOutOfRangeException(nameof(taskLevel), taskLevel, null),
         };
     }
 }

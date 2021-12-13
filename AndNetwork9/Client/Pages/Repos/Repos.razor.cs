@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
+using System.Threading.Tasks;
 using AndNetwork9.Client.Services;
 using AndNetwork9.Client.Shared;
 using AndNetwork9.Client.Utility;
@@ -28,6 +29,7 @@ public partial class Repos
     public NavigationManager NavigationManager { get; set; }
     public SelectedTab Selected { get; set; }
     public AndNetwork9.Shared.Storage.Repo[] Entities { get; set; }
+
     public IEnumerable<AndNetwork9.Shared.Storage.Repo> ViewEntities
     {
         get
@@ -82,7 +84,7 @@ public partial class Repos
         NavigationManager.NavigateTo(value is null ? "repo" : $"repo/{value:D}");
     }
 
-    protected override async System.Threading.Tasks.Task OnInitializedAsync()
+    protected override async Task OnInitializedAsync()
     {
         Entities = await Client.GetFromJsonAsync<AndNetwork9.Shared.Storage.Repo[]>("api/repo/");
     }

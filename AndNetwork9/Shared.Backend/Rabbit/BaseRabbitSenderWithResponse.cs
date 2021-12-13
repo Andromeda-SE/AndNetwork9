@@ -22,6 +22,7 @@ public class BaseRabbitSenderWithResponse<TRequest, TResponse> : BaseRabbitSende
         IBasicProperties properties = Model.CreateBasicProperties();
         properties.ReplyTo = ReplyQueueName;
         properties.CorrelationId = guid.ToString("N");
+        properties.AppId = AppId;
         Logger.LogInformation($"End init {guid}");
         Waiting.AddOrUpdate(guid,
             _ => new(false),
@@ -49,14 +50,15 @@ public class BaseRabbitSenderWithResponse<TRequest, TResponse> : BaseRabbitSende
                 if (reply.BasicProperties.Headers["Success"] is true)
                 {
                     Logger.LogInformation($"{guid} OK");
+                    if (reply.Body.Span.IsEmpty) return default;
                     return JsonSerializer.Deserialize<TResponse>(reply.Body.Span, JsonSerializerOptions);
                 }
                 else
                 {
                     Logger.LogWarning($"Error {guid}");
                     byte[]? exceptionData = reply.BasicProperties.Headers["Exception"] as byte[];
-                    Exception? exception = JsonSerializer.Deserialize<Exception>(exceptionData);
-                    throw exception ?? new Exception();
+                    string? exception = JsonSerializer.Deserialize<string>(exceptionData);
+                    throw new(exception);
                 }
             }
             finally

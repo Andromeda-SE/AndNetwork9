@@ -102,9 +102,7 @@ public class DiscordBot : DiscordSocketClient, IHostedService
         using IServiceScope scope = ScopeFactory.CreateScope();
         await _commandService.AddModuleAsync<Member>(scope.ServiceProvider).ConfigureAwait(false);
         await _commandService.AddModuleAsync<Elections>(scope.ServiceProvider).ConfigureAwait(false);
-        await _commandService.AddModuleAsync<Send>(scope.ServiceProvider).ConfigureAwait(false);
         await _commandService.AddModuleAsync<Root>(scope.ServiceProvider).ConfigureAwait(false);
-        await _commandService.AddModuleAsync<File>(scope.ServiceProvider).ConfigureAwait(false);
 
         MessageReceived += HandleCommandAsync;
         _commandService.CommandExecuted += CommandExecuted;

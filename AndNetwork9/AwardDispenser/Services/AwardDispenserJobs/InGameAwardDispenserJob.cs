@@ -28,10 +28,10 @@ public class InGameAwardDispenserJob : IAwardDispenserJob
         Dictionary<Member, bool> result = members.Where(x => x.SteamId.HasValue).ToDictionary(x => x, _ => false);
         if (PlayerActivity is null) throw new();
         foreach ((Member member, PlayerActivityResultNode activity) in
-            result.Keys.Join(PlayerActivity,
-                x => x.SteamId,
-                x => x.SteamId,
-                (member, activity) => (member, activity)))
+                 result.Keys.Join(PlayerActivity,
+                     x => x.SteamId,
+                     x => x.SteamId,
+                     (member, activity) => (member, activity)))
             result[member] = Available(member) && activity.InSpaceEngineers;
         return Task.FromResult((IReadOnlyDictionary<Member, bool>)result);
     }

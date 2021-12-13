@@ -3,6 +3,7 @@ using System.Net.Http.Json;
 using AndNetwork9.Shared;
 using AndNetwork9.Shared.Enums;
 using Microsoft.AspNetCore.Components;
+using Task = System.Threading.Tasks.Task;
 
 namespace AndNetwork9.Client.Pages.Management;
 
@@ -19,12 +20,9 @@ public partial class AddMember
         Rank = Rank.Guest,
     };
 
-    private bool Validate()
-    {
-        return !string.IsNullOrWhiteSpace(Model.Nickname);
-    }
+    private bool Validate() => !string.IsNullOrWhiteSpace(Model.Nickname);
 
-    private async System.Threading.Tasks.Task Create()
+    private async Task Create()
     {
         HttpResponseMessage result = await Client.PostAsJsonAsync("api/member", Model);
         if (result.IsSuccessStatusCode)

@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Shared.Backend\AndNetwork9.Shared.Backend.csproj" />
+    <ProjectReference Include="..\..\Shared\AndNetwork9.Shared.csproj" />
+    <ProjectReference Include="..\Shared.Backend\AndNetwork9.War.Shared.Backend.csproj" />
+    <ProjectReference Include="..\Shared\AndNetwork9.War.Shared.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -8,6 +8,6 @@ public class ResolveVkUrlSender : BaseRabbitSenderWithResponse<string, long?>
 {
     public const string QUEUE_NAME = "Vk.ResolveVkUrl";
 
-    protected ResolveVkUrlSender(IConnection connection,
+    public ResolveVkUrlSender(IConnection connection,
         ILogger<BaseRabbitSenderWithResponse<string, long?>> logger) : base(connection, QUEUE_NAME, logger) { }
 }

@@ -71,7 +71,8 @@ public record Task : IId, IComparable<Task>
 
     public int Id { get; set; }
     public Guid ConcurrencyToken { get; set; }
-
-    public virtual IEnumerable<Member> GetAllWatchers() => Watchers.Where(x => x.DiscordNotificationsEnabled && (ReadRule?.HasAccess(x) ?? false)).DistinctBy(x => x.Id); 
     public DateTime LastChanged { get; set; }
+
+    public virtual IEnumerable<Member> GetAllWatchers() => Watchers
+        .Where(x => x.DiscordNotificationsEnabled && (ReadRule?.HasAccess(x) ?? false)).DistinctBy(x => x.Id);
 }

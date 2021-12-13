@@ -41,6 +41,8 @@ public record Comment : IId
     public int Id { get; set; }
     public Guid ConcurrencyToken { get; set; }
 
+    public DateTime LastChanged { get; set; }
+
     public Comment? FindComment(int id)
     {
         return Id == id
@@ -48,10 +50,5 @@ public record Comment : IId
             : Children.Select(child => child.FindComment(id)).FirstOrDefault(result => result is not null);
     }
 
-    public override string ToString()
-    {
-        return Text;
-    }
-
-    public DateTime LastChanged { get; set; }
+    public override string ToString() => Text;
 }

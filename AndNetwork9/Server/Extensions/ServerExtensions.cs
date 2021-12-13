@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using AndNetwork9.Shared;
+using AndNetwork9.Shared.Extensions;
 
 namespace AndNetwork9.Server.Extensions;
 
@@ -11,7 +12,7 @@ public static class ServerExtensions
     {
         return members.Select(x => new
         {
-            x.Id, x.Nickname, x.RealName, x.Rank, x.Direction, x.SquadNumber, x.SquadPartNumber, x.SquadCommander,
+            x.Id, x.Nickname, x.RealName, x.Rank, x.Direction, x.SquadNumber, x.SquadPartNumber,
         });
     }
 
@@ -19,27 +20,12 @@ public static class ServerExtensions
     {
         return members.Select(x => new
         {
-            x.Id, x.Nickname, x.RealName, x.Rank, x.Direction, x.SquadNumber, x.SquadPartNumber, x.SquadCommander,
-        });
-    }
-
-    public static IAsyncEnumerable<dynamic> GetShort(this IAsyncEnumerable<Member> members)
-    {
-        return members.Select(x => new
-        {
-            x.Id,
-            x.Nickname,
-            x.RealName,
-            x.Rank,
-            x.Direction,
-            x.SquadNumber,
-            x.SquadPartNumber,
-            x.SquadCommander,
+            x.Id, x.Nickname, x.RealName, x.Rank, x.Direction, x.SquadNumber, x.SquadPartNumber,
         });
     }
 
 
-    public static IQueryable GetPublicShort(this IQueryable<Member> members)
+    public static IEnumerable GetPublicShort(this IEnumerable<Member> members)
     {
         return members.Select(x => new
         {
@@ -47,10 +33,19 @@ public static class ServerExtensions
             x.Nickname,
             x.RealName,
             x.Rank,
+            RankIcon = x.Rank.GetRankIcon(),
+            RankName = x.Rank.GetRankName(),
+            FullNickname = x.ToString(),
+            TagNickname = x.ToTagString(),
             x.Direction,
+            DirectionName = x.Direction.GetName(),
             x.SquadNumber,
+            SquadName = x.SquadPart?.Squad.ToString(),
             x.SquadPartNumber,
-            x.CommanderLevel
+            x.CommanderLevel,
+            CommanderLevelIcon = x.CommanderLevel.GetSquadCommanderIcon(),
+            CommanderLevelName = x.CommanderLevel.GetSquadCommanderName(),
+            x.LastChanged,
         });
     }
 }

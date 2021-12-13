@@ -136,7 +136,8 @@ public class ClanDataContext : DbContext
 
                 entity.Property(x => x.Text).IsRequired();
                 entity.HasOne(x => x.Task).WithMany(x => x.Comments).HasForeignKey(x => x.TaskId).IsRequired(false);
-                entity.HasOne(x => x.TaskDescription).WithOne(x => x.Description).HasForeignKey<Comment>(x => x.TaskDescriptionId).IsRequired(false);
+                entity.HasOne(x => x.TaskDescription).WithOne(x => x.Description)
+                    .HasForeignKey<Comment>(x => x.TaskDescriptionId).IsRequired(false);
                 entity.HasOne(x => x.Repo).WithMany(x => x.Comments).HasForeignKey(x => x.RepoId).IsRequired(false);
                 entity.HasOne(x => x.Voting).WithMany(x => x.Comments).HasForeignKey(x => x.VotingId).IsRequired(false);
                 entity.Property(x => x.CreateTime).HasColumnType("timestamp with time zone").IsRequired();
@@ -182,8 +183,10 @@ public class ClanDataContext : DbContext
                 entity.HasKey(x => x.Id);
                 entity.HasIndex(x => x.SteamId).IsUnique();
                 entity.HasIndex(x => x.DiscordId).IsUnique();
+                entity.HasIndex(x => x.MicrosoftId).IsUnique();
                 entity.Property(x => x.SteamId).IsRequired(false);
                 entity.Property(x => x.DiscordId).IsRequired(false);
+                entity.Property(x => x.MicrosoftId).IsRequired(false);
 
                 entity.Property(x => x.VkId).IsRequired(false);
                 entity.Property(x => x.TelegramId).IsRequired(false);
@@ -207,7 +210,7 @@ public class ClanDataContext : DbContext
 
                 entity.HasOne(x => x.SquadPart).WithMany(x => x.Members)
                     .HasForeignKey(x => new {x.SquadNumber, x.SquadPartNumber}).IsRequired(false);
-                entity.Property(x => x.SquadCommander).IsRequired();
+
 
                 entity.HasMany(x => x.Tasks).WithOne(x => x.Assignee).HasForeignKey(x => x.AssigneeId).IsRequired();
                 entity.HasMany(x => x.CreatedTasks).WithOne(x => x.Reporter).HasForeignKey(x => x.ReporterId)
@@ -255,6 +258,7 @@ public class ClanDataContext : DbContext
                 });
 
                 entity.HasOne(x => x.Squad).WithMany(x => x.SquadParts).HasForeignKey(x => x.Number);
+                entity.HasOne(x => x.Commander).WithOne().HasForeignKey<SquadPart>(x => x.CommanderId).IsRequired();
                 entity.HasMany(x => x.Members).WithOne(x => x.SquadPart)
                     .HasForeignKey(x => new {x.SquadNumber, x.SquadPartNumber});
 
@@ -270,7 +274,8 @@ public class ClanDataContext : DbContext
                 entity.HasKey(x => x.Id);
 
                 entity.Property(x => x.Title);
-                entity.HasOne(x => x.Description).WithOne(x => x.TaskDescription).HasForeignKey<Task>(x => x.DescriptionId).IsRequired(true);
+                entity.HasOne(x => x.Description).WithOne(x => x.TaskDescription)
+                    .HasForeignKey<Task>(x => x.DescriptionId).IsRequired();
                 entity.HasMany(x => x.Comments).WithOne(x => x.Task);
                 entity.HasMany(x => x.Tags).WithMany(x => x.Tasks);
 

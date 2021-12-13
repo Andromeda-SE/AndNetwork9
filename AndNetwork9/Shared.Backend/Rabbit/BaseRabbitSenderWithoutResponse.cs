@@ -23,6 +23,7 @@ public class BaseRabbitSenderWithoutResponse<TRequest> : BaseRabbitSender
 
         properties.ReplyTo = ReplyQueueName;
         properties.CorrelationId = guid.ToString("N");
+        properties.AppId = AppId;
         Logger.LogInformation($"End init {guid}");
         Waiting.AddOrUpdate(guid,
             _ => new(false),
@@ -57,8 +58,8 @@ public class BaseRabbitSenderWithoutResponse<TRequest> : BaseRabbitSender
                 {
                     Logger.LogWarning($"Error {guid}");
                     byte[]? exceptionData = reply.BasicProperties.Headers["Exception"] as byte[];
-                    Exception? exception = JsonSerializer.Deserialize<Exception>(exceptionData);
-                    throw exception ?? new Exception();
+                    string? exception = JsonSerializer.Deserialize<string>(exceptionData);
+                    throw new(exception);
                 }
             }
             finally

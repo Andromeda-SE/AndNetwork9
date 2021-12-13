@@ -1,0 +1,42 @@
+﻿@page "/squad/{SelectedKeyRaw?}"
+@attribute [Authorize]
+@using AndNetwork9.Client.Utility
+@inherits ElementPageBase<Squad>
+
+<BaseBodyWithAside>
+    <Title>
+        Отряды
+    </Title>
+    <Main>
+        @if (Entities is null)
+        {
+            <LoadingSpinner/>
+        }
+        else
+        {
+            <Table Columns="ColumnDefinitions" InitialSort="(0, true)" SelectionChanged="SelectionChanged" Source="@Entities" TItem="Squad"></Table>
+        }
+    </Main>
+    <Aside>
+        @if (SelectedEntity is null)
+        {
+            <p class="small">Отряд не выбран</p>
+        }
+        else
+        {
+            <b>Личный состав: </b>
+
+            <table class="table">
+                <tbody>
+                @foreach (Member member in SelectedEntity.SquadParts.SelectMany(x => x.Members).OrderByDescending(x => x, SquadMembersComparer.Shared))
+                {
+                    <tr>
+                        <td>@member.GetHtml()</td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+            <br/>
+        }
+    </Aside>
+</BaseBodyWithAside>

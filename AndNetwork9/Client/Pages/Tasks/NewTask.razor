@@ -1,28 +1,27 @@
 ﻿@page "/Task/new"
-@inherits Task
 @using TaskStatus = AndNetwork9.Shared.Enums.TaskStatus
-@using AndNetwork9.Shared.Utility
+@inherits Task
 
 
 
 @if (_modelInitialized)
 {
     <BaseBodyWithAside>
-        <Title>
-            <div class="d-grid">
-                <textarea @bind="Model.Title" rows="1"/>
-            </div>
-        </Title>
+
+    <Title>
+        <div class="d-grid">
+            <textarea @bind="Model.Title" rows="1"/>
+        </div>
+    </Title>
     <Main>
-        @if (Model.WriteRule.HasAccess(AuthStateProvider.CurrentMember)
-             || Model.ReporterId == AuthStateProvider.CurrentMember.Id)
+        @if (Model.WriteRule.HasAccess(AuthStateProvider.CurrentMember) || Model.ReporterId == AuthStateProvider.CurrentMember.Id)
         {
             <MarkdownEditor
                 GetterFunc="() => EditedText"
+                PreviewEnabled="false"
                 ResetFunc="() => EditedText = Model.Description?.Text"
                 SaveFunc="async _ => await UpdateDescription()"
-                SetterFunc="x => EditedText = x"
-                PreviewEnabled="false">
+                SetterFunc="x => EditedText = x">
             </MarkdownEditor>
         }
         else
@@ -67,7 +66,7 @@
                         </h2>
                         <div class="accordion-collapse collapse" id="collapseTwo">
                             <div class="accordion-body" style="max-height: 50vh; overflow-y: scroll">
-                                <Virtualize Items="Model.Children" Context="task" OverscanCount="2">
+                                <Virtualize Context="task" Items="Model.Children" OverscanCount="2">
                                     <TaskShortCard Task="task"/>
                                 </Virtualize>
                             </div>
@@ -77,188 +76,206 @@
             </div>
         }
     </Main>
-        <Aside>
-            <b>Исполнитель: </b>
-            <select @bind="@Model.AssigneeId" class="form-select" disabled="@(!Model.WriteRule.HasAccess(AuthStateProvider.CurrentMember))">
-                <option value="0">Не назначено</option>
-                @foreach (Member member in AllMembers)
-                {
-                    <option value="@member.Id">@member.ToString()</option>
-                }
-            </select>
-            <b>Инициатор: </b>
-            <select @bind="@Model.ReporterId" class="form-select mb-3" disabled>
-                <option value="0">Совет клана</option>
-                @foreach (Member member in AllMembers)
-                {
-                    <option value="@member.Id">@member.ToString()</option>
-                }
-            </select>
-
-            <b>Направление: </b>
-            <select @bind="@Model.DirectionAssignee" class="form-select" disabled="@(!Model.WriteRule.HasAccess(AuthStateProvider.CurrentMember))">
-                <option value="0">(нет)</option>
-                @foreach (Direction direction in Enum.GetValues<Direction>().OrderByDescending(x => x))
-                {
-                    <option value="@direction">@direction.GetName()</option>
-                }
-            </select>
-            <b>Отряд: </b>
-            <select @bind="@Model.SquadAssigneeId" class="form-select" disabled="@(!Model.WriteRule.HasAccess(AuthStateProvider.CurrentMember))">
-                <option value="0">(нет)</option>
-                @foreach (Squad squad in AllSquads)
-                {
-                    <option value="@squad">@squad.ToString()</option>
-                }
-            </select>
-            <b>Отделение: </b>
-            <select @bind="@Model.SquadPartAssigneeId" class="form-select mb-3" disabled="@(!Model.WriteRule.HasAccess(AuthStateProvider.CurrentMember))">
-                <option value="0">(нет)</option>
-                @if (Model.SquadAssigneeId is not null)
-                {
-                    @foreach (SquadPart squadPart in AllSquads.First(x => x.Number == Model.SquadAssigneeId).SquadParts)
-                    {
-                        <option value="@squadPart.Part">@squadPart.Part</option>
-                    }
-                }
-            </select>
-
-            <b>Статус: </b>
-            <select @bind="@Model.Status" class="form-select" disabled="@(!Model.WriteRule.HasAccess(AuthStateProvider.CurrentMember))">
-                @foreach (TaskStatus status in Enum.GetValues<TaskStatus>().OrderByDescending(x => x))
-                {
-                    <option value="@status">@status.ToLocalString()</option>
-                }
-            </select>
-            <b>Приоритет: </b>
-            <select @bind="@Model.Priority" class="form-select" disabled="@(!Model.WriteRule.HasAccess(AuthStateProvider.CurrentMember))">
-                @foreach (TaskPriority priority in Enum.GetValues<TaskPriority>().OrderByDescending(x => x))
-                {
-                    <option value="@priority">@priority.ToLocalString()</option>
-                }
-            </select>
-            <b>Уровень: </b>
-            <select @bind="@Model.Level" class="form-select" disabled="@(!Model.WriteRule.HasAccess(AuthStateProvider.CurrentMember))">
-                @foreach (TaskLevel level in Enum.GetValues<TaskLevel>().OrderByDescending(x => x))
-                {
-                    <option value="@level">@level.ToLocalString()</option>
-                }
-            </select>
-            <b>Награда: </b>
-            <select @bind="@Model.Award" class="form-select mb-3" disabled="@(!Model.WriteRule.HasAccess(AuthStateProvider.CurrentMember))">
-                @foreach (AwardType awardType in Enum.GetValues<AwardType>().OrderByDescending(x => x))
-                {
-                    <option value="@awardType">@awardType.GetTypeName()</option>
-                }
-            </select>
-
-            <b>Время создания: </b>
-            <input class="form-control" type="datetime-local" @bind="@Model.CreateTime" disabled>
-            @if (Model.LastEditTime is not null)
+    <Aside>
+        <b>Исполнитель: </b>
+        <select @bind="@Model.AssigneeId" class="form-select" disabled="@(!Model.WriteRule.HasAccess(AuthStateProvider.CurrentMember))">
+            <option value="0">Не назначено</option>
+            @foreach (Member member in AllMembers)
             {
-                <b>Время изменения: </b>
-                <input class="form-control" type="datetime-local" @bind="@Model.LastEditTime" disabled>
+                <option value="@member.Id">@member.ToString()</option>
             }
-            <b>Время начала задачи: </b>
-            <input class="form-control" type="datetime-local" @bind="@Model.StartTime" disabled="@(!Model.WriteRule.HasAccess(AuthStateProvider.CurrentMember))">
-            <b>Время конца задачи: </b>
-            <input class="form-control mb-3" type="datetime-local" @bind="@Model.EndTime" disabled="@(!Model.WriteRule.HasAccess(AuthStateProvider.CurrentMember))">
-            @if (Model.WriteRule.HasAccess(AuthStateProvider.CurrentMember))
+        </select>
+        <b>Инициатор: </b>
+        <select @bind="@Model.ReporterId" class="form-select mb-3" disabled>
+            <option value="0">Совет клана</option>
+            @foreach (Member member in AllMembers)
             {
-                <b>Родительская задача: </b>
-                <input class="form-control mb-3" type="number" @bind="@Model.ParentId">
-                <div class="d-grid">
-                    @if (Model.ReadRule is not null)
-                    {
-                        <AccessRuleEditor Id="readRuleEdiorId" Model="Model.ReadRule" RuleUpdated="UpdateReadRule"/>
-                        <button class="btn btn-info mb-1" data-bs-toggle="modal" data-bs-target="#readRuleEdiorId" type="button">Изменить права чтения</button>
-                    }
-                    @if (Model.WriteRule is not null)
-                    {
-                        <AccessRuleEditor Id="writeRuleEdiorId" Model="Model.WriteRule" RuleUpdated="UpdateWriteRule"/>
-                        <button class="btn btn-info mb-1" data-bs-toggle="modal" data-bs-target="#writeRuleEdiorId" type="button">Изменить права записи</button>
-                    }
-
-                    <button class="btn btn-primary mb-1" type="button" disabled="@(!SendEnabled)" @onclick="async () => await Send()">Сохранить изменения</button>
-                </div>
+                <option value="@member.Id">@member.ToString()</option>
             }
-        </Aside>
+        </select>
+
+        <b>Направление: </b>
+        <select @bind="@Model.DirectionAssignee" class="form-select" disabled="@(!Model.WriteRule.HasAccess(AuthStateProvider.CurrentMember))">
+            <option value="0">(нет)</option>
+            @foreach (Direction direction in Enum.GetValues<Direction>().OrderByDescending(x => x))
+            {
+                <option value="@direction">@direction.GetName()</option>
+            }
+        </select>
+        <b>Отряд: </b>
+        <select @bind="@Model.SquadAssigneeId" class="form-select" disabled="@(!Model.WriteRule.HasAccess(AuthStateProvider.CurrentMember))">
+            <option value="0">(нет)</option>
+            @foreach (Squad squad in AllSquads)
+            {
+                <option value="@squad.Number">@squad.ToString()</option>
+            }
+        </select>
+        <b>Отделение: </b>
+        <select @bind="@Model.SquadPartAssigneeId" class="form-select mb-3" disable="@(Model.SquadAssigneeId is null)" disabled="@(!Model.WriteRule.HasAccess(AuthStateProvider.CurrentMember))">
+            <option value="@(default(short?))">(нет)</option>
+            @if (Model.SquadAssigneeId is not null)
+            {
+                @foreach (SquadPart squadPart in AllSquads.First(x => x.Number == Model.SquadAssigneeId).SquadParts)
+                {
+                    <option value="@(squadPart.Part)">@squadPart.ToString(false)</option>
+                }
+            }
+        </select>
+
+        <b>Статус: </b>
+        <select @bind="@Model.Status" class="form-select" disabled="@(!Model.WriteRule.HasAccess(AuthStateProvider.CurrentMember))">
+            @foreach (TaskStatus status in Enum.GetValues<TaskStatus>().OrderByDescending(x => x))
+            {
+                <option value="@status">@status.ToLocalString()</option>
+            }
+        </select>
+        <b>Приоритет: </b>
+        <select @bind="@Model.Priority" class="form-select" disabled="@(!Model.WriteRule.HasAccess(AuthStateProvider.CurrentMember))">
+            @foreach (TaskPriority priority in Enum.GetValues<TaskPriority>().OrderByDescending(x => x))
+            {
+                <option value="@priority">@priority.ToLocalString()</option>
+            }
+        </select>
+        <b>Уровень: </b>
+        <select @bind="@Model.Level" class="form-select" disabled="@(!Model.WriteRule.HasAccess(AuthStateProvider.CurrentMember))">
+            @foreach (TaskLevel level in Enum.GetValues<TaskLevel>().OrderByDescending(x => x))
+            {
+                <option value="@level">@level.ToLocalString()</option>
+            }
+        </select>
+        <b>Награда: </b>
+        <select @bind="@Model.Award" class="form-select mb-3" disabled="@(!Model.WriteRule.HasAccess(AuthStateProvider.CurrentMember))">
+            @foreach (AwardType awardType in Enum.GetValues<AwardType>().OrderByDescending(x => x))
+            {
+                <option value="@awardType">@awardType.GetTypeName()</option>
+            }
+        </select>
+
+        <b>Время создания: </b>
+        <input @bind="@Model.CreateTime" class="form-control" disabled type="datetime-local">
+        @if (Model.LastEditTime is not null)
+    {
+            <b>Время изменения: </b>
+
+
+
+
+        
+        <input @bind="@Model.LastEditTime" class="form-control" disabled type="datetime-local">
+        }
+        <b>Время начала задачи: </b>
+        <input @bind="@Model.StartTime" class="form-control" disabled="@(!Model.WriteRule.HasAccess(AuthStateProvider.CurrentMember))" type="datetime-local">
+        <b>Время конца задачи: </b>
+        <input @bind="@Model.EndTime" class="form-control mb-3" disabled="@(!Model.WriteRule.HasAccess(AuthStateProvider.CurrentMember))" type="datetime-local">
+        @if (Model.WriteRule.HasAccess(AuthStateProvider.CurrentMember))
+        {
+            <b>Родительская задача: </b>
+        }
+
+        <input @bind="@Model.ParentId" class="form-control mb-3" type="number">
+        <div class="d-grid">
+            @if (Model.ReadRule is not null)
+            {
+                <AccessRuleEditor Id="readRuleEdiorId" Model="Model.ReadRule" RuleUpdated="UpdateReadRule"/>
+                <button class="btn btn-info mb-1" data-bs-target="#readRuleEdiorId" data-bs-toggle="modal" type="button">Изменить права чтения</button>
+            }
+            @if (Model.WriteRule is not null)
+            {
+                <AccessRuleEditor Id="writeRuleEdiorId" Model="Model.WriteRule" RuleUpdated="UpdateWriteRule"/>
+                <button class="btn btn-info mb-1" data-bs-target="#writeRuleEdiorId" data-bs-toggle="modal" type="button">Изменить права записи</button>
+            }
+
+            <button class="btn btn-primary mb-1" disabled="@(!SendEnabled)" @onclick="async () => await Send()" type="button">Сохранить изменения</button>
+        </div>
+    </Aside>
     </BaseBodyWithAside>
 }
 else
-{
-    <LoadingSpinner/>
-}
-
-@code
-{
-    private bool _modelInitialized = false;
-
-    public NewTask()
     {
-        Model = new()
-        {
-            Title = string.Empty,
-            Children = new List<AndNetwork9.Shared.Task>(),
-            ReporterId = AuthStateProvider.CurrentMember.Id,
-            Reporter = AuthStateProvider.CurrentMember,
-            Description = new Comment()
-            {
-                Text = string.Empty,
-            },
-            ReadRule = new()
-            {
-                Directions = Enum.GetValues<Direction>().Where(x => x > Direction.None).ToArray(),
-                MinRank = Rank.Neophyte,
-                Squad = null,
-                SquadId = null,
-                AllowedMembersIds = new int[]
-                {
-                    AuthStateProvider.CurrentMember.Id
-                },
-                AllowedMembers = new List<Member>()
-                {
-                  AuthStateProvider.CurrentMember  
-                },
-            },
-            WriteRule = new()
-            {
-                Directions = Enum.GetValues<Direction>().Where(x => x > Direction.None).ToArray(),
-                MinRank = Rank.Advisor,
-                Squad = null,
-                SquadId = null,
-                AllowedMembersIds = new int[]
-                {
-                    AuthStateProvider.CurrentMember.Id
-                },
-                AllowedMembers = new List<Member>()
-                {
-                    AuthStateProvider.CurrentMember  
-                },
-            },
-        };
-        _modelInitialized = true;
+        <LoadingSpinner/>
     }
-    protected override async System.Threading.Tasks.Task OnInitializedAsync()
-    {
-        EditedText = string.Empty;
-        AllMembers = await Client.GetFromJsonAsync<Member[]>($"api/member/all");
-        AllSquads = await Client.GetFromJsonAsync<Squad[]>($"api/squad/all");
 
-        foreach (Squad squad in AllSquads)
+    
+
+
+        @code
         {
-            squad.SquadParts = await Client.GetFromJsonAsync<SquadPart[]>($"api/squad/{squad.Number}/parts");
+            public bool _modelInitialized { get; set; }
+
+            public NewTask()
+            {
+                Model = new()
+                {
+                    Title = string.Empty,
+                    Children = new List<AndNetwork9.Shared.Task>(),
+                    ReporterId = AuthStateProvider.CurrentMember.Id,
+                    Reporter = AuthStateProvider.CurrentMember,
+                    Description = new()
+                    {
+                        Text = string.Empty,
+                    },
+                    ReadRule = new()
+                    {
+                        Directions = Enum.GetValues<Direction>().Where(x => x > Direction.None).ToArray(),
+                        MinRank = Rank.Neophyte,
+                        Squad = null,
+                        SquadId = null,
+                        AllowedMembersIds = new[]
+                        {
+                            AuthStateProvider.CurrentMember.Id,
+                        },
+                        AllowedMembers = new List<Member>
+                        {
+                            AuthStateProvider.CurrentMember,
+                        },
+                    },
+                    WriteRule = new()
+                    {
+                        Directions = Enum.GetValues<Direction>().Where(x => x > Direction.None).ToArray(),
+                        MinRank = Rank.Advisor,
+                        Squad = null,
+                        SquadId = null,
+                        AllowedMembersIds = new[]
+                        {
+                            AuthStateProvider.CurrentMember.Id,
+                        },
+                        AllowedMembers = new List<Member>
+                        {
+                            AuthStateProvider.CurrentMember,
+                        },
+                    },
+                    CreateTime = DateTime.Now,
+                    LastEditTime = null,
+                    EndTime = DateTime.Now.AddDays(1),
+                };
+            }
+
+            protected override async System.Threading.Tasks.Task OnInitializedAsync()
+            {
+                EditedText = string.Empty;
+                AllMembers = await Client.GetFromJsonAsync<Member[]>("api/member/all");
+                AllSquads = await Client.GetFromJsonAsync<Squad[]>("api/squad/all");
+
+                foreach (Squad squad in AllSquads)
+                {
+                    squad.SquadParts = await Client.GetFromJsonAsync<SquadPart[]>($"api/squad/{squad.Number}/parts");
+                }
+                foreach (Member member in AllMembers)
+                {
+                    if (member.SquadNumber is null) continue;
+                    member.SquadPart = AllSquads.First(x => x.Number == member.SquadNumber).SquadParts.First(x => x.Part == member.SquadPartNumber);
+                }
+                _modelInitialized = true;
+            }
+
+            protected override async System.Threading.Tasks.Task Send()
+            {
+                UpdateReadRule(Model.ReadRule);
+                UpdateWriteRule(Model.WriteRule);
+
+                Model.ReporterId = AuthStateProvider.CurrentMember.Id;
+                HttpResponseMessage response = await Client.PostAsJsonAsync("api/task", Model);
+                AndNetwork9.Shared.Task result = await response.Content.ReadFromJsonAsync<AndNetwork9.Shared.Task>();
+                NavigationManager.NavigateTo($"/Task/{result!.Id}", true);
+            }
         }
-    }
-
-    protected override async System.Threading.Tasks.Task Send()
-    {
-        UpdateReadRule(Model.ReadRule);
-        UpdateWriteRule(Model.WriteRule);
-
-        Model.ReporterId = AuthStateProvider.CurrentMember.Id;
-        HttpResponseMessage response = await Client.PostAsJsonAsync($"api/task", Model);
-        AndNetwork9.Shared.Task result = await response.Content.ReadFromJsonAsync<AndNetwork9.Shared.Task>();
-        NavigationManager.NavigateTo($"/Task/{result!.Id}", true);
-    }
-}

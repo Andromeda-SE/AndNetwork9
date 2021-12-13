@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Threading.Tasks;
 using AndNetwork9.Discord.Permissions;
 using AndNetwork9.Discord.Services;
@@ -9,7 +10,7 @@ namespace AndNetwork9.Discord.Commands;
 
 public class Root : Base
 {
-    private static readonly string HelpText = System.IO.File.ReadAllText("help.md");
+    private static readonly string HelpText = File.ReadAllText("help.md");
 
     public Root(DiscordBot bot, ClanDataContext data) : base(bot, data) { }
 

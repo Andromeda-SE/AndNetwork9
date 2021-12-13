@@ -21,10 +21,8 @@ internal static class AuthExtensions
         member.PasswordHash = password.GetPasswordHash();
     }
 
-    internal static byte[] GetPasswordHash(this string password)
-    {
-        return KeyDerivation.Pbkdf2(password, _staticSalt, KeyDerivationPrf.HMACSHA256, 10, 256 / 8);
-    }
+    internal static byte[] GetPasswordHash(this string password) =>
+        KeyDerivation.Pbkdf2(password, _staticSalt, KeyDerivationPrf.HMACSHA256, 10, 256 / 8);
 
     internal static void SetSalt(string value)
     {
@@ -35,10 +33,8 @@ internal static class AuthExtensions
     }
 
     internal static async ValueTask<Member?>
-        GetCurrentMember(this ControllerBase controller, ClanDataContext data)
-    {
-        return await GetCurrentMember(controller.HttpContext.User, data).ConfigureAwait(false);
-    }
+        GetCurrentMember(this ControllerBase controller, ClanDataContext data) =>
+        await GetCurrentMember(controller.HttpContext.User, data).ConfigureAwait(false);
 
     internal static async ValueTask<Member?> GetCurrentMember(this ClaimsPrincipal user, ClanDataContext data)
     {

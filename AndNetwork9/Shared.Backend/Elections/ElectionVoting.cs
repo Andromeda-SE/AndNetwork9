@@ -22,11 +22,12 @@ public record ElectionVoting : IConcurrencyToken
 
     public Guid ConcurrencyToken { get; set; }
 
+    public DateTime LastChanged { get; set; }
+
     public Member? GetWinner()
     {
-        ElectionsMember? winner = Members.OrderByDescending(x => x.Member.Awards.Sum(y => y.Points)).Where(x => x.Votes is not null).MaxBy(x => x.Votes);
+        ElectionsMember? winner = Members.OrderByDescending(x => x.Member.Awards.Sum(y => y.Points))
+            .Where(x => x.Votes is not null).MaxBy(x => x.Votes);
         return winner is not null && AgainstAll <= winner.Votes ? winner.Member : null;
     }
-
-    public DateTime LastChanged { get; set; }
 }

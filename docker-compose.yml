@@ -95,10 +95,19 @@ services:
     volumes:
       - "./data/postgresql:/var/lib/postgresql/data"
 
+#  redis:
+#    container_name: AndNetwork9.Redis
+#    image: redis:alpine
+#    restart: "no"
+#    volumes:
+#      - "./data/redis/redis.conf:/usr/local/etc/redis/redis.conf"
+
   broker:
     container_name: AndNetwork9.Broker
     image: rabbitmq:alpine
     restart: "no"
     env_file: .env
+    ports:
+      - "6379:6379"
     volumes:
       - "./data/rabbitmq/rabbitmq.conf:/var/lib/rabbitmq/rabbitmq.conf"

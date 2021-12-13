@@ -13,10 +13,7 @@ public class DirectionPermission : PreconditionAttribute
 {
     private readonly Direction[] _directions;
 
-    public DirectionPermission(params Direction[] directions)
-    {
-        _directions = directions;
-    }
+    public DirectionPermission(params Direction[] directions) => _directions = directions;
 
     public override async Task<PreconditionResult> CheckPermissionsAsync(ICommandContext context,
         CommandInfo command, IServiceProvider services)

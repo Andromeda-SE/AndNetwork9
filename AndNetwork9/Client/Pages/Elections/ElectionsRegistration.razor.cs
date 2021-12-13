@@ -4,6 +4,7 @@ using System.Net.Http.Json;
 using AndNetwork9.Shared;
 using AndNetwork9.Shared.Elections;
 using Microsoft.AspNetCore.Components;
+using Task = System.Threading.Tasks.Task;
 
 namespace AndNetwork9.Client.Pages.Elections;
 
@@ -25,7 +26,7 @@ public partial class ElectionsRegistration
         StateHasChanged();
     }
 
-    private async System.Threading.Tasks.Task Register()
+    private async Task Register()
     {
         HttpResponseMessage response = await Client.GetAsync("api/Election/reg");
         if (response.IsSuccessStatusCode) NavigationManager.NavigateTo("/election", true);

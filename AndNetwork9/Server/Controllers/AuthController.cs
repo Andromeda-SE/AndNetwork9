@@ -9,6 +9,7 @@ using AndNetwork9.Server.Extensions;
 using AndNetwork9.Shared;
 using AndNetwork9.Shared.Backend;
 using AndNetwork9.Shared.Backend.Auth;
+using AndNetwork9.Shared.Enums;
 using AndNetwork9.Shared.Utility;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -26,10 +27,7 @@ public class AuthController : ControllerBase
 {
     private readonly ClanDataContext _data;
 
-    public AuthController(ClanDataContext data)
-    {
-        _data = data;
-    }
+    public AuthController(ClanDataContext data) => _data = data;
 
     // POST api/<AuthController>
     [HttpPost]
@@ -41,6 +39,7 @@ public class AuthController : ControllerBase
         if (member is null
             || member.PasswordHash is null
             || !member.PasswordHash.SequenceEqual(value.Password.GetPasswordHash())) return NotFound();
+        if (member.Rank <= Rank.None) return Forbid();
 
         AuthSession session = new()
         {

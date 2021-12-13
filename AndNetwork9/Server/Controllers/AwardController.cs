@@ -24,7 +24,8 @@ public class AwardController : ControllerBase
     private readonly GiveAwardSender _giveAwardSender;
     private readonly IHubContext<ModelHub, IModelHub> _modelHub;
 
-    public AwardController(ClanDataContext data, GiveAwardSender giveAwardSender, IHubContext<ModelHub, IModelHub> modelHub)
+    public AwardController(ClanDataContext data, GiveAwardSender giveAwardSender,
+        IHubContext<ModelHub, IModelHub> modelHub)
     {
         _data = data;
         _giveAwardSender = giveAwardSender;
@@ -60,7 +61,7 @@ public class AwardController : ControllerBase
         Member? caller = await this.GetCurrentMember(_data).ConfigureAwait(false);
         if (caller is null) return Unauthorized();
 
-        List<Member> receivers = new List<Member>(awards.Length);
+        List<Member> receivers = new(awards.Length);
         foreach (Award award in awards)
         {
             Member? member = await _data.Members.FindAsync(award.MemberId).ConfigureAwait(false);
@@ -77,16 +78,14 @@ public class AwardController : ControllerBase
                 Member = member,
                 MemberId = member.Id,
             };
-            
+
             await _giveAwardSender.CallAsync(result).ConfigureAwait(false);
             receivers.Add(member);
         }
 
         await _data.SaveChangesAsync().ConfigureAwait(false);
         foreach (Member member in receivers.DistinctBy(x => x.Id))
-        {
             await _modelHub.Clients.All.ReceiveModelUpdate(typeof(Member).FullName, member).ConfigureAwait(false);
-        }
         return Ok();
     }
 }

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using AndNetwork9.Server.Auth.Attributes;
@@ -22,10 +21,11 @@ namespace AndNetwork9.Server.Controllers;
 public class StaticFileController : ControllerBase
 {
     private readonly ClanDataContext _data;
-    private readonly SaveStaticFileSender _staticFileSender;
     private readonly IHubContext<ModelHub, IModelHub> _modelHub;
+    private readonly SaveStaticFileSender _staticFileSender;
 
-    public StaticFileController(ClanDataContext data, SaveStaticFileSender staticFileSender, IHubContext<ModelHub, IModelHub> modelHub)
+    public StaticFileController(ClanDataContext data, SaveStaticFileSender staticFileSender,
+        IHubContext<ModelHub, IModelHub> modelHub)
     {
         _data = data;
         _staticFileSender = staticFileSender;
@@ -58,8 +58,9 @@ public class StaticFileController : ControllerBase
         await using ConfiguredAsyncDisposable _ = stream.ConfigureAwait(false);
         await file.CopyToAsync(stream).ConfigureAwait(false);
 
-        StaticFile result = await _staticFileSender.CallAsync(new(file.FileName, content, member.Id, null)).ConfigureAwait(false)
-                            ?? throw new InvalidOperationException();
+        StaticFile result =
+            await _staticFileSender.CallAsync(new(file.FileName, content, member.Id, null)).ConfigureAwait(false)
+            ?? throw new InvalidOperationException();
         //await _modelHub.Clients.Users(_data.Members.Where(x => x.)).ReceiveModelUpdate(typeof(StaticFile).FullName, result).ConfigureAwait(false);
         return result;
     }

@@ -1,5 +1,6 @@
 ﻿using System.Net.Http;
 using System.Net.Http.Json;
+using System.Threading.Tasks;
 using AndNetwork9.Client.Services;
 using AndNetwork9.Shared.Enums;
 using Microsoft.AspNetCore.Authorization;
@@ -11,8 +12,11 @@ namespace AndNetwork9.Client.Pages;
 public partial class ProfileEdit
 {
     private Direction _direction;
+
+    private string _firstPassword;
     private string _nickname;
     private string _realname;
+    private string _secondPassword;
     [Inject]
     public HttpClient Client { get; set; }
     [Inject]
@@ -60,10 +64,10 @@ public partial class ProfileEdit
     [Parameter]
     public string PasswordFirst
     {
-        get => _nickname;
+        get => _firstPassword;
         set
         {
-            _nickname = value;
+            _firstPassword = value;
             StateHasChanged();
         }
     }
@@ -71,42 +75,43 @@ public partial class ProfileEdit
     [Parameter]
     public string PasswordSecond
     {
-        get => _nickname;
+        get => _secondPassword;
         set
         {
-            _nickname = value;
+            _secondPassword = value;
             StateHasChanged();
         }
     }
 
-    private async System.Threading.Tasks.Task SetNewNickname()
+    private async Task SetNewNickname()
     {
         await Client.PutAsJsonAsync("api/member/nickname", Nickname);
-        NavigationManager.NavigateTo(NavigationManager.Uri, true);
+        NavigationManager.NavigateTo(NavigationManager.Uri, false);
+        AuthStateProvider.CurrentMember.Nickname = Nickname;
     }
 
-    private async System.Threading.Tasks.Task SetNewRealname()
+    private async Task SetNewRealname()
     {
         await Client.PutAsJsonAsync("api/member/realname", Realname);
-        NavigationManager.NavigateTo(NavigationManager.Uri, true);
+        NavigationManager.NavigateTo(NavigationManager.Uri, false);
     }
 
-    private async System.Threading.Tasks.Task SetNewDirection()
+    private async Task SetNewDirection()
     {
         await Client.PutAsJsonAsync("api/member/direction", Direction);
-        NavigationManager.NavigateTo(NavigationManager.Uri, true);
+        NavigationManager.NavigateTo(NavigationManager.Uri, false);
     }
 
-    private async System.Threading.Tasks.Task SetCurrentTimeZone()
+    private async Task SetCurrentTimeZone()
     {
         await Client.PutAsJsonAsync("api/member/timezone", SelectedTimeZoneId);
-        NavigationManager.NavigateTo(NavigationManager.Uri, true);
+        NavigationManager.NavigateTo(NavigationManager.Uri, false);
     }
 
-    private async System.Threading.Tasks.Task SetNewPassword()
+    private async Task SetNewPassword()
     {
         await Client.PutAsJsonAsync("api/auth/", PasswordFirst);
         await StateProvider.LogoutAsync();
-        NavigationManager.NavigateTo(NavigationManager.Uri, true);
+        NavigationManager.NavigateTo(NavigationManager.Uri, false);
     }
 }

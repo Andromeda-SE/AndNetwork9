@@ -26,10 +26,10 @@ namespace AndNetwork9.Server.Controllers;
 public class RepoController : ControllerBase
 {
     private readonly ClanDataContext _data;
+    private readonly IHubContext<ModelHub, IModelHub> _modelHub;
     private readonly NewRepoSender _newRepoSender;
     private readonly RepoGetFileSender _repoGetFileSender;
     private readonly RepoSetFileSender _repoSetFileSender;
-    private readonly IHubContext<ModelHub, IModelHub> _modelHub;
 
     public RepoController(ClanDataContext data, RepoGetFileSender repoGetFileSender, NewRepoSender newRepoSender,
         RepoSetFileSender repoSetFileSender, IHubContext<ModelHub, IModelHub> modelHub)
@@ -49,7 +49,7 @@ public class RepoController : ControllerBase
         Member? member = await this.GetCurrentMember(_data).ConfigureAwait(false);
         if (member is null) return Unauthorized();
 
-        return Ok(await _data.Repos.AsAsyncEnumerable().Where(x => x.CreatorId == member.Id || x.ReadRule.HasAccess(member)).ToArrayAsync());
+        return Ok(_data.Repos.ToArray().Where(x => x.CreatorId == member.Id || x.ReadRule.HasAccess(member)));
     }
 
     [HttpPost]
@@ -80,10 +80,14 @@ public class RepoController : ControllerBase
         if (result is not null)
         {
             AccessRule? rule = await _data.AccessRules.FindAsync(repo.ReadRuleId).ConfigureAwait(false);
-            if (rule is not null) await _modelHub.Clients
-            .Users(await _data.Members.AsAsyncEnumerable().Where(x => rule.HasAccess(x)).Select(x => x.Id.ToString("D", CultureInfo.InvariantCulture)).ToArrayAsync().ConfigureAwait(false))
-            .ReceiveModelUpdate(typeof(Repo).FullName, result).ConfigureAwait(false);
+            if (rule is not null)
+                await _modelHub.Clients
+                    .Users(await _data.Members.AsAsyncEnumerable().Where(x => rule.HasAccess(x))
+                        .Select(x => x.Id.ToString("D", CultureInfo.InvariantCulture)).ToArrayAsync()
+                        .ConfigureAwait(false))
+                    .ReceiveModelUpdate(typeof(Repo).FullName, result).ConfigureAwait(false);
         }
+
         return Ok(result);
     }
 
@@ -104,9 +108,10 @@ public class RepoController : ControllerBase
         oldRepo.Name = newRepo.Name;
 
         await _data.SaveChangesAsync().ConfigureAwait(false);
-        await _modelHub.Clients
-            .Users(await _data.Members.AsAsyncEnumerable().Where(x => oldRepo.ReadRule.HasAccess(x)).Select(x => x.Id.ToString("D", CultureInfo.InvariantCulture)).ToArrayAsync())
-            .ReceiveModelUpdate(typeof(Repo).FullName, oldRepo).ConfigureAwait(false);
+        /*await _modelHub.Clients
+            .Users(await _data.Members.AsAsyncEnumerable().Where(x => oldRepo.ReadRule.HasAccess(x))
+                .Select(x => x.Id.ToString("D", CultureInfo.InvariantCulture)).ToArrayAsync())
+            .ReceiveModelUpdate(typeof(Repo).FullName, oldRepo).ConfigureAwait(false);*/
         return Ok(oldRepo);
     }
 

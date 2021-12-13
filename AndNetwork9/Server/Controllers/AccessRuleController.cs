@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AndNetwork9.Server.Auth.Attributes;
@@ -11,7 +10,6 @@ using AndNetwork9.Shared.Hubs;
 using AndNetwork9.Shared.Utility;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 
@@ -65,7 +63,8 @@ public class AccessRuleController : ControllerBase
             .ToArray();
         EntityEntry<AccessRule> result = await _data.AccessRules.AddAsync(rule with {Id = 0}).ConfigureAwait(false);
         await _data.SaveChangesAsync().ConfigureAwait(false);
-        await _modelHub.Clients.All.ReceiveModelUpdate(typeof(AccessRule).FullName, result.Entity).ConfigureAwait(false);
+        await _modelHub.Clients.All.ReceiveModelUpdate(typeof(AccessRule).FullName, result.Entity)
+            .ConfigureAwait(false);
         return Ok(result.Entity);
     }
 }

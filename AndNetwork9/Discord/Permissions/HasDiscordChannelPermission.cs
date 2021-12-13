@@ -13,10 +13,8 @@ public class HasDiscordChannelPermission : PreconditionAttribute
     private readonly Shared.Backend.Discord.Enums.Permissions _permissions;
 
     public HasDiscordChannelPermission(
-        Shared.Backend.Discord.Enums.Permissions permissions = Shared.Backend.Discord.Enums.Permissions.Read)
-    {
+        Shared.Backend.Discord.Enums.Permissions permissions = Shared.Backend.Discord.Enums.Permissions.Read) =>
         _permissions = permissions;
-    }
 
     public override async Task<PreconditionResult> CheckPermissionsAsync(ICommandContext context,
         CommandInfo command,

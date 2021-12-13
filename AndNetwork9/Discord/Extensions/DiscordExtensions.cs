@@ -86,7 +86,7 @@ public static class DiscordExtensions
                 PermissionTarget.Role,
                 channel.SquadPermissions.ToOverwritePermissions());
             foreach (Member member in channel.Squad.SquadParts.SelectMany(x => x.Members)
-                .Where(x => x.SquadCommander && x.DiscordId.HasValue))
+                         .Where(x => x.SquadPartNumber == 0 && x.SquadPart.CommanderId == x.Id && x.DiscordId.HasValue))
                 yield return new(member.DiscordId!.Value,
                     PermissionTarget.User,
                     channel.SquadCommandersPermissions.ToOverwritePermissions());
@@ -97,17 +97,14 @@ public static class DiscordExtensions
             yield return new(channel.SquadPart.DiscordRoleId.Value,
                 PermissionTarget.Role,
                 channel.SquadPermissions.ToOverwritePermissions());
-            foreach (Member member in
-                channel.SquadPart.Members.Where(x => x.SquadCommander && x.DiscordId.HasValue))
-                yield return new(member.DiscordId!.Value,
+            if (channel.SquadPart.Commander.DiscordId is not null)
+                yield return new(channel.SquadPart.Commander.DiscordId!.Value,
                     PermissionTarget.User,
                     channel.SquadCommandersPermissions.ToOverwritePermissions());
         }
     }
 
     public static OverwritePermissions ToOverwritePermissions(
-        this Shared.Backend.Discord.Enums.Permissions permissionsFlags)
-    {
-        return new((ulong)permissionsFlags, ~(ulong)permissionsFlags);
-    }
+        this Shared.Backend.Discord.Enums.Permissions permissionsFlags) =>
+        new((ulong)permissionsFlags, ~(ulong)permissionsFlags);
 }

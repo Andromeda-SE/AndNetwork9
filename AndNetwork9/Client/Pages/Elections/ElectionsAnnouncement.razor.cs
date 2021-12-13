@@ -24,6 +24,11 @@ public partial class ElectionsAnnouncement : IDisposable
     public IReadOnlyCollection<Member> AllMembers { get; set; }
     public bool Initialized { get; set; } = false;
 
+    public void Dispose()
+    {
+        ModelService.Received -= OnModelServiceOnReceived;
+    }
+
     protected override async void OnInitialized()
     {
         CurrentElections ??= await Client.GetFromJsonAsync<CouncilElection>("api/Election/current");
@@ -41,10 +46,5 @@ public partial class ElectionsAnnouncement : IDisposable
         if (type != typeof(CouncilElection).FullName || id.Id != CurrentElections.Id) return;
         CurrentElections = (CouncilElection)id;
         StateHasChanged();
-    }
-    
-    public void Dispose()
-    {
-        ModelService.Received -= OnModelServiceOnReceived;
     }
 }

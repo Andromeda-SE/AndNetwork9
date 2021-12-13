@@ -69,7 +69,7 @@ public static class ClanRulesExtensions
             Rank.SeniorSentinel => "★",
             Rank.Advisor => "△",
             Rank.FirstAdvisor => "▲",
-            
+
             _ => throw new ArgumentOutOfRangeException(nameof(rank), rank, null),
         };
     }
@@ -207,6 +207,17 @@ public static class ClanRulesExtensions
             SquadCommander.None => string.Empty,
             SquadCommander.Lieutenant => "◇",
             SquadCommander.Captain => "◆",
+            _ => throw new ArgumentOutOfRangeException(nameof(squadCommander), squadCommander, null),
+        };
+    }
+
+    public static string GetSquadCommanderName(this SquadCommander squadCommander)
+    {
+        return squadCommander switch
+        {
+            SquadCommander.None => string.Empty,
+            SquadCommander.Lieutenant => "Лейтенант",
+            SquadCommander.Captain => "Капитан",
             _ => throw new ArgumentOutOfRangeException(nameof(squadCommander), squadCommander, null),
         };
     }

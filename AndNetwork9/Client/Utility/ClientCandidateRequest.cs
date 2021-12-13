@@ -2,7 +2,4 @@
 
 namespace AndNetwork9.Client.Utility;
 
-public record ClientCandidateRequest : CandidateRequest
-{
-
-}
+public record ClientCandidateRequest : CandidateRequest { }

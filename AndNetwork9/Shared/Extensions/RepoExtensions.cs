@@ -30,8 +30,6 @@ public static class RepoExtensions
         };
     }
 
-    public static string GetFileName(this RepoNode node)
-    {
-        return $"AND.{node.Repo.Name}.{node.Tag}{node.Repo.Type.GetFileExtension()}";
-    }
+    public static string GetFileName(this RepoNode node) =>
+        $"AND.{node.Repo.Name}.{node.Tag}{node.Repo.Type.GetFileExtension()}";
 }

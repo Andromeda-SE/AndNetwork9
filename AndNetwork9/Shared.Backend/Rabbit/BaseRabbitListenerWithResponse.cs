@@ -40,7 +40,10 @@ public abstract class BaseRabbitListenerWithResponse<TRequest, TResponse> : Base
                 {
                     Logger.LogWarning(e, "Exception {0}", args.DeliveryTag);
                     replyProperties.Headers.Add("Success", false);
-                    replyProperties.Headers.Add("Exception", JsonSerializer.Serialize(e, JsonSerializerOptions));
+                    replyProperties.Headers.Add("Exception",
+                        JsonSerializer.Serialize(
+                            $"{e}{Environment.NewLine}{e.Message}{Environment.NewLine}{e.StackTrace}",
+                            JsonSerializerOptions));
                 }
                 finally
                 {

@@ -37,17 +37,19 @@ public record AccessRule : IComparable<AccessRule>, IId
 
     public Guid ConcurrencyToken { get; set; }
 
+    public DateTime LastChanged { get; set; }
+
     public bool HasAccess(Member member) => member.Rank == Rank.FirstAdvisor
                                             || AllowedMembersIds.Any(x => x == member.Id)
                                             || Directions.Any(x => x == member.Direction)
                                             && member.Rank >= MinRank
                                             && (
                                                 SquadId is null && SquadPartId is null
-                                                || SquadId is not null && SquadPartId is null && SquadId == member.SquadPartNumber
+                                                || SquadId is not null
+                                                && SquadPartId is null
+                                                && SquadId == member.SquadPartNumber
                                                 || SquadId is not null
                                                 && SquadPartId is not null
                                                 && SquadId == member.SquadPartNumber
                                                 && SquadPartId == member.SquadPartNumber);
-
-    public DateTime LastChanged { get; set; }
 }

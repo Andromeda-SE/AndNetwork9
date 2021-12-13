@@ -55,6 +55,8 @@ public class RoleManager : IDisposable
         _discordBot.Connected -= InitRoles;
     }
 
+    internal event Func<Task> Initialized;
+
     private async Task InitRoles()
     {
         while (_discordBot.ConnectionState != ConnectionState.Connected) await Task.Delay(30).ConfigureAwait(true);
@@ -98,7 +100,7 @@ public class RoleManager : IDisposable
 
             DirectionRoles = rolesBuilder.ToImmutable();
 
-            foreach (Squad squad in data.Squads)
+            foreach (Squad squad in data.Squads.ToArray())
             {
                 IRole role = squad.DiscordRoleId is null
                     ? await guild.CreateRoleAsync(squad.ToString(),
@@ -156,6 +158,7 @@ public class RoleManager : IDisposable
                 await _updateUserSender.CallAsync(member.DiscordId!.Value).ConfigureAwait(false);
 
             await data.SaveChangesAsync().ConfigureAwait(false);
+            Initialized?.Invoke();
         }
         catch (Exception e)
         {

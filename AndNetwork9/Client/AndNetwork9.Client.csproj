@@ -10,8 +10,11 @@
 	  <BlazorEnableTimeZoneSupport>true</BlazorEnableTimeZoneSupport>
 	  <BlazorWebAssemblyLoadAllGlobalizationData>true</BlazorWebAssemblyLoadAllGlobalizationData>
   </PropertyGroup>
+	<ItemGroup>
+		<RuntimeHostConfigurationOption Include="System.Net.SocketsHttpHandler.Http3Support" Value="true" />
+	</ItemGroup>
 
-  <ItemGroup>
+	<ItemGroup>
     <Compile Remove="Shared\MessageBox.razor.cs" />
   </ItemGroup>
 
@@ -52,10 +55,6 @@
 
   <ItemGroup>
     <UpToDateCheckInput Remove="Shared\LoadingSpinner.razor" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Pages\Squads\" />
   </ItemGroup>
 
 </Project>

@@ -12,6 +12,8 @@ public record Tag : IEquatable<Tag?>, IConcurrencyToken
     public string Name { get; init; } = string.Empty;
     public Guid ConcurrencyToken { get; set; }
 
+    public DateTime LastChanged { get; set; }
+
     public virtual bool Equals(Tag? other)
     {
         if (ReferenceEquals(null, other)) return false;
@@ -19,10 +21,5 @@ public record Tag : IEquatable<Tag?>, IConcurrencyToken
         return Name == other.Name;
     }
 
-    public override int GetHashCode()
-    {
-        return Name.GetHashCode();
-    }
-
-    public DateTime LastChanged { get; set; }
+    public override int GetHashCode() => Name.GetHashCode();
 }

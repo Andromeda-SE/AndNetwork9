@@ -13,6 +13,13 @@ namespace AndNetwork9.Client.Shared;
 
 public partial class RepoNodeEditor
 {
+    public enum VersionLevel
+    {
+        Version,
+        Modification,
+        Prototype,
+    }
+
     private bool _initialized = false;
     private bool _loadEnabled;
 
@@ -26,13 +33,6 @@ public partial class RepoNodeEditor
         }
     }
 
-    public enum VersionLevel
-    {
-        Version,
-        Modification,
-        Prototype,
-    }
-
     [Inject]
     public HttpClient Client { get; set; }
     [Parameter]
@@ -43,9 +43,9 @@ public partial class RepoNodeEditor
     public VersionLevel Level { get; set; }
     public byte[] File { get; set; }
     private bool LoadButtonEnabled => File is not null && !string.IsNullOrWhiteSpace(Description) && _loadEnabled;
+
     private async void FileChanged(InputFileChangeEventArgs e)
     {
-
         try
         {
             IBrowserFile file = e.File;

@@ -16,18 +16,9 @@ public class DiscordIdComparer : IEqualityComparer<IEntity<ulong>>, IEqualityCom
         return x.Id == y.Id;
     }
 
-    public int GetHashCode(IEntity<ulong> obj)
-    {
-        return obj.Id.GetHashCode();
-    }
+    public int GetHashCode(IEntity<ulong> obj) => obj.Id.GetHashCode();
 
-    public bool Equals(IUser? x, IUser? y)
-    {
-        return Equals(x, (IEntity<ulong>?)y);
-    }
+    public bool Equals(IUser? x, IUser? y) => Equals(x, (IEntity<ulong>?)y);
 
-    public int GetHashCode(IUser obj)
-    {
-        return GetHashCode((IEntity<ulong>)obj);
-    }
+    public int GetHashCode(IUser obj) => GetHashCode((IEntity<ulong>)obj);
 }

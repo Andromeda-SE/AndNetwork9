@@ -117,7 +117,7 @@ public class Member : Base
         addField("Отряд", member.SquadPart?.Squad.ToString());
         addField("Командир отряда", member.SquadPart?.Captain.Id == member.Id ? string.Empty : null);
         addField("Отделение", member.SquadPart?.ToString());
-        addField("Командир отделения", member.SquadPart?.Lieutenant.Id == member.Id ? string.Empty : null);
+        addField("Командир отделения", member.SquadPart?.CommanderId == member.Id ? string.Empty : null);
 
         text.AppendLine();
         if (member.SteamId is not null)

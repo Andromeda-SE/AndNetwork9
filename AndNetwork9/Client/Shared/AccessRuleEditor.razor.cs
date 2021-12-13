@@ -63,6 +63,22 @@ public partial class AccessRuleEditor
                           };
         Squads = await Client.GetFromJsonAsync<Squad[]>("api/squad/all");
         Members = await Client.GetFromJsonAsync<Member[]>("api/member/all");
+        foreach (Squad entity in Squads)
+        {
+            entity.SquadParts = await Client.GetFromJsonAsync<SquadPart[]>($"api/squad/{entity.Number}/parts");
+            foreach (SquadPart part in entity.SquadParts)
+            {
+                part.Members = Members.Where(x => x.SquadNumber == entity.Number && x.SquadPartNumber == part.Part)
+                    .ToArray();
+                part.Commander = Members.First(x => x.Id == part.CommanderId);
+                part.Commander.SquadPart = part;
+            }
+        }
+
+        foreach (Member member in Members.Where(x => x.SquadNumber is not null))
+            member.SquadPart = Squads.First(x => x.Number == member.SquadNumber).SquadParts
+                .First(x => x.Part == member.SquadPartNumber);
+
 
         MinRank = rule.MinRank;
         SelectedMembers = Model.Id > 0

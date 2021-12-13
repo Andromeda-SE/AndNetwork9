@@ -45,18 +45,20 @@ public class CommentController : ControllerBase
         oldComment.Text = comment.Text;
 
         await _data.SaveChangesAsync().ConfigureAwait(false);
-        if (oldComment.Task is not null) await _modelHub.Clients
-            .Users(await _data.Members.AsAsyncEnumerable()
-                .Where(x => oldComment.Task.ReadRule!.HasAccess(x))
-                .Select(x => x.Id.ToString("D", CultureInfo.InvariantCulture))
-                .ToArrayAsync().ConfigureAwait(false))
-            .ReceiveModelUpdate(typeof(Task).FullName, oldComment.Task).ConfigureAwait(false);
-        if (oldComment.Repo is not null) await _modelHub.Clients
-            .Users(await _data.Members.AsAsyncEnumerable()
-                .Where(x => oldComment.Repo.ReadRule!.HasAccess(x))
-                .Select(x => x.Id.ToString("D", CultureInfo.InvariantCulture))
-                .ToArrayAsync().ConfigureAwait(false))
-            .ReceiveModelUpdate(typeof(Repo).FullName, oldComment.Repo).ConfigureAwait(false);
+        if (oldComment.Task is not null)
+            await _modelHub.Clients
+                .Users(await _data.Members.AsAsyncEnumerable()
+                    .Where(x => oldComment.Task.ReadRule!.HasAccess(x))
+                    .Select(x => x.Id.ToString("D", CultureInfo.InvariantCulture))
+                    .ToArrayAsync().ConfigureAwait(false))
+                .ReceiveModelUpdate(typeof(Task).FullName, oldComment.Task).ConfigureAwait(false);
+        if (oldComment.Repo is not null)
+            await _modelHub.Clients
+                .Users(await _data.Members.AsAsyncEnumerable()
+                    .Where(x => oldComment.Repo.ReadRule!.HasAccess(x))
+                    .Select(x => x.Id.ToString("D", CultureInfo.InvariantCulture))
+                    .ToArrayAsync().ConfigureAwait(false))
+                .ReceiveModelUpdate(typeof(Repo).FullName, oldComment.Repo).ConfigureAwait(false);
         return Ok(oldComment);
     }
 }

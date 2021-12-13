@@ -53,8 +53,8 @@ public class RewriteElectionsChannel : BaseRabbitListenerWithoutResponse<Electio
 
             int nicknameLength = Math.Max(data.Members.Select(x => x.Nickname.Length).Max(), "Против всех".Length);
             await foreach (Channel channel in data.DiscordChannels
-                .Where(x => x.Type == ChannelType.Text && x.ChannelFlags.HasFlag(ChannelFlags.Elections))
-                .ToAsyncEnumerable().ConfigureAwait(false))
+                               .Where(x => x.Type == ChannelType.Text && x.ChannelFlags.HasFlag(ChannelFlags.Elections))
+                               .ToAsyncEnumerable().ConfigureAwait(false))
             {
                 SocketTextChannel discordChannel = _bot.GetGuild(_bot.GuildId).GetTextChannel(channel.DiscordId);
                 IMessage[] messages = (await discordChannel.GetMessagesAsync(5, RequestOptions.Default)
@@ -65,7 +65,7 @@ public class RewriteElectionsChannel : BaseRabbitListenerWithoutResponse<Electio
                     await discordChannel.SendMessageAsync("…").ConfigureAwait(false);
 
                 foreach ((IMessage message, Direction direction) in messages.Zip(Enum.GetValues<Direction>()
-                    .Where(x => x > Direction.None)))
+                             .Where(x => x > Direction.None)))
                     await discordChannel.ModifyMessageAsync(message.Id,
                         properties =>
                         {

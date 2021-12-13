@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Reflection;
 using System.Text.Json;
 using System.Threading;
 using Microsoft.Extensions.Logging;
@@ -10,6 +11,8 @@ namespace AndNetwork9.Shared.Backend.Rabbit;
 
 public abstract class BaseRabbitSender : IDisposable
 {
+    private protected static readonly string AppId = Assembly.GetEntryAssembly()?.ToString() ?? string.Empty;
+
     protected static readonly JsonSerializerOptions JsonSerializerOptions = new()
     {
         WriteIndented = false,

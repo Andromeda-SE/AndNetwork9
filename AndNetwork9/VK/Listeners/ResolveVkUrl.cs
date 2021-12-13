@@ -14,10 +14,7 @@ public class ResolveVkUrl : BaseRabbitListenerWithResponse<string, long?>
     private readonly VkApi _vkApi;
 
     public ResolveVkUrl(IConnection connection, ILogger<ResolveVkUrl> logger, VkApi vkApi) :
-        base(connection, ResolveVkUrlSender.QUEUE_NAME, logger)
-    {
-        _vkApi = vkApi;
-    }
+        base(connection, ResolveVkUrlSender.QUEUE_NAME, logger) => _vkApi = vkApi;
 
     protected override async Task<long?> GetResponseAsync(string request)
     {

@@ -69,7 +69,7 @@ public class AwardDispenser : ITimerService
         {
             job.PlayerActivity = nodes;
             foreach (Member member in (await job.AvailableAsync(members).ConfigureAwait(false)).Where(x => x.Value)
-                .Select(x => x.Key))
+                     .Select(x => x.Key))
                 await _giveAwardSender.CallAsync(new()
                 {
                     AutomationTag = job.AutomationTag,

@@ -23,8 +23,8 @@ namespace AndNetwork9.Server.Controllers;
 public class ElectionController : ControllerBase
 {
     private readonly ClanDataContext _data;
-    private readonly VoteSender _voteSender;
     private readonly IHubContext<ModelHub, IModelHub> _modelHub;
+    private readonly VoteSender _voteSender;
 
     public ElectionController(ClanDataContext data, VoteSender voteSender, IHubContext<ModelHub, IModelHub> modelHub)
     {
@@ -86,8 +86,20 @@ public class ElectionController : ControllerBase
         }
 
         await _modelHub.Clients
-            .Users(await _data.Members.AsAsyncEnumerable().Where(x => x.Rank > Rank.None).Select(x => x.Id.ToString("D", CultureInfo.InvariantCulture)).ToArrayAsync().ConfigureAwait(false))
-            .ReceiveModelUpdate(typeof(CouncilElection).FullName, _data.Elections.Single(x => x.Stage != ElectionStage.Ended).GetCouncilElection(member)).ConfigureAwait(false);
+            .Users(await _data.Members.AsAsyncEnumerable().Where(x => x.Rank > Rank.None)
+                .Select(x => x.Id.ToString("D", CultureInfo.InvariantCulture)).ToArrayAsync().ConfigureAwait(false))
+            .ReceiveModelUpdate(typeof(CouncilElection).FullName,
+                _data.Elections.Single(x => x.Stage != ElectionStage.Ended).GetCouncilElection(member))
+            .ConfigureAwait(false);
+        return Ok();
+    }
+
+    [HttpPost("reg")]
+    [MinRankAuthorize()]
+    public async Task<IActionResult> PostReg()
+    {
+        Member? member = await this.GetCurrentMember(_data).ConfigureAwait(false);
+
         return Ok();
     }
 }

@@ -11,10 +11,7 @@ public class VkBot : VkApi, IHostedService
 {
     private readonly string _authorizationToken;
 
-    public VkBot(IConfiguration configuration)
-    {
-        _authorizationToken = configuration["Vk_Token"];
-    }
+    public VkBot(IConfiguration configuration) => _authorizationToken = configuration["Vk_Token"];
 
     public async Task StartAsync(CancellationToken cancellationToken)
     {

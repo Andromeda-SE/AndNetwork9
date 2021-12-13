@@ -16,10 +16,7 @@ public class Send : BaseRabbitListenerWithoutResponse<SendArg>
 
     public Send(IConnection connection, DiscordBot bot, ILogger<Send> logger) : base(connection,
         SendSender.QUEUE_NAME,
-        logger)
-    {
-        _bot = bot;
-    }
+        logger) => _bot = bot;
 
     public override async Task Run(SendArg arg)
     {

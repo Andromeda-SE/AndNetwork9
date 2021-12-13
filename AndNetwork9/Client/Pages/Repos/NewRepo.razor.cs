@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
+using System.Threading.Tasks;
 using AndNetwork9.Client.Services;
 using AndNetwork9.Shared.Enums;
 using AndNetwork9.Shared.Utility;
@@ -37,7 +38,7 @@ public partial class NewRepo
         SquadId = null,
     };
 
-    private async System.Threading.Tasks.Task CreateRepo()
+    private async Task CreateRepo()
     {
         HttpResponseMessage readResponse = await Client.PostAsJsonAsync("api/AccessRule", ReadRule);
         HttpResponseMessage writeResponse = await Client.PostAsJsonAsync("api/AccessRule", WriteRule);

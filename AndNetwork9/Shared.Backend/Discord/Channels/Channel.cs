@@ -53,6 +53,8 @@ public class Channel : IEquatable<Channel>, IComparable<Channel>, IComparable, I
 
     public Guid ConcurrencyToken { get; set; }
 
+    public DateTime LastChanged { get; set; }
+
     public bool Equals(Channel? other)
     {
         if (other is null) return false;
@@ -61,40 +63,27 @@ public class Channel : IEquatable<Channel>, IComparable<Channel>, IComparable, I
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool HasPermissionLevel(Member member, Permissions level)
-    {
-        return level >= EveryonePermissions
-               || member.Rank > Rank.None
-               && level >= MemberPermissions
-               || member.Rank > Rank.Advisor
-               && level >= AdvisorPermissions
-               || SquadNumber is not null
-               && SquadNumber == member.SquadNumber
-               && (SquadPartNumber is null
-                   || SquadPartNumber
-                   == member.SquadPartNumber)
-               && level >= SquadPermissions;
-    }
+    public bool HasPermissionLevel(Member member, Permissions level) => level >= EveryonePermissions
+                                                                        || member.Rank > Rank.None
+                                                                        && level >= MemberPermissions
+                                                                        || member.Rank > Rank.Advisor
+                                                                        && level >= AdvisorPermissions
+                                                                        || SquadNumber is not null
+                                                                        && SquadNumber == member.SquadNumber
+                                                                        && (SquadPartNumber is null
+                                                                            || SquadPartNumber
+                                                                            == member.SquadPartNumber)
+                                                                        && level >= SquadPermissions;
 
-    public static bool operator <(Channel? left, Channel? right)
-    {
-        return Comparer<Channel>.Default.Compare(left, right) < 0;
-    }
+    public static bool operator <(Channel? left, Channel? right) => Comparer<Channel>.Default.Compare(left, right) < 0;
 
-    public static bool operator >(Channel? left, Channel? right)
-    {
-        return Comparer<Channel>.Default.Compare(left, right) > 0;
-    }
+    public static bool operator >(Channel? left, Channel? right) => Comparer<Channel>.Default.Compare(left, right) > 0;
 
-    public static bool operator <=(Channel? left, Channel? right)
-    {
-        return Comparer<Channel>.Default.Compare(left, right) <= 0;
-    }
+    public static bool operator <=(Channel? left, Channel? right) =>
+        Comparer<Channel>.Default.Compare(left, right) <= 0;
 
-    public static bool operator >=(Channel? left, Channel? right)
-    {
-        return Comparer<Channel>.Default.Compare(left, right) >= 0;
-    }
+    public static bool operator >=(Channel? left, Channel? right) =>
+        Comparer<Channel>.Default.Compare(left, right) >= 0;
 
     public override bool Equals(object? obj)
     {
@@ -103,20 +92,9 @@ public class Channel : IEquatable<Channel>, IComparable<Channel>, IComparable, I
         return obj.GetType() == GetType() && Equals((Channel)obj);
     }
 
-    public override int GetHashCode()
-    {
-        return DiscordId.GetHashCode();
-    }
+    public override int GetHashCode() => DiscordId.GetHashCode();
 
-    public static bool operator ==(Channel? left, Channel? right)
-    {
-        return Equals(left, right);
-    }
+    public static bool operator ==(Channel? left, Channel? right) => Equals(left, right);
 
-    public static bool operator !=(Channel? left, Channel? right)
-    {
-        return !Equals(left, right);
-    }
-
-    public DateTime LastChanged { get; set; }
+    public static bool operator !=(Channel? left, Channel? right) => !Equals(left, right);
 }
