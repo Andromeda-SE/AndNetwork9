@@ -34,6 +34,7 @@ public class ResolveSteamUrlTests
     [Test]
     [TestCase("https://steamcommunity.com/id/moryakspb", ExpectedResult = 76561198109866439UL)]
     [TestCase("http://steamcommunity.com/id/moryakspb", ExpectedResult = 76561198109866439UL)]
+    [TestCase("http://www.steamcommunity.com/id/moryakspb", ExpectedResult = 76561198109866439UL)]
     [TestCase("steamcommunity.com/id/moryakspb", ExpectedResult = 76561198109866439UL)]
     [TestCase("  https://steamcommunity.com/profiles/76561198109866439", ExpectedResult = 76561198109866439UL)]
     [TestCase("https://steamcommunity.com/profiles/76561198109866439", ExpectedResult = 76561198109866439UL)]

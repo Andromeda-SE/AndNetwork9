@@ -20,6 +20,7 @@ public class ResolveVkUrl : BaseRabbitListenerWithResponse<string, long?>
     {
         request = request.Replace("http://", string.Empty);
         request = request.Replace("https://", string.Empty);
+        request = request.Replace("www.", string.Empty);
         request = request.Replace("vk.com/id", string.Empty);
         request = request.Replace("vk.com/", string.Empty);
         request = request.Trim().Trim('/');

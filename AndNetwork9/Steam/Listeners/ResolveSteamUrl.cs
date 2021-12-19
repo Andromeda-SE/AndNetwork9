@@ -28,6 +28,7 @@ public class ResolveSteamUrl : BaseRabbitListenerWithResponse<string, ulong?>
         if (string.IsNullOrWhiteSpace(request)) return null;
         request = request.Replace("http://", string.Empty);
         request = request.Replace("https://", string.Empty);
+        request = request.Replace("www.", string.Empty);
         request = request.Replace("steamcommunity.com/id/", string.Empty);
         request = request.Replace("steamcommunity.com/profiles/", string.Empty);
         request = request.Trim('/');

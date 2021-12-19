@@ -35,6 +35,7 @@ public class ResolveVkUrlTests
 
     [Test]
     [TestCase("https://vk.com/moryakspb", ExpectedResult = 91777907L)]
+    [TestCase("https://www.vk.com/moryakspb", ExpectedResult = 91777907L)]
     [TestCase("http://vk.com/moryakspb", ExpectedResult = 91777907L)]
     [TestCase("vk.com/moryakspb", ExpectedResult = 91777907L)]
     [TestCase("  https://vk.com/id91777907", ExpectedResult = 91777907L)]

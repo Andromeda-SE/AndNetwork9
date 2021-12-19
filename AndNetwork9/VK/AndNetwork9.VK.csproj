@@ -11,7 +11,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.14.0" />
-    <PackageReference Include="VkNet" Version="1.67.0" />
+    <PackageReference Include="VkNet" Version="1.68.0" />
   </ItemGroup>
 
   <ItemGroup>
