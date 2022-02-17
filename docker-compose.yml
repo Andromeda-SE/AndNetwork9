@@ -1,104 +1,134 @@
-version: '3'
+version: '3.4'
 
 services:
-  andnetwork9discord:
-    container_name: AndNetwork9.Discord
-    image: ${DOCKER_REGISTRY-}andnetwork9discord
-    restart: "no"
-    env_file: .env
-    build:
-      context: .
-      dockerfile: AndNetwork9/Discord/Dockerfile
-    depends_on: 
-      - database
-      - broker
-
-  andnetwork9server:
-    container_name: AndNetwork9.Server
-    image: ${DOCKER_REGISTRY-}andnetwork9server
+  and9.gateway.clan:
+    container_name: And9.Gateway.Clan
+    image: ${DOCKER_REGISTRY-}gateway-clan
     restart: "no"
     env_file: .env
     ports:
-      - "5260:80"
+      - "5240:80"
     build:
       context: .
-      dockerfile: AndNetwork9/Server/Dockerfile
-    depends_on: 
-      - database
-      - broker
+      dockerfile: src/And9.Gateway.Clan/Dockerfile
 
-  andnetwork9storage:
-    container_name: AndNetwork9.Storage
-    image: ${DOCKER_REGISTRY-}andnetwork9storage
+  and9.service.core:
+    container_name: And9.Service.Core
+    image: ${DOCKER_REGISTRY-}service-core
     restart: "no"
     env_file: .env
     build:
       context: .
-      dockerfile: AndNetwork9/Storage/Dockerfile
-    depends_on: 
-      - database
-      - broker
+      dockerfile: src/And9.Service.Core/Dockerfile
+
+  and9.service.auth:
+    container_name: And9.Service.Auth
+    image: ${DOCKER_REGISTRY-}service-auth
+    restart: "no"
+    env_file: .env
+    build:
+      context: .
+      dockerfile: src/And9.Service.Auth/Dockerfile
+
+  and9.service.Award:
+    container_name: And9.Service.Award
+    image: ${DOCKER_REGISTRY-}service-award
+    restart: "no"
+    env_file: .env
+    build:
+      context: .
+      dockerfile: src/And9.Service.Award/Dockerfile
+
+  and9.integration.discord:
+    container_name: And9.Integration.Discord
+    image: ${DOCKER_REGISTRY-}integration-discord
+    restart: "no"
+    env_file: .env
+    build:
+      context: .
+      dockerfile: src/And9.Integration.Discord/Dockerfile
+
+  and9.integration.steam:
+    container_name: And9.Integration.Steam
+    image: ${DOCKER_REGISTRY-}integration-steam
+    restart: "no"
+    env_file: .env
+    build:
+      context: .
+      dockerfile: src/And9.Integration.Steam/Dockerfile
+
+  and9.integration.vk:
+    container_name: And9.Integration.VK
+    image: ${DOCKER_REGISTRY-}integration-vk
+    restart: "no"
+    env_file: .env
+    build:
+      context: .
+      dockerfile: src/And9.Integration.VK/Dockerfile
+
+  and9.infra.redis:
+    container_name: And9.Infra.Redis
+    image: redis:alpine
+    restart: "no"
     volumes:
-      - "./data/repos:/var/lib/AndNetwork9/data"
+      - "./data/redis/:/usr/local/etc/redis/"
 
-  andnetwork9elections:
-    container_name: AndNetwork9.Elections
-    image: ${DOCKER_REGISTRY-}andnetwork9elections
-    restart: "no"
-    env_file: .env
-    build:
-      context: .
-      dockerfile: AndNetwork9/Elections/Dockerfile
-    depends_on: 
-      - database
-      - broker
-
-  andnetwork9steam:
-    container_name: AndNetwork9.Steam
-    image: ${DOCKER_REGISTRY-}andnetwork9steam
-    restart: "no"
-    env_file: .env
-    build:
-      context: .
-      dockerfile: AndNetwork9/Steam/Dockerfile
-    depends_on: 
-      - broker
-
-  andnetwork9vk:
-    container_name: AndNetwork9.VK
-    image: ${DOCKER_REGISTRY-}andnetwork9vk
-    restart: "no"
-    env_file: .env
-    build:
-      context: .
-      dockerfile: AndNetwork9/VK/Dockerfile
-    depends_on: 
-      - broker
-
-  andnetwork9awarddispenser:
-    container_name: AndNetwork9.AwardDispenser
-    image: ${DOCKER_REGISTRY-}awarddispenser
-    restart: "no"
-    env_file: .env
-    build:
-      context: .
-      dockerfile: AndNetwork9/AwardDispenser/Dockerfile
-    depends_on: 
-      - broker
-      - database
-
-  database:
-    container_name: AndNetwork9.Database
+  and9.infra.database:
+    container_name: And9.Infra.Database
     image: postgres:alpine
     restart: "no"
     env_file: .env
     volumes:
       - "./data/postgresql:/var/lib/postgresql/data"
 
-  broker:
-    container_name: AndNetwork9.Broker
+  and9.infra.broker:
+    container_name: And9.Infra.Broker
     image: rabbitmq:alpine
     restart: "no"
     env_file: .env
+    ports:
+      - "6379:6379"
     volumes:
       - "./data/rabbitmq/rabbitmq.conf:/var/lib/rabbitmq/rabbitmq.conf"
+
+
+  and9.monitoring.prometheus:
+    image: prom/prometheus
+    container_name: And9.Monitoring.Prometheus
+    volumes:
+      - ./data/prometheus/config:/etc/prometheus/
+      - ./data/prometheus/data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+    ports:
+      - 9090:9090
+
+  and9.monitoring.grafana:
+    image: grafana/grafana
+    container_name: And9.Monitoring.Grafana
+    volumes:
+      - ./data/grafana:/var/lib/grafana
+    ports:
+      - 3000:3000
+
+  and9.monitoring.cadvisor:
+    image: gcr.io/cadvisor/cadvisor:latest
+    container_name: And9.Monitoring.Cadvisor
+    privileged: true
+    command: 
+      - '--housekeeping_interval=15s'
+      - '--docker_only=true'
+      - '--disable_metrics=disk'
+    ports:
+    - 8080:8080
+    volumes:
+    - /:/rootfs:ro
+    - /var/run:/var/run:rw
+    - /sys:/sys:ro
+    - /var/lib/docker/:/var/lib/docker:ro
+
+  and9.monitoring.node-exporter:
+    image: prom/node-exporter:latest
+    container_name: And9.Monitoring.NodeExporter
+    ports:
+    - 9100:9100

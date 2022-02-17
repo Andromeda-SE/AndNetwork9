@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>6279c845-92f8-4333-ab99-3d213163593c</ProjectGuid>
+    <MinimumVisualStudioVersion>14.0</MinimumVisualStudioVersion>
+  </PropertyGroup>
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\CodeSharing\Microsoft.CodeSharing.Common.Default.props" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\CodeSharing\Microsoft.CodeSharing.Common.props" />
+  <PropertyGroup />
+  <Import Project="And9.Client.Clan.Shared.projitems" Label="Shared" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\CodeSharing\Microsoft.CodeSharing.CSharp.targets" />
+  <ItemGroup>
+    <_Globbed_Compile Remove="BuildVersion.cs" />
+    <_Globbed_Compile Remove="ContentDialog1.xaml.cs" />
+    <_Globbed_Compile Remove="Converters\AwardTypeToSymbolConverter.cs" />
+    <_Globbed_Compile Remove="Converters\RankToStringConverter.cs" />
+    <_Globbed_Compile Remove="Converters\TimeZoneConverter.cs" />
+    <_Globbed_Compile Remove="Descriptors\IColumnDescriptor.cs" />
+    <_Globbed_Compile Remove="Extensions.cs" />
+    <_Globbed_Compile Remove="LoginDialog.xaml.cs" />
+    <_Globbed_Compile Remove="LoginPage.xaml.cs" />
+    <_Globbed_Compile Remove="MainPage.xaml.cs" />
+    <_Globbed_Compile Remove="Models\Configuration.cs" />
+    <_Globbed_Compile Remove="Services\ApplicationDataService.cs" />
+    <_Globbed_Compile Remove="Services\AwardNotificationService.cs" />
+    <_Globbed_Compile Remove="Services\ConfigurationService.cs" />
+    <_Globbed_Compile Remove="Services\RankNotificationService.cs" />
+    <_Globbed_Compile Remove="Startup.cs" />
+    <_Globbed_Compile Remove="ViewModels\GiveAwardViewModel.cs" />
+    <_Globbed_Compile Remove="ViewModels\LoginViewModel.cs" />
+    <_Globbed_Compile Remove="ViewModels\MembersViewModel.cs" />
+    <_Globbed_Compile Remove="ViewModels\MenuItem.cs" />
+    <_Globbed_Compile Remove="ViewModels\NavigationViewModel.cs" />
+    <_Globbed_Compile Remove="Views\AppSettingsView.xaml.cs" />
+    <_Globbed_Compile Remove="Views\ContentDialog1.xaml.cs" />
+    <_Globbed_Compile Remove="Views\ElectionView.xaml.cs" />
+    <_Globbed_Compile Remove="Views\GiveAwardContentDialog.xaml.cs" />
+    <_Globbed_Compile Remove="Views\LoginPage.xaml.cs" />
+    <_Globbed_Compile Remove="Views\MembersControl.xaml.cs" />
+    <_Globbed_Compile Remove="Views\NavigationPage.xaml.cs" />
+    <_Globbed_Compile Remove="Views\Pages\SquadPage.xaml.cs" />
+    <_Globbed_Compile Remove="Views\UserSettingsView.xaml.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <_Globbed_PRIResource Remove="Strings\ru\Resources.resw" />
+  </ItemGroup>
+  <ItemGroup>
+    <_Globbled_Page Remove="LoginDialog.xaml" />
+    <_Globbled_Page Remove="LoginPage.xaml" />
+    <_Globbled_Page Remove="MainPage.xaml" />
+    <_Globbled_Page Remove="Views\AppSettingsView.xaml" />
+    <_Globbled_Page Remove="Views\ContentDialog1.xaml" />
+    <_Globbled_Page Remove="Views\ElectionView.xaml" />
+    <_Globbled_Page Remove="Views\GiveAwardContentDialog.xaml" />
+    <_Globbled_Page Remove="Views\NavigationPage.xaml" />
+    <_Globbled_Page Remove="Views\Pages\SquadPage.xaml" />
+    <_Globbled_Page Remove="Views\UserSettingsView.xaml" />
+  </ItemGroup>
+</Project>

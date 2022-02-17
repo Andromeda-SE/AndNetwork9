@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFrameworks>net6.0;net6.0-windows10.0.18362.0</TargetFrameworks>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
+
+	<ItemGroup>
+	  <PackageReference Include="MessagePack.Annotations" Version="2.3.85" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\And9.Lib.Models.Abstractions\And9.Lib.Models.Abstractions.csproj" />
+		<ProjectReference Include="..\And9.Service.Core.Abstractions\And9.Service.Core.Abstractions.csproj" />
+	</ItemGroup>
+
+</Project>

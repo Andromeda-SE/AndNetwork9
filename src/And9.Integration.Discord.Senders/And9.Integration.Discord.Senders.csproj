@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\And9.Integration.Discord.Abstractions\And9.Integration.Discord.Abstractions.csproj" />
+		<ProjectReference Include="..\And9.Lib.Broker\And9.Lib.Broker.csproj" />
+		<ProjectReference Include="..\And9.Lib.Models.Abstractions\And9.Lib.Models.Abstractions.csproj" />
+		<ProjectReference Include="..\And9.Service.Auth.Abstractions\And9.Service.Auth.Abstractions.csproj" />
+	</ItemGroup>
+
+</Project>

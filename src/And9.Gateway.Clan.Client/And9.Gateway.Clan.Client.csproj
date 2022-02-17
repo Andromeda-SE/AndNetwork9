@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net6.0;net6.0-windows10.0.18362.0</TargetFrameworks>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\And9.Integration.Discord.API\And9.Integration.Discord.API.csproj" />
+    <ProjectReference Include="..\And9.Lib.Utility\And9.Lib.Utility.csproj" />
+    <ProjectReference Include="..\And9.Service.Auth.API\And9.Service.Auth.API.csproj" />
+    <ProjectReference Include="..\And9.Service.Award.API\And9.Service.Award.API.csproj" />
+    <ProjectReference Include="..\And9.Service.Core.API\And9.Service.Core.API.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="6.0.2" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR.Protocols.MessagePack" Version="6.0.2" />
+    <PackageReference Include="System.Linq.Async" Version="6.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+  </ItemGroup>
+</Project>

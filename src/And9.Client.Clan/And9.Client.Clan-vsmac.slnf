@@ -1,0 +1,14 @@
+{
+  "solution": {
+    "path": "And9.Client.Clan.sln",
+    "projects": [
+		"And9.Client.Clan.Shared\\And9.Client.Clan.Shared.shproj",
+
+
+
+		"And9.Client.Clan.Wasm\\And9.Client.Clan.Wasm.csproj",
+
+
+    ]
+  }
+}

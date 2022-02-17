@@ -1,0 +1,49 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <DockerfileContext>..\..</DockerfileContext>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.2" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR.Protocols.MessagePack" Version="6.0.2" />
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.14.0" />
+    <PackageReference Include="StackExchange.Redis" Version="2.2.88" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\And9.Gateway.Clan.Client\And9.Gateway.Clan.Client.csproj" />
+    <ProjectReference Include="..\And9.Gateway.Clan.Senders\And9.Gateway.Clan.Senders.csproj" />
+    <ProjectReference Include="..\And9.Integration.Discord.Senders\And9.Integration.Discord.Senders.csproj" />
+    <ProjectReference Include="..\And9.Lib.API\And9.Lib.API.csproj" />
+    <ProjectReference Include="..\And9.Lib.Broker\And9.Lib.Broker.csproj" />
+    <ProjectReference Include="..\And9.Lib.Utility\And9.Lib.Utility.csproj" />
+    <ProjectReference Include="..\And9.Service.Auth.Senders\And9.Service.Auth.Senders.csproj" />
+    <ProjectReference Include="..\And9.Service.Award.Senders\And9.Service.Award.Senders.csproj" />
+    <ProjectReference Include="..\And9.Service.Core.Senders\And9.Service.Core.Senders.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Properties\Resources.Designer.cs">
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Properties\Resources.resx">
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Hubs\Model\" />
+  </ItemGroup>
+
+</Project>

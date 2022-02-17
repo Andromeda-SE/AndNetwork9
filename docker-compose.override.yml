@@ -1,22 +1,10 @@
-version: '3'
+version: '3.4'
 
 services:
-  andnetwork9discord:
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-
-  andnetwork9server:
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-
-  andnetwork9storage:
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-
-  broker:
+  and9.infra.broker:
     image: rabbitmq:management-alpine
     ports:
       - "15672:15672"
-  database:
+  and9.infra.database:
     ports:
       - "5432:5432"

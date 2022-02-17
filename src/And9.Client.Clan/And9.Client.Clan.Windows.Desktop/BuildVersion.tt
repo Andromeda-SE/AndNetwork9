@@ -1,0 +1,23 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ output extension=".cs" #>
+
+using System.Reflection;
+
+[assembly: AssemblyVersion("<#= this.Update #>.<#= this.Platform #>.<#= this.Day #>.<#= this.Minute #>")]
+
+<#+
+    string Update = 0.ToString("D");
+
+    /*
+
+    WASM = 2;
+    WinUI_3 = 10;
+    WPF = 7;
+    */
+    string Platform = 10.ToString("D");
+
+    static DateTime StartDate = new DateTime(2022, 1, 1);
+
+    string Day = Math.Truncate((DateTime.UtcNow - StartDate).TotalDays).ToString("F0");
+    string Minute = (DateTime.UtcNow.TimeOfDay.TotalDays * 10000d).ToString("0000");
+#>

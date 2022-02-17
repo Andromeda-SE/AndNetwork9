@@ -1,0 +1,63 @@
+﻿<Page
+    x:Class="And9.Client.Clan.Views.Pages.LoginPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:viewmodels="using:And9.Client.Clan.ViewModels"
+    d:DataContext="{d:DesignInstance Type=viewmodels:LoginViewModel}"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    <Grid>
+        <StackPanel x:Name="LoginStackPanel"
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Center"
+                    Width="350">
+            <TextBox Header="Никнейм"
+                     Text="{Binding Login, Mode=TwoWay}"
+                     AcceptsReturn="False"
+                     Margin="5"
+                     IsEnabled="{Binding LoginAvailable}" />
+            <PasswordBox Header="Пароль"
+                         Password="{Binding Password, Mode=TwoWay}"
+                         Margin="5"
+                         PasswordRevealMode="Peek"
+                         IsEnabled="{Binding LoginAvailable}" />
+            <CheckBox Content="Запомнить данные"
+                      IsChecked="{Binding Persist, Mode=TwoWay}"
+                      Margin="5"
+                      IsEnabled="{Binding LoginAvailable}" />
+            <Button Content="Войти"
+                    Style="{ThemeResource AccentButtonStyle}"
+                    Margin="5"
+                    HorizontalAlignment="Stretch"
+                    KeyboardAcceleratorPlacementMode="Auto"
+                    Command="{Binding LoginCommand}">
+                <Button.KeyboardAccelerators>
+                    <KeyboardAccelerator Key="Enter" ScopeOwner="{x:Bind LoginStackPanel}" />
+                </Button.KeyboardAccelerators>
+            </Button>
+            <TextBlock Text="{Binding ErrorString}"
+                       ToolTipService.ToolTip="{Binding ErrorString}"
+                       TextTrimming="CharacterEllipsis"
+                       TextWrapping="NoWrap"
+                       Margin="5"
+                       Foreground="Red" />
+        </StackPanel>
+        <Button VerticalAlignment="Bottom"
+                HorizontalAlignment="Left"
+                Foreground="DarkGray"
+                Margin="5"
+                Command="{Binding CopyVersionCommand}">
+            <Button.Template>
+                <ControlTemplate>
+                    <TextBlock Text="{Binding Build}" />
+                </ControlTemplate>
+            </Button.Template>
+        </Button>
+
+
+    </Grid>
+
+
+</Page>

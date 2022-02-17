@@ -1,0 +1,31 @@
+﻿namespace And9.Service.Core.Abstractions.Enums;
+
+public enum Rank : sbyte
+{
+    Outcast = sbyte.MinValue,
+    Enemy = -7,
+    Guest = -6,
+    Diplomat = -5,
+    Ally = -4,
+    Candidate = -3,
+    Auxiliary = -2,
+    SeniorAuxiliary = -1,
+    None = 0,
+    Neophyte,
+    Trainee,
+    Assistant,
+    JuniorEmployee,
+    Employee,
+    SeniorEmployee,
+    JuniorSpecialist,
+    Specialist,
+    SeniorSpecialist,
+    JuniorIntercessor,
+    Intercessor,
+    SeniorIntercessor,
+    JuniorSentinel,
+    Sentinel,
+    SeniorSentinel,
+    Advisor,
+    FirstAdvisor = sbyte.MaxValue,
+}

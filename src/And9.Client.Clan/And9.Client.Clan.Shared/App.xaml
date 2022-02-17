@@ -1,0 +1,24 @@
+<Application
+    x:Class="And9.Client.Clan.App"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:converters="using:And9.Client.Clan.Converters">
+
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <converters:IntToLatinConverter x:Key="IntToLatinConverter" />
+            <converters:TimeZoneConverter x:Key="TimeZoneConverter" />
+            <converters:DirectionToStringConverter x:Key="DirectionToStringConverter" />
+            <converters:RankToStringConverter x:Key="RankToStringConverter" />
+            <converters:AwardTypeToSymbolConverter x:Key="AwardTypeToSymbolConverter" />
+            <converters:AwardTypeToStringConverter x:Key="AwardTypeToStringConverter" />
+        </ResourceDictionary>
+
+
+    </Application.Resources>
+
+</Application>

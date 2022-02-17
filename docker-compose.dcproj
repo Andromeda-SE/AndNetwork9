@@ -3,20 +3,15 @@
   <PropertyGroup Label="Globals">
     <ProjectVersion>2.1</ProjectVersion>
     <DockerTargetOS>Linux</DockerTargetOS>
-    <DockerComposeProjectName>AndNetwork9</DockerComposeProjectName>
-    <DockerServiceUrl>{Scheme}://localhost:{ServicePort}</DockerServiceUrl>
-    <ProjectGuid>a3533c6e-1181-43fb-96be-7f4bf5036256</ProjectGuid>
-  </PropertyGroup>
-  <PropertyGroup>
-    <DockerServiceName>andnetwork9server</DockerServiceName>
+    <ProjectGuid>06aa7ddb-9a01-4aa0-9ebc-b426b5d393fa</ProjectGuid>
+	<DockerComposeProjectName>And9</DockerComposeProjectName>
     <DockerLaunchAction>LaunchBrowser</DockerLaunchAction>
+    <DockerServiceUrl>{Scheme}://localhost:{ServicePort}</DockerServiceUrl>
+    <DockerServiceName>integration.steam</DockerServiceName>
   </PropertyGroup>
   <ItemGroup>
     <None Include=".env" />
     <None Include=".env.template" />
-    <None Include="docker-compose.monitoring.yml">
-	  <DependentUpon>docker-compose.yml</DependentUpon>
-    </None>
     <None Include="docker-compose.override.yml">
       <DependentUpon>docker-compose.yml</DependentUpon>
     </None>
