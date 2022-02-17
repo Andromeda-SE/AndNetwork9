@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\And9.Lib.Models.Abstractions\And9.Lib.Models.Abstractions.csproj" />
+    <ProjectReference Include="..\And9.Service.Core.Abstractions\And9.Service.Core.Abstractions.csproj" />
+  </ItemGroup>
+
+</Project>

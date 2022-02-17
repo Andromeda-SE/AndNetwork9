@@ -369,3 +369,5 @@ FodyWeavers.xsd
 /data/postgresql
 /data/prometheus/data/data
 /Tests/Tokens
+/data/redis
+/AndNetwork9/War/War.Plugin/lib

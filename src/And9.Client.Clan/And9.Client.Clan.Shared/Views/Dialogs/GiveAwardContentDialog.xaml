@@ -1,0 +1,32 @@
+﻿<ContentDialog
+    x:Class="And9.Client.Clan.Views.Dialogs.GiveAwardContentDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Title="Выдать награду"
+    DefaultButton="Primary"
+    PrimaryButtonText="Выдать"
+    PrimaryButtonCommand="{Binding GiveCommand}"
+    IsPrimaryButtonEnabled="{Binding CanExecute}"
+    CloseButtonText="Отмена">
+
+    <StackPanel MinWidth="350">
+        <TextBox Margin="2"
+                 Header="Игроки"
+                 Text="{Binding MembersText}"
+                 HorizontalAlignment="Stretch"
+                 TextWrapping="NoWrap"
+                 IsReadOnly="True" />
+
+        <ComboBox Margin="2"
+                  Header="Тип награды"
+                  ItemsSource="{Binding AllowedAwardTypes}"
+                  HorizontalAlignment="Stretch"
+                  SelectedItem="{Binding SelectedAwardTypeTuple, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                  SelectedValuePath="Item1"
+                  DisplayMemberPath="Item2" />
+
+        <TextBox Header="Описание"
+                 Margin="2"
+                 Text="{Binding Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+    </StackPanel>
+</ContentDialog>
