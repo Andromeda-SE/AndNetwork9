@@ -32,8 +32,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AndNetwork9.VK", "AndNetwor
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AndNetwork9.Tests", "Tests\AndNetwork9.Tests.csproj", "{A29FAF1A-0D67-40DE-87B2-FDE67A292CDD}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AndNetwork9.War.Shared.Backend", "AndNetwork9\War\Shared.Backend\AndNetwork9.War.Shared.Backend.csproj", "{8BD65026-F284-4C2F-9FEC-73FAE9A668DF}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AndNetwork9.War.Hub", "AndNetwork9\War\Hub\AndNetwork9.War.Hub.csproj", "{6C57D533-DE7B-4707-8744-9EAC04E10229}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AndNetwork9.War.Shared", "AndNetwork9\War\Shared\AndNetwork9.War.Shared.csproj", "{5F403865-91B0-49B5-9073-FE95B97E2525}"
@@ -94,10 +92,6 @@ Global
 		{A29FAF1A-0D67-40DE-87B2-FDE67A292CDD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A29FAF1A-0D67-40DE-87B2-FDE67A292CDD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A29FAF1A-0D67-40DE-87B2-FDE67A292CDD}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8BD65026-F284-4C2F-9FEC-73FAE9A668DF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8BD65026-F284-4C2F-9FEC-73FAE9A668DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8BD65026-F284-4C2F-9FEC-73FAE9A668DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8BD65026-F284-4C2F-9FEC-73FAE9A668DF}.Release|Any CPU.Build.0 = Release|Any CPU
 		{6C57D533-DE7B-4707-8744-9EAC04E10229}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{6C57D533-DE7B-4707-8744-9EAC04E10229}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6C57D533-DE7B-4707-8744-9EAC04E10229}.Release|Any CPU.ActiveCfg = Release|Any CPU

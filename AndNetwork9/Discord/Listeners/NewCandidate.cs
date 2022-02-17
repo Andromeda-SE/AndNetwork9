@@ -91,11 +91,10 @@ public class NewCandidate : BaseRabbitListenerWithoutResponse<CandidateRequest>
                 }).WithFooter(request.Description).Build();
 
             await _bot.GetGuild(_bot.GuildId).GetTextChannel(channel.DiscordId)
-                .SendMessageAsync("@everyone , новая завяка на вступление в клан!", embed: embed).ConfigureAwait(false);
+                .SendMessageAsync($"@everyone , новая завяка на вступление в клан от {request.GetDiscordMention()}!", embed: embed).ConfigureAwait(false);
             await discordChannel.SendMessageAsync(
-                "Вы успешно подали заявку в клан «Андромеда»! Рассмотрение заявки занимает от 8 до 48 часов. Если вы считаете, что это ошибка, напишите об этом <@266672873882648577>"
-                + Environment.NewLine
-                + $"Вам также дан доступ к сайту клана https://{_configuration}/ !").ConfigureAwait(false);
+                "Вы успешно подали заявку в клан «Андромеда»! Рассмотрение заявки занимает от 8 до 48 часов. Если вы считаете, что это ошибка, напишите об этом <@266672873882648577>")
+                .ConfigureAwait(false);
         }
     }
 }

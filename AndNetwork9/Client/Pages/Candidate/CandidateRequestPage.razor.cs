@@ -12,7 +12,6 @@ using Microsoft.AspNetCore.Components.Forms;
 
 namespace AndNetwork9.Client.Pages.Candidate;
 
-[AllowAnonymous]
 public partial class CandidateRequestPage
 {
     private string _discordInput;
@@ -209,7 +208,7 @@ public partial class CandidateRequestPage
         SumbitProcessing = true;
         HttpResponseMessage response =
             await Client.PostAsJsonAsync("public/api/candidate/", Model).ConfigureAwait(false);
-
+        if (response.IsSuccessStatusCode) NavigationManager.NavigateTo("/candidate/ok");
         SumbitProcessing = false;
     }
 }

@@ -27,8 +27,6 @@ public partial class ElectionAnnouncementCard
     private double GetPercent(uint votes)
     {
         double result = votes / (double)ElectionVote.Votes.Values.Sum(x => x);
-        Console.WriteLine(
-            $"{ElectionVote.Direction}: {votes} / {ElectionVote.Votes.Values.Sum(x => x)} = {result}");
         return double.IsNaN(result) ? 0.0 : result;
     }
 

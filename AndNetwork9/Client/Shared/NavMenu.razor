@@ -34,16 +34,22 @@
                             @if (AuthStateProvider.CurrentMember.Rank >= Rank.Advisor)
                             {
                                 <li>
-                                    <a class="dropdown-item" href="/management/addmember">Добавить участника…</a>
+                                    <a class="dropdown-item" href="/management/addmember">Добавить участника</a>
                                 </li>
                             }
                             <li>
-                                <a class="dropdown-item" href="/management/addaward">Выдать награду или штраф…</a>
+                                <a class="dropdown-item" href="/management/addaward">Выдать награду или штраф</a>
                             </li>
                             @if (AuthStateProvider.CurrentMember.Rank >= Rank.Advisor)
                             {
                                 <li>
-                                    <a class="dropdown-item" href="/management/message">Отправить сообщения…</a>
+                                    <a class="dropdown-item" href="/management/message">Отправить сообщения</a>
+                                </li>
+                            }
+                            @if (AuthStateProvider.CurrentMember.CommanderLevel == SquadCommander.Captain)
+                            {
+                                <li>
+                                    <a class="dropdown-item" href="/squad/manage">Управление отрядом</a>
                                 </li>
                             }
                         </ul>

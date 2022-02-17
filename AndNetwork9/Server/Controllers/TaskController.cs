@@ -334,7 +334,6 @@ public class TaskController : ControllerBase
     {
         Member? member = await this.GetCurrentMember(_data).ConfigureAwait(false);
         if (member is null) return Unauthorized();
-        if (string.IsNullOrWhiteSpace(task.Description?.Text)) return BadRequest();
         task = task with
         {
             Reporter = member,

@@ -6,18 +6,18 @@
     <select class="form-select" @bind="SelectedPartNumber">
         @foreach (var part in Squad.SquadParts)
         {
-            <option value="@part.Part" selected="@(part.Part == 0)">@part.ToString(false)</option>
+            <option value="@part.Part" selected="@(part.Part == SelectedPartNumber)">@part.ToString(false)</option>
         }
     </select>
     <BaseBodyWithAside>
         <Main>
-            @if (Entities is null)
+            @if (SelectedPart?.Members is null)
             {
                 <LoadingSpinner/>
             }
             else
             {
-                <Table Columns="ColumnDefinitions" InitialSort="(0, true)" SelectionChanged="SelectionChanged" Source="@Entities" TItem="Member"></Table>
+                <Table Columns="ColumnDefinitions" InitialSort="(1, false)" SelectionChanged="SelectionChanged" Source="@((IReadOnlyCollection<Member>)SelectedPart.Members)" TItem="Member"/>
             }
         </Main>
         <Aside>

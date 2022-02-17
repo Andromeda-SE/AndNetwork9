@@ -24,7 +24,7 @@ public record CandidateRequest
     public int? HoursCount { get; set; }
 
     [JsonConverter(typeof(TimeZoneInfoConverter))]
-    public TimeZoneInfo? TimeZone { get; set; }
+    public TimeZoneInfo? TimeZone { get; set; } = TimeZoneInfo.Local;
     public string? Recommendation { get; set; }
 
     public string? Description { get; set; }

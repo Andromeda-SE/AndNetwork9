@@ -1,7 +1,9 @@
 @layout MainLayoutWithoutBar
 @page "/candidate"
+@attribute [AllowAnonymous]
 
-<h1>Заявка на вступление в клан</h1>
+<h1>Заявка на вступление в клан «Андромеда»</h1>
+
 @if (Model is not null)
 {
     <EditForm Model="Model" OnValidSubmit="ValidSumbit">
@@ -12,6 +14,7 @@
             <label class="col-form-label col-sm-4">Никнейм *</label>
             <div class="col-sm-8">
                 <InputText @bind-Value="Model.Nickname" maxlength="24" class="form-control"/>
+                <div class="form-text">Рекомендуется использовать только символы, вводящееся с клавиатуры</div>
             </div>
         </div>
         <div class="mb-3 row">
@@ -42,7 +45,7 @@
             </div>
         </div>
         <div class="mb-3 row">
-            <label class="col-form-label col-sm-4">Возраст *</label>
+            <label class="col-form-label col-sm-4">Возраст</label>
             <div class="col-sm-8">
                 <InputNumber @bind-Value="Model.Age" class="form-control"/>
             </div>
@@ -78,7 +81,11 @@
         </div>
         <div class="mb-3 form-check">
             <input type="checkbox" class="form-check-input" id="ruleCheck" @bind="RuleChecked">
-            <label class="form-check-label" for="ruleCheck">Соглашаюсь выполнять правила, устанавливаемые уставом клана *</label>
+            <label class="form-check-label" for="ruleCheck">
+                <span>
+                    Соглашаюсь выполнять правила, устанавливаемые <a href="rule/Rules9.pdf" target="_blank">уставом клана</a> *
+                </Span>
+            </label>
         </div>
         <div class="mb-3 form-check">
             <input type="checkbox" class="form-check-input" id="dataCheck" @bind="DataChecked">

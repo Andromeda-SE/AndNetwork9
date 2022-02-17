@@ -30,11 +30,9 @@
         }
         @if (Model.ParentId is not null || Model.Children.Any())
         {
-            Console.WriteLine(2);
             <div class="accordion">
                 @if (Model.ParentId is not null)
                 {
-                    Console.WriteLine(3);
                     <div class="accordion-item">
                         <h2 class="accordion-header">
                             <button class="accordion-button" data-bs-target="#collapseOne" data-bs-toggle="collapse" type="button">
@@ -57,7 +55,6 @@
                 }
                 @if (Model.Children.Any())
                 {
-                    Console.WriteLine(4);
                     <div class="accordion-item">
                         <h2 class="accordion-header">
                             <button class="accordion-button collapsed" data-bs-target="#collapseTwo" data-bs-toggle="collapse" type="button">

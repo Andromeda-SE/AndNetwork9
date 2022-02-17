@@ -1,5 +1,9 @@
 ﻿using System;
+using System.Linq;
 using System.Security.Claims;
+using System.Security.Cryptography;
+using System.Text;
+using System.Text.Unicode;
 using System.Threading.Tasks;
 using AndNetwork9.Shared;
 using AndNetwork9.Shared.Backend;
@@ -15,10 +19,33 @@ internal static class AuthExtensions
     public const string SESSION_ID_CLAIM_NAME = "SessionId";
 
     private static byte[] _staticSalt = new byte[16];
+    private static readonly RandomNumberGenerator RandomNumberGenerator = RandomNumberGenerator.Create();
+    private const int _RANDOM_PASSWORD_LENGTH = 16;
+    private static readonly char[] AllowedCharacters = Enumerable.Empty<int>()
+        .Concat(Enumerable.Range(0x0030, 10))
+        .Concat(Enumerable.Range(0x0041, 26))
+        .Concat(Enumerable.Range(0x0061, 26))
+        .Append(0x002B)
+        .Append(0x002D)
+        .Select(x => (char)x).ToArray();
 
     internal static void SetPassword(this Member member, in string password)
     {
         member.PasswordHash = password.GetPasswordHash();
+    }
+
+    internal static string SetRandomPassword(this Member member)
+    {
+        Span<byte> buffer = stackalloc byte[AllowedCharacters.Length];
+        RandomNumberGenerator.GetBytes(buffer);
+        StringBuilder builder = new (_RANDOM_PASSWORD_LENGTH);
+        for (int i = 0; i < _RANDOM_PASSWORD_LENGTH; i++)
+        {
+            builder.Append(AllowedCharacters[buffer[i] % AllowedCharacters.Length]);
+        }
+        string result = builder.ToString();
+        member.SetPassword(result);
+        return result;
     }
 
     internal static byte[] GetPasswordHash(this string password) =>

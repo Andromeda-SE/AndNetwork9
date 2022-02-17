@@ -15,6 +15,9 @@ using AndNetwork9.Shared.Backend.Senders.Steam;
 using AndNetwork9.Shared.Backend.Senders.Storage;
 using AndNetwork9.Shared.Backend.Senders.VK;
 using AspNetCoreRateLimit;
+using MessagePack;
+using MessagePack.AspNetCoreMvcFormatter;
+using MessagePack.Resolvers;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
@@ -49,27 +52,21 @@ public class Startup
             {
                 new()
                 {
-                    Endpoint = "get:/public/api/*",
+                    Endpoint = "get:*/public/api/*",
                     Limit = 5,
                     PeriodTimespan = TimeSpan.FromMinutes(15),
                 },
                 new()
                 {
-                    Endpoint = "*:/api/*",
-                    Limit = 120,
-                    PeriodTimespan = TimeSpan.FromMinutes(1),
+                    Endpoint = "*/public/api/*",
+                    Limit = 5,
+                    PeriodTimespan = TimeSpan.FromSeconds(1),
                 },
                 new()
                 {
-                    Endpoint = "*:/api/*",
+                    Endpoint = "*",
                     Limit = 1500,
                     PeriodTimespan = TimeSpan.FromHours(1),
-                },
-                new()
-                {
-                    Endpoint = "*:/api/*",
-                    Limit = 5000,
-                    PeriodTimespan = TimeSpan.FromDays(1),
                 },
                 new()
                 {
@@ -85,6 +82,8 @@ public class Startup
         {
             options.OutputFormatters.RemoveType<SystemTextJsonOutputFormatter>();
             options.OutputFormatters.Add(new CustomSystemTextJsonOutputFormatter(new(JsonSerializerDefaults.Web)));
+            options.OutputFormatters.Add(new MessagePackOutputFormatter(MessagePackSerializerOptions.Standard));
+            options.InputFormatters.Add(new MessagePackInputFormatter(MessagePackSerializerOptions.Standard));
         });
         services.AddResponseCaching();
         services.AddRazorPages();
@@ -118,6 +117,7 @@ public class Startup
         services.AddScoped<ResolveVkUrlSender>();
         services.AddScoped<ResolveSteamUrlSender>();
         services.AddScoped<NewCandidateSender>();
+        services.AddScoped<RegisterSender>();
 
         services.AddSingleton<IAuthorizationPolicyProvider, ClanPolicyProvider>();
         services.AddSingleton<IAuthorizationHandler, ClanPolicyProvider>();

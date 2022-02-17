@@ -25,12 +25,14 @@ public class ElectionController : ControllerBase
     private readonly ClanDataContext _data;
     private readonly IHubContext<ModelHub, IModelHub> _modelHub;
     private readonly VoteSender _voteSender;
+    private readonly RegisterSender _registerSender;
 
-    public ElectionController(ClanDataContext data, VoteSender voteSender, IHubContext<ModelHub, IModelHub> modelHub)
+    public ElectionController(ClanDataContext data, VoteSender voteSender, IHubContext<ModelHub, IModelHub> modelHub, RegisterSender registerSender)
     {
         _data = data;
         _voteSender = voteSender;
         _modelHub = modelHub;
+        _registerSender = registerSender;
     }
 
     [HttpGet]
@@ -94,12 +96,13 @@ public class ElectionController : ControllerBase
         return Ok();
     }
 
-    [HttpPost("reg")]
+    [HttpGet("reg")]
     [MinRankAuthorize()]
-    public async Task<IActionResult> PostReg()
+    public async Task<IActionResult> Reg()
     {
         Member? member = await this.GetCurrentMember(_data).ConfigureAwait(false);
-
+        if (member is null) return Unauthorized();
+        await _registerSender.CallAsync(member.Id).ConfigureAwait(false);
         return Ok();
     }
 }

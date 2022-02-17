@@ -23,6 +23,11 @@ public partial class ElectionsRegistration
     {
         CurrentElections ??= await Client.GetFromJsonAsync<CouncilElection>("api/Election/current");
         AllMembers ??= await Client.GetFromJsonAsync<Member[]>("api/member/all");
+        foreach (Member entity in AllMembers)
+            entity.SquadPart = entity.SquadNumber is null
+                ? null
+                : await Client.GetFromJsonAsync<SquadPart>(
+                    $"api/squad/{entity.SquadNumber}/part/{entity.SquadPartNumber}");
         StateHasChanged();
     }
 

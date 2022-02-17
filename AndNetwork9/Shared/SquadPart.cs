@@ -45,7 +45,7 @@ public record SquadPart : IId
     {
         string result = string.Empty;
         if (includeSquad) result += $"{Number.ToRoman()} отряд, ";
-        return result + (Part == 0 ? "головное" : Part.ToString("D")) + " отделение";
+        return result + (Part == 0 ? "Головное" : Part.ToString("D")) + " отделение";
     }
 
     public override string ToString() => ToString(true);

@@ -1,4 +1,8 @@
-﻿namespace AndNetwork9.War.Shared;
+﻿using System.Text.Json.Serialization;
+using AndNetwork9.Shared;
+using AndNetwork9.Shared.Interfaces;
+
+namespace AndNetwork9.War.Shared;
 
 public record Battle : IId
 {

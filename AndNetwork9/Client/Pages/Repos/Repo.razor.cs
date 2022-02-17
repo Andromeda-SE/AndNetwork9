@@ -63,7 +63,6 @@ public partial class Repo
         entity.WriteRule = await Client.GetFromJsonAsync<AccessRule>($"api/AccessRule/{entity.WriteRuleId}");
 
         SelectedNodeIndex = entity.Nodes.IndexOf(entity.Nodes.MaxBy(x => x));
-        Console.WriteLine(Entity is null);
         Entity = entity;
     }
 

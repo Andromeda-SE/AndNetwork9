@@ -12,7 +12,6 @@ public class Plugin : TorchPluginBase, IWpfPlugin, ITorchPlugin, IDisposable
 {
     public override void Init(ITorchBase torch)
     {
-        torch.
         base.Init(torch);
     }
 
@@ -32,7 +31,7 @@ public class Plugin : TorchPluginBase, IWpfPlugin, ITorchPlugin, IDisposable
             case TorchGameState.Created:
                 break;
             case TorchGameState.Loading:
-                InitScripts();
+                InitScripts(game);
                 break;
             case TorchGameState.Loaded:
                 break;
@@ -47,12 +46,11 @@ public class Plugin : TorchPluginBase, IWpfPlugin, ITorchPlugin, IDisposable
 
     private void InitScripts(MySandboxGame game)
     {
-        MyAPIGateway.
+        
     }
 
     private void DisposeAddons()
     {
-        foreach (IDisposable? addon in _addons) addon?.Dispose();
-        _addons.Clear();
+
     }
 }

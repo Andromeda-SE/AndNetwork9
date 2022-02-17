@@ -13,7 +13,6 @@ public partial class ElectionsAside
 
     protected override void OnInitialized()
     {
-        Console.WriteLine(string.Join(Environment.NewLine,
-            CultureInfo.GetCultures(CultureTypes.AllCultures).Select(x => x.ToString())));
+
     }
 }

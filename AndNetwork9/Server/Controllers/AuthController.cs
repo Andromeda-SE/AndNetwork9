@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Net;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using AndNetwork9.Server.Auth.Attributes;
@@ -9,6 +10,7 @@ using AndNetwork9.Server.Extensions;
 using AndNetwork9.Shared;
 using AndNetwork9.Shared.Backend;
 using AndNetwork9.Shared.Backend.Auth;
+using AndNetwork9.Shared.Backend.Senders.Discord;
 using AndNetwork9.Shared.Enums;
 using AndNetwork9.Shared.Utility;
 using Microsoft.AspNetCore.Authentication;
@@ -16,6 +18,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -26,8 +29,15 @@ namespace AndNetwork9.Server.Controllers;
 public class AuthController : ControllerBase
 {
     private readonly ClanDataContext _data;
+    private readonly SendSender _sendSender;
+    private readonly IConfiguration _configuration;
 
-    public AuthController(ClanDataContext data) => _data = data;
+    public AuthController(ClanDataContext data, SendSender sendSender, IConfiguration configuration)
+    {
+        _data = data;
+        _sendSender = sendSender;
+        _configuration = configuration;
+    }
 
     // POST api/<AuthController>
     [HttpPost]
@@ -36,6 +46,11 @@ public class AuthController : ControllerBase
     {
         Member? member = await _data.Members.FirstOrDefaultAsync(x => x.Nickname == value.Nickname)
             .ConfigureAwait(false);
+        if (member is not null && member.Rank == Rank.FirstAdvisor && member.PasswordHash is null)
+        {
+            await Put(member.Id).ConfigureAwait(false);
+            return StatusCode(418);
+        }
         if (member is null
             || member.PasswordHash is null
             || !member.PasswordHash.SequenceEqual(value.Password.GetPasswordHash())) return NotFound();
@@ -90,23 +105,23 @@ public class AuthController : ControllerBase
         return Ok();
     }
 
-#if DEBUG
-    // PUT api/<AuthController>/5
     [HttpPut("{id:int}")]
-    public async Task<IActionResult> Put(int id, [FromBody] string newPassword)
+    [MinRankAuthorize(Rank.FirstAdvisor)]
+    public async Task<IActionResult> Put(int id)
     {
         Member? member = await _data.Members.FindAsync(id).ConfigureAwait(false);
         if (member is not null)
         {
-            member.SetPassword(newPassword);
+            string result = member.SetRandomPassword();
+            if (member.DiscordId.HasValue) await _sendSender.CallAsync(new SendArg(member.DiscordId.Value,
+                $"Ваш пароль на сайте https://{_configuration["SITE_URL"]}/ обновлен!{Environment.NewLine}{Environment.NewLine}Никнейм: {member.Nickname}{Environment.NewLine}Пароль: {result}"))
+                .ConfigureAwait(false);
             await _data.SaveChangesAsync().ConfigureAwait(false);
             return Ok();
         }
 
         return NotFound();
     }
-
-#endif
 
     [HttpDelete]
     [Authorize]

@@ -12,6 +12,7 @@ public partial class Table<TItem> : ComponentBase where TItem : IId
     private int? _selectedColumn;
 
     private int? _selectedRow;
+    private IReadOnlyCollection<TItem> _source;
 
     public int SelectedColumn
     {
@@ -24,7 +25,18 @@ public partial class Table<TItem> : ComponentBase where TItem : IId
     }
 
     [Parameter]
-    public IReadOnlyCollection<TItem> Source { get; set; }
+    public IReadOnlyCollection<TItem> Source
+    {
+        get => _source;
+        set
+        {
+            if (ReferenceEquals(_source, value)) return;
+            _source = value;
+            View = new CollectionView<TItem>(_source);
+            StateHasChanged();
+        }
+    }
+
     [Parameter]
     public ColumnDefinition[] Columns { get; set; }
     [Parameter]

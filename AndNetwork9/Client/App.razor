@@ -1,9 +1,15 @@
-﻿<CascadingAuthenticationState>
+﻿@code {
+    private void OnNavigate()
+    {
+        throw new NotImplementedException();
+    }
+}
+<CascadingAuthenticationState>
     <AuthorizeView>
         <Authorized>
             <Router AppAssembly="@typeof(Program).Assembly">
                 <Found Context="routeData">
-                    <RouteView DefaultLayout="@typeof(MainLayout)" RouteData="@routeData"/>
+                    <AuthorizeRouteView DefaultLayout="@typeof(MainLayout)" RouteData="@routeData"/>
                 </Found>
                 <NotFound>
                     <LayoutView Layout="@typeof(MainLayout)">
@@ -13,7 +19,25 @@
             </Router>
         </Authorized>
         <NotAuthorized>
-            <Login></Login>
+            <Router AppAssembly="@typeof(Program).Assembly">
+                <Found Context="routeData">
+                    @if (routeData.PageType.CustomAttributes.Any(x => x.AttributeType == typeof(AllowAnonymousAttribute)))
+                    {
+                        <RouteView DefaultLayout="@typeof(MainLayout)" RouteData="@routeData"/>
+                    }
+                    else
+                    {
+                        <Login/>
+                    }
+                    
+                </Found>
+                <NotFound>
+                    <LayoutView Layout="@typeof(MainLayout)">
+                        <p>Ошибка 404: на данной странице ничего нет</p>
+                    </LayoutView>
+                </NotFound>
+            </Router>
+
         </NotAuthorized>
     </AuthorizeView>
 

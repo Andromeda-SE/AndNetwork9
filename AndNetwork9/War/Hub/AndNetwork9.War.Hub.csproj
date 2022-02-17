@@ -9,7 +9,6 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Shared.Backend\AndNetwork9.Shared.Backend.csproj" />
     <ProjectReference Include="..\..\Shared\AndNetwork9.Shared.csproj" />
-    <ProjectReference Include="..\Shared.Backend\AndNetwork9.War.Shared.Backend.csproj" />
     <ProjectReference Include="..\Shared\AndNetwork9.War.Shared.csproj" />
   </ItemGroup>
 
