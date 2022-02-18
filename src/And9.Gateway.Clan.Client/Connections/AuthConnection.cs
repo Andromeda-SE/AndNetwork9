@@ -8,7 +8,7 @@ public class AuthConnection : IClientConnection, IAuthServerMethods, IAuthTokenP
 {
     private Func<Task<string?>>? _getNewToken;
     private string _token = string.Empty;
-    private DateTime expireTime = DateTime.MinValue;
+    private DateTime _expireTime = DateTime.MinValue;
 
     public AuthConnection(HubConnection connection) => Connection = connection;
 
@@ -19,7 +19,7 @@ public class AuthConnection : IClientConnection, IAuthServerMethods, IAuthTokenP
         get => _token;
         set
         {
-            expireTime = string.IsNullOrEmpty(value) ? DateTime.MinValue : DateTime.UtcNow.AddMinutes(60);
+            _expireTime = string.IsNullOrEmpty(value) ? DateTime.MinValue : DateTime.UtcNow.AddMinutes(60);
             _token = value;
             TokenChanged?.Invoke(value);
         }
@@ -59,9 +59,9 @@ public class AuthConnection : IClientConnection, IAuthServerMethods, IAuthTokenP
 
     public event Func<string, Task>? TokenChanged;
 
-    public async ValueTask<string> GetToken()
+    public async ValueTask<string?> GetToken()
     {
-        if (_getNewToken is not null && expireTime <= DateTime.UtcNow) IsAuthenticated = !string.IsNullOrEmpty(await _getNewToken().ConfigureAwait(false));
+        if (_getNewToken is not null && _expireTime <= DateTime.UtcNow) IsAuthenticated = !string.IsNullOrEmpty(await _getNewToken().ConfigureAwait(false));
         return Token;
     }
 
