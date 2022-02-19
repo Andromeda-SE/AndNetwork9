@@ -15,6 +15,7 @@ public class ElectionDataContext : DbContext
     {
         modelBuilder.HasDefaultSchema("Election");
 
+        modelBuilder.HasSequence<short>("ElectionIds");
         modelBuilder.Entity<Abstractions.Models.Election>(entity =>
         {
             entity.HasKey(x => new
@@ -22,7 +23,7 @@ public class ElectionDataContext : DbContext
                 x.ElectionId,
                 x.Direction,
             });
-            entity.Property(x => x.ElectionId);
+            entity.Property(x => x.ElectionId).HasDefaultValueSql("nextval('\"Election\".\"ElectionIds\"')");
             entity.HasIndex(x => x.ElectionId).IsUnique(false);
             entity.Property(x => x.Direction);
             entity.HasIndex(x => x.Direction).IsUnique(false);
@@ -34,7 +35,7 @@ public class ElectionDataContext : DbContext
             entity.Property(x => x.ConcurrencyToken).IsConcurrencyToken();
             entity.Property(x => x.LastChanged).IsRowVersion();
         });
-
+        
         modelBuilder.Entity<ElectionVote>(entity =>
         {
             entity.HasKey(x => x.Id);

@@ -3,6 +3,7 @@ using System;
 using And9.Service.Election.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace And9.Service.Election.Database.Migrations
 {
     [DbContext(typeof(ElectionDataContext))]
-    partial class ElectionDataContextModelSnapshot : ModelSnapshot
+    [Migration("20220219145328_Election.ElectionIdSequence")]
+    partial class ElectionElectionIdSequence
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
