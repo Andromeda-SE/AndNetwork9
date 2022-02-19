@@ -7,10 +7,6 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="MessagePack.Annotations" Version="2.3.85" />
-	</ItemGroup>
-
-	<ItemGroup>
 		<ProjectReference Include="..\And9.Lib.Formatters\And9.Lib.Formatters.csproj" />
 		<ProjectReference Include="..\And9.Lib.Models.Abstractions\And9.Lib.Models.Abstractions.csproj" />
 	</ItemGroup>
