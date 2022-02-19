@@ -1,4 +1,4 @@
-﻿using And9.Service.Election.Abstractions.Interfaces;
+﻿using And9.Service.Election.Abstractions.Enums;
 using And9.Service.Election.Database.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -39,6 +39,12 @@ public class ElectionDataContext : DbContext
         modelBuilder.Entity<ElectionVote>(entity =>
         {
             entity.HasKey(x => x.Id);
+            entity.HasAlternateKey(x => new
+            {
+                x.ElectionId,
+                x.Direction,
+                x.MemberId
+            });
 
             entity.Property(x => x.ElectionId);
             entity.HasIndex(x => x.ElectionId).IsUnique(false);
@@ -58,4 +64,7 @@ public class ElectionDataContext : DbContext
             entity.Property(x => x.LastChanged).IsRowVersion();
         });
     }
+
+    public async ValueTask<Abstractions.Models.Election> GetCurrentElectionAsync() => 
+        await Elections.SingleAsync(x => x.Status > ElectionStatus.None && x.Status < ElectionStatus.Ended).ConfigureAwait(false);
 }
