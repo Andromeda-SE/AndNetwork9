@@ -125,9 +125,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "And9.Gateway.Clan.Senders",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "And9.Service.Squad.Database", "src\And9.Service.Squad.Database\And9.Service.Squad.Database.csproj", "{278F8EFF-E1B9-48BE-80F8-A735D498106E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "And9.Service.Election.Abstractions", "src\And9.Service.Election.Abstractions\And9.Service.Election.Abstractions.csproj", "{BBE4C908-5D4D-4B0D-8A68-F2D04799CFFE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "And9.Service.Election.Abstractions", "src\And9.Service.Election.Abstractions\And9.Service.Election.Abstractions.csproj", "{BBE4C908-5D4D-4B0D-8A68-F2D04799CFFE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "And9.Service.Election.Database", "src\And9.Service.Election.Database\And9.Service.Election.Database.csproj", "{3DDB76F8-BBC5-4571-A26A-05CFEEB09421}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "And9.Service.Election.Database", "src\And9.Service.Election.Database\And9.Service.Election.Database.csproj", "{3DDB76F8-BBC5-4571-A26A-05CFEEB09421}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "And9.Service.Election.Senders", "src\And9.Service.Election.Senders\And9.Service.Election.Senders.csproj", "{E5838836-BA46-4CB1-8537-28CD7FF55954}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
@@ -859,6 +861,22 @@ Global
 		{3DDB76F8-BBC5-4571-A26A-05CFEEB09421}.Release|x64.Build.0 = Release|Any CPU
 		{3DDB76F8-BBC5-4571-A26A-05CFEEB09421}.Release|x86.ActiveCfg = Release|Any CPU
 		{3DDB76F8-BBC5-4571-A26A-05CFEEB09421}.Release|x86.Build.0 = Release|Any CPU
+		{E5838836-BA46-4CB1-8537-28CD7FF55954}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E5838836-BA46-4CB1-8537-28CD7FF55954}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E5838836-BA46-4CB1-8537-28CD7FF55954}.Debug|arm64.ActiveCfg = Debug|Any CPU
+		{E5838836-BA46-4CB1-8537-28CD7FF55954}.Debug|arm64.Build.0 = Debug|Any CPU
+		{E5838836-BA46-4CB1-8537-28CD7FF55954}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{E5838836-BA46-4CB1-8537-28CD7FF55954}.Debug|x64.Build.0 = Debug|Any CPU
+		{E5838836-BA46-4CB1-8537-28CD7FF55954}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{E5838836-BA46-4CB1-8537-28CD7FF55954}.Debug|x86.Build.0 = Debug|Any CPU
+		{E5838836-BA46-4CB1-8537-28CD7FF55954}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E5838836-BA46-4CB1-8537-28CD7FF55954}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E5838836-BA46-4CB1-8537-28CD7FF55954}.Release|arm64.ActiveCfg = Release|Any CPU
+		{E5838836-BA46-4CB1-8537-28CD7FF55954}.Release|arm64.Build.0 = Release|Any CPU
+		{E5838836-BA46-4CB1-8537-28CD7FF55954}.Release|x64.ActiveCfg = Release|Any CPU
+		{E5838836-BA46-4CB1-8537-28CD7FF55954}.Release|x64.Build.0 = Release|Any CPU
+		{E5838836-BA46-4CB1-8537-28CD7FF55954}.Release|x86.ActiveCfg = Release|Any CPU
+		{E5838836-BA46-4CB1-8537-28CD7FF55954}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -920,10 +938,11 @@ Global
 		{278F8EFF-E1B9-48BE-80F8-A735D498106E} = {078D0845-AB95-41A0-BF9A-F97424856FDE}
 		{BBE4C908-5D4D-4B0D-8A68-F2D04799CFFE} = {B2142AE1-DB4C-40B3-BBC8-090E7219AF03}
 		{3DDB76F8-BBC5-4571-A26A-05CFEEB09421} = {B2142AE1-DB4C-40B3-BBC8-090E7219AF03}
+		{E5838836-BA46-4CB1-8537-28CD7FF55954} = {B2142AE1-DB4C-40B3-BBC8-090E7219AF03}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		RESX_ResXSortingComparison = InvariantCulture
-		RESX_NeutralResourcesLanguage = ru
 		SolutionGuid = {EBC09307-04B7-4AB6-82F8-B48680797DAA}
+		RESX_NeutralResourcesLanguage = ru
+		RESX_ResXSortingComparison = InvariantCulture
 	EndGlobalSection
 EndGlobal
