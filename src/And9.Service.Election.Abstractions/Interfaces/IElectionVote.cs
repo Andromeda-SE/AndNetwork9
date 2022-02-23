@@ -7,7 +7,7 @@ public interface IElectionVote : IId
 {
     short ElectionId { get; }
     Direction Direction { get; }
-    int MemberId { get; }
+    int? MemberId { get; }
     bool? Voted { get; }
     int Votes { get; }
 }

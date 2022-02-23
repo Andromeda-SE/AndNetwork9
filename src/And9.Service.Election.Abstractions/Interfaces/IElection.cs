@@ -12,5 +12,5 @@ public interface IElection : IId
     DateOnly AdvisorsStartDate { get; }
     Direction Direction { get; }
     ElectionStatus Status { get; }
-    int AgainstAllVotes { get; }
+    public ISet<IElectionVote> Votes { get; set; }
 }

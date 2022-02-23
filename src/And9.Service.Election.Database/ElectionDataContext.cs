@@ -1,4 +1,5 @@
-﻿using And9.Service.Election.Abstractions.Enums;
+﻿using And9.Service.Core.Abstractions.Enums;
+using And9.Service.Election.Abstractions.Enums;
 using And9.Service.Election.Database.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -32,6 +33,8 @@ public class ElectionDataContext : DbContext
             entity.Property(x => x.Status);
             entity.Property(x => x.AgainstAllVotes);
 
+            entity.HasMany(x => x.Votes).WithOne().HasForeignKey(x => new {x.ElectionId, x.Direction});
+
             entity.Property(x => x.ConcurrencyToken).IsConcurrencyToken();
             entity.Property(x => x.LastChanged).IsRowVersion();
         });
@@ -56,7 +59,7 @@ public class ElectionDataContext : DbContext
                 x.Direction,
             }).IsUnique(false);
 
-            entity.Property(x => x.MemberId);
+            entity.Property(x => x.MemberId).IsRequired(false);
             entity.Property(x => x.Voted).IsRequired(false);
             entity.Property(x => x.Votes);
 
@@ -65,6 +68,21 @@ public class ElectionDataContext : DbContext
         });
     }
 
-    public async ValueTask<Abstractions.Models.Election> GetCurrentElectionAsync() => 
-        await Elections.SingleAsync(x => x.Status > ElectionStatus.None && x.Status < ElectionStatus.Ended).ConfigureAwait(false);
+    public IAsyncEnumerable<Abstractions.Models.Election> GetCurrentElectionsAsync() 
+        => Elections.Where(x => x.Status > ElectionStatus.None && x.Status < ElectionStatus.Ended).AsAsyncEnumerable();
+    public IAsyncEnumerable<Abstractions.Models.Election> GetCurrentElectionsWithVotesAsync()
+        => Elections.Include(election => election.Votes).Where(x => x.Status > ElectionStatus.None && x.Status < ElectionStatus.Ended).AsAsyncEnumerable();
+
+    public async Task<Abstractions.Models.Election> GetCurrentElectionAsync(Direction direction)
+        => await Elections.SingleAsync(x => x.Status > ElectionStatus.None && x.Status < ElectionStatus.Ended && x.Direction == direction).ConfigureAwait(false);
+
+    public async ValueTask<(short Id, ElectionStatus Status)> GetCurrentElectionStatusAsync()
+    {
+        Abstractions.Models.Election first = 
+            await Elections.FirstAsync(x => x.Status > ElectionStatus.None && x.Status < ElectionStatus.Ended).ConfigureAwait(false);
+        return (first.ElectionId, await Elections
+            .Where(x => x.Status > ElectionStatus.None && x.Status < ElectionStatus.Ended)
+            .AllAsync(x => x.ElectionId == first.ElectionId && x.Status == first.Status)
+            .ConfigureAwait(false) ? first.Status : ElectionStatus.Invalid);
+    }
 }

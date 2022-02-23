@@ -16,8 +16,11 @@ public class Election : IElection
     public DateOnly AdvisorsStartDate { get; set; }
     [Key(3)]
     public ElectionStatus Status { get; set; }
-    [Key(4)]
+    
+    [IgnoreMember]
     public int AgainstAllVotes { get; set; }
+    [Key(4)]
+    public ISet<IElectionVote> Votes { get; set; }
     [Key(5)]
     public DateTime LastChanged { get; set; }
     [Key(6)]

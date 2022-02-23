@@ -8,12 +8,12 @@
 
   <ItemGroup>
     <ProjectReference Include="..\And9.Lib.Utility\And9.Lib.Utility.csproj" />
+    <ProjectReference Include="..\And9.Service.Core.Senders\And9.Service.Core.Senders.csproj" />
     <ProjectReference Include="..\And9.Service.Election.Database\And9.Service.Election.Database.csproj" />
     <ProjectReference Include="..\And9.Service.Election.Senders\And9.Service.Election.Senders.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Listeners\" />
     <Folder Include="Services\" />
   </ItemGroup>
 
