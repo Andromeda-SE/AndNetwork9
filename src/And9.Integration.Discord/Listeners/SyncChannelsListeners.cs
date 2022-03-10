@@ -7,15 +7,14 @@ using And9.Lib.Broker;
 using And9.Service.Core.Abstractions.Models;
 using Discord;
 using Discord.WebSocket;
-using Direction = And9.Service.Core.Abstractions.Enums.Direction;
 using IConnection = RabbitMQ.Client.IConnection;
 
 namespace And9.Integration.Discord.Listeners;
 
 public class SyncChannelsListeners : BaseRabbitListenerWithoutResponse<IReadOnlyCollection<Member>>
 {
-    private readonly DiscordDataContext _discordDataContext;
     private readonly DiscordBot _bot;
+    private readonly DiscordDataContext _discordDataContext;
 
     public SyncChannelsListeners(
         IConnection connection,

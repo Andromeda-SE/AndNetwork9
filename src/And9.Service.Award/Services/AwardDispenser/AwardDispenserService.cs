@@ -8,8 +8,8 @@ namespace And9.Service.Award.Services.AwardDispenser;
 
 public sealed class AwardDispenserService<TStrategy> : TimerService where TStrategy : IAwardDispenserStrategy
 {
-    private readonly TStrategy _strategy;
     private readonly IServiceScopeFactory _scopeFactory;
+    private readonly TStrategy _strategy;
 
     public AwardDispenserService(TStrategy strategy, IServiceScopeFactory scopeFactory)
     {

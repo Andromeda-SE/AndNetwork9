@@ -1,17 +1,10 @@
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Text.Json;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
-using And9.Client.Clan.Services;
-using And9.Client.Clan.Views;
 using And9.Client.Clan.Views.Pages;
 using CommunityToolkit.WinUI.Notifications;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;

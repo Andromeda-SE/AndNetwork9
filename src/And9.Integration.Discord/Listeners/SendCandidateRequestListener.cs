@@ -51,9 +51,7 @@ public class SendCandidateRequestListener : BaseRabbitListenerWithoutResponse<IC
 
         Embed embed = new EmbedBuilder()
             .WithTitle("Новая заявка в клан")
-            .WithFields(new[]
-            {
-                new EmbedFieldBuilder()
+            .WithFields(new EmbedFieldBuilder()
                     .WithName("Никнейм")
                     .WithValue(request.Nickname),
                 new EmbedFieldBuilder()
@@ -78,8 +76,7 @@ public class SendCandidateRequestListener : BaseRabbitListenerWithoutResponse<IC
                         : "—"),
                 new EmbedFieldBuilder()
                     .WithName("Рекомендация")
-                    .WithValue(request.Recommendation ?? "—"),
-            })
+                    .WithValue(request.Recommendation ?? "—"))
             .WithDescription(request.Description)
             .WithCurrentTimestamp()
             .WithAuthor(guild.GetUser(request.DiscordId))

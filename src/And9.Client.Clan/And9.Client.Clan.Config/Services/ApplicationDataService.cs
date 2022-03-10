@@ -6,16 +6,13 @@ namespace And9.Client.Clan.Config.Services;
 
 public class ApplicationDataService : DbContext, IConfiguration
 {
-    private readonly IChangeToken _token = new ConfigurationReloadToken();
     private readonly string _filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "SpaceEngineers", "AndConfig.sqlite");
+    private readonly IChangeToken _token = new ConfigurationReloadToken();
 
-    public ApplicationDataService() : base()
+    public ApplicationDataService()
     {
         Database.Migrate();
     }
-
-    protected override void OnConfiguring(DbContextOptionsBuilder options)
-        => options.UseSqlite($"Data Source={_filePath}");
 
     public DbSet<Tuple<string, string>> ConfigValues { get; set; } = null!;
     public DbSet<Tuple<int>> GaveAwards { get; set; } = null!;
@@ -38,6 +35,9 @@ public class ApplicationDataService : DbContext, IConfiguration
         }
     }
 
+    protected override void OnConfiguring(DbContextOptionsBuilder options)
+        => options.UseSqlite($"Data Source={_filePath}");
+
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -46,7 +46,7 @@ public class ApplicationDataService : DbContext, IConfiguration
             entity.HasKey(x => x.Item1);
             entity.Property(x => x.Item2);
         });
-        modelBuilder.Entity<Tuple<string, string>>().HasData(new List<Tuple<string, string>>()
+        modelBuilder.Entity<Tuple<string, string>>().HasData(new List<Tuple<string, string>>
         {
             new("CLAN_DOMAIN", "5.19.254.243:5240"),
             new("LOGIN", string.Empty),

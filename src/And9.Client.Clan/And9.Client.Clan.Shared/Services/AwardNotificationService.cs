@@ -1,5 +1,4 @@
 ﻿#if WINDOWS
-using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
@@ -12,9 +11,8 @@ using And9.Service.Award.Abstractions.Models;
 using And9.Service.Core.Abstractions.Models;
 using CommunityToolkit.WinUI.Notifications;
 using Microsoft.AspNetCore.SignalR.Client;
-using Microsoft.Extensions.Hosting;
-using And9.Client.Clan.Config.Services;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 namespace And9.Client.Clan.Services;
 

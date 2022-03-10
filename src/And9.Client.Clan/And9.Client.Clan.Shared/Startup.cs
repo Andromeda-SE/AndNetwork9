@@ -1,5 +1,4 @@
-﻿using And9.Client.Clan.Config.Services;
-using And9.Client.Clan.Services;
+﻿using And9.Client.Clan.Services;
 using And9.Client.Clan.ViewModels;
 using And9.Client.Clan.Views;
 using And9.Client.Clan.Views.Dialogs;

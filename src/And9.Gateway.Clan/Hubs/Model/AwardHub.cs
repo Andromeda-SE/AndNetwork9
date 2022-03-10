@@ -1,11 +1,8 @@
 ﻿using System.Runtime.CompilerServices;
-using And9.Gateway.Clan.Senders;
-using And9.Gateway.Clan.Senders.Models;
 using And9.Integration.Discord.Senders;
 using And9.Lib.Models.Abstractions;
 using And9.Service.Award.Abstractions.Models;
 using And9.Service.Award.Senders;
-using And9.Service.Core.Abstractions.Models;
 using And9.Service.Core.Senders;
 using Microsoft.AspNetCore.SignalR;
 
@@ -14,8 +11,8 @@ namespace And9.Gateway.Clan.Hubs.Model;
 public class AwardHub : Hub<IModelCrudClientMethods>
 {
     private readonly AwardCrudSender _awardCrudSender;
-    private readonly SyncUserSender _syncUserSender;
     private readonly MemberCrudSender _memberCrudSender;
+    private readonly SyncUserSender _syncUserSender;
 
     public AwardHub(AwardCrudSender awardCrudSender, SyncUserSender syncUserSender, MemberCrudSender memberCrudSender)
     {

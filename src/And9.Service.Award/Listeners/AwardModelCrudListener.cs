@@ -1,5 +1,4 @@
-﻿using System.Data.Common;
-using System.Runtime.CompilerServices;
+﻿using System.Runtime.CompilerServices;
 using And9.Gateway.Clan.Senders;
 using And9.Lib.Broker;
 using And9.Lib.Broker.Crud;

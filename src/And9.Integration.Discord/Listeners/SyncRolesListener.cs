@@ -12,8 +12,8 @@ namespace And9.Integration.Discord.Listeners;
 
 public class SyncRolesListener : BaseRabbitListenerWithoutResponse<object>
 {
-    private readonly DiscordDataContext _discordDataContext;
     private readonly DiscordBot _bot;
+    private readonly DiscordDataContext _discordDataContext;
 
     public SyncRolesListener(IConnection connection,
         ILogger<BaseRabbitListenerWithoutResponse<object>> logger,

@@ -14,7 +14,7 @@ public class ElectionConnection : ConnectionBase, IElectionServerMethods
 
     public async Task<bool> CancelRegister() => await Connection.InvokeAsync<bool>(nameof(IElectionServerMethods.CancelRegister)).ConfigureAwait(false);
 
-    public async Task<bool> Vote(IReadOnlyDictionary<Direction, IReadOnlyDictionary<int?, int>> votes) 
+    public async Task<bool> Vote(IReadOnlyDictionary<Direction, IReadOnlyDictionary<int?, int>> votes)
         => await Connection.InvokeAsync<bool>(nameof(IElectionServerMethods.Vote), votes).ConfigureAwait(false);
 
     public IAsyncEnumerable<Election> GetElection(CancellationToken token)

@@ -6,9 +6,9 @@ namespace And9.Gateway.Clan.Client.Connections;
 
 public class AuthConnection : IClientConnection, IAuthServerMethods, IAuthTokenProvider
 {
+    private DateTime _expireTime = DateTime.MinValue;
     private Func<Task<string?>>? _getNewToken;
     private string _token = string.Empty;
-    private DateTime _expireTime = DateTime.MinValue;
 
     public AuthConnection(HubConnection connection) => Connection = connection;
 

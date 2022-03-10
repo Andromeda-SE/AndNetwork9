@@ -1,7 +1,4 @@
 ﻿using System.Collections.Concurrent;
-using System.Diagnostics.Eventing.Reader;
-using System.Text;
-using System.Text.Json;
 using MessagePack;
 using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;

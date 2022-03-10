@@ -2,7 +2,6 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.DataTransfer;
-using And9.Client.Clan.Views;
 using And9.Client.Clan.Views.Pages;
 using And9.Gateway.Clan.Client.Connections;
 using And9.Service.Award.Abstractions.Models;

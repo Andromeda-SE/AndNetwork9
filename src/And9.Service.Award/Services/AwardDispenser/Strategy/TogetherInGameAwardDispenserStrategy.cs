@@ -11,6 +11,7 @@ namespace And9.Service.Award.Services.AwardDispenser.Strategy;
 
 public sealed class TogetherInGameAwardDispenserStrategy : IAwardDispenserStrategy
 {
+    private const int _COOLDOWN_DAYS = 14;
     private readonly ILogger<TogetherInGameAwardDispenserStrategy> _logger;
     private readonly IServiceScopeFactory _serviceScopeFactory;
 
@@ -24,7 +25,6 @@ public sealed class TogetherInGameAwardDispenserStrategy : IAwardDispenserStrate
 
     public int AutomationId => 2;
     public TimeSpan CheckInterval => TimeSpan.FromMinutes(5);
-    private const int _COOLDOWN_DAYS = 14;
 
     public async IAsyncEnumerable<(int MemberId, AwardType AwardType, string Description)> GetAwards()
     {

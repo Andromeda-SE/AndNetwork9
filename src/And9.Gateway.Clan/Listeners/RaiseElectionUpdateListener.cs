@@ -10,11 +10,9 @@ namespace And9.Gateway.Clan.Listeners;
 public class RaiseElectionUpdateListener : BaseRabbitListenerWithoutResponse<int>
 {
     private readonly IHubContext<ElectionHub> _electionHub;
-    public RaiseElectionUpdateListener(IConnection connection, ILogger<BaseRabbitListenerWithoutResponse<int>> logger, IHubContext<ElectionHub> electionHub) 
-        : base(connection, RaiseElectionUpdateSender.QUEUE_NAME, logger)
-    {
-        _electionHub = electionHub;
-    }
+
+    public RaiseElectionUpdateListener(IConnection connection, ILogger<BaseRabbitListenerWithoutResponse<int>> logger, IHubContext<ElectionHub> electionHub)
+        : base(connection, RaiseElectionUpdateSender.QUEUE_NAME, logger) => _electionHub = electionHub;
 
     public override async Task Run(int request)
     {

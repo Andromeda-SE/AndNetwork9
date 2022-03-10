@@ -7,8 +7,8 @@ namespace And9.Lib.Broker;
 
 public abstract class BaseRabbitListener : IHostedService
 {
-    protected readonly IConnection Connection;
     protected static readonly object _sync = new();
+    protected readonly IConnection Connection;
 
     protected readonly ILogger<BaseRabbitListener> Logger;
     protected readonly string QueueName;

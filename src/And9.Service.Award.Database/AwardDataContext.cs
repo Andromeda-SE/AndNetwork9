@@ -1,16 +1,12 @@
 ﻿using System.Data.Common;
-using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
-using Microsoft.EntityFrameworkCore.Storage;
-using Npgsql.EntityFrameworkCore.PostgreSQL.Query.Expressions.Internal;
-using Npgsql.EntityFrameworkCore.PostgreSQL.Storage.Internal.Mapping;
 
 namespace And9.Service.Award.Database;
 
 public class AwardDataContext : DbContext
 {
+    protected const string POINTS_EXPRESSION = "COALESCE(ROUND(SUM(\"Type\" * pow(2, (\"Date\" - now()::DATE) / 365.25)), 10), 0)";
     public AwardDataContext(DbContextOptions<AwardDataContext> options) : base(options) { }
     public DbSet<Abstractions.Models.Award> Awards { get; set; } = null!;
 
@@ -39,8 +35,6 @@ public class AwardDataContext : DbContext
             entity.Property(x => x.LastChanged).IsRowVersion().HasDefaultValueSql("now()");
         });
     }
-
-    protected const string POINTS_EXPRESSION = "COALESCE(ROUND(SUM(\"Type\" * pow(2, (\"Date\" - now()::DATE) / 365.25)), 10), 0)";
 
     public virtual async Task<double> GetPointsAsync(int memberId)
     {

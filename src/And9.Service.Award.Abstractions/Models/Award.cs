@@ -1,5 +1,4 @@
 ﻿using System.Text.Json.Serialization;
-using And9.Lib.Formatters;
 using And9.Lib.Formatters.Json;
 using And9.Lib.Formatters.MessagePack;
 using And9.Service.Award.Abstractions.Enums;

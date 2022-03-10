@@ -1,6 +1,4 @@
-﻿using And9.Gateway.Clan.Senders.Models;
-using And9.Lib.Broker;
-using And9.Service.Core.Abstractions.Enums;
+﻿using And9.Lib.Broker;
 using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
 

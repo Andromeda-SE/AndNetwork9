@@ -4,7 +4,7 @@ using And9.Integration.Discord.Database.Models;
 using And9.Integration.Discord.Senders;
 using And9.Lib.Broker;
 using Discord.WebSocket;
-using IConnection = RabbitMQ.Client.IConnection;
+using RabbitMQ.Client;
 
 namespace And9.Integration.Discord.Listeners;
 

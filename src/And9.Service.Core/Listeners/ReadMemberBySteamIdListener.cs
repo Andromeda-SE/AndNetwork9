@@ -3,7 +3,6 @@ using And9.Lib.Broker;
 using And9.Service.Core.Abstractions.Models;
 using And9.Service.Core.Database;
 using And9.Service.Core.Senders;
-using And9.Service.Core.Senders.Interfaces;
 using RabbitMQ.Client;
 
 namespace And9.Service.Core.Listeners;

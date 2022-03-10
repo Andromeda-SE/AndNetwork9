@@ -18,6 +18,13 @@ public interface IRole : IDiscordId, IConcurrencyToken, IComparable<IRole>, ICom
     short? SquadNumber { get; }
     short? SquadPartNumber { get; }
 
+    int IComparable.CompareTo(object? obj)
+    {
+        if (ReferenceEquals(null, obj)) return 1;
+        if (ReferenceEquals(this, obj)) return 0;
+        return obj is IRole other ? CompareTo(other) : throw new ArgumentException($"Object must be of type {nameof(IRole)}");
+    }
+
     int IComparable<IRole>.CompareTo(IRole? other)
     {
         if (ReferenceEquals(this, other)) return 0;
@@ -29,12 +36,5 @@ public interface IRole : IDiscordId, IConcurrencyToken, IComparable<IRole>, ICom
         int squadNumberComparison = Nullable.Compare(SquadNumber, other.SquadNumber);
         if (squadNumberComparison != 0) return squadNumberComparison;
         return Nullable.Compare(SquadPartNumber, other.SquadPartNumber);
-    }
-
-    int IComparable.CompareTo(object? obj)
-    {
-        if (ReferenceEquals(null, obj)) return 1;
-        if (ReferenceEquals(this, obj)) return 0;
-        return obj is IRole other ? CompareTo(other) : throw new ArgumentException($"Object must be of type {nameof(IRole)}");
     }
 }
