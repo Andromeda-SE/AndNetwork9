@@ -64,7 +64,7 @@ public record Member : IMember
         string result = string.Empty;
         if (rankIcon is not null) result += $"[{rankIcon}] ";
         result += Nickname;
-        if (RealName is not null) result += $" ({RealName})";
+        if (RealName is not null && result.Length + RealName.Length + 3 <= 32) result += $" ({RealName})";
         return result;
     }
 }
