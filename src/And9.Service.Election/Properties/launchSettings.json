@@ -3,18 +3,18 @@
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
     "iisExpress": {
-      "applicationUrl": "http://localhost:57256/",
-      "sslPort": 44347
+      "applicationUrl": "http://localhost:42876",
+      "sslPort": 0
     }
   },
   "profiles": {
-    "Integration.Steam": {
+    "And9.Service.Election": {
       "commandName": "Project",
       "launchBrowser": true,
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
-      "applicationUrl": "http://localhost:5263",
+      "applicationUrl": "http://localhost:5194",
       "dotnetRunMessages": true
     },
     "IIS Express": {
