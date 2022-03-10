@@ -47,8 +47,8 @@ public class CoreDataContext : DbContext
             entity.Property(x => x.JoinDate);
             entity.Property(x => x.LastDirectionChange);
 
-            entity.Property(x => x.ConcurrencyToken).IsConcurrencyToken();
-            entity.Property(x => x.LastChanged).IsRowVersion();
+            entity.Property(x => x.ConcurrencyToken).IsConcurrencyToken().HasDefaultValueSql("gen_random_uuid()");
+            entity.Property(x => x.LastChanged).IsRowVersion().HasDefaultValueSql("now()");
         });
 
         modelBuilder.Entity<CandidateRegisteredRequest>(entity =>
