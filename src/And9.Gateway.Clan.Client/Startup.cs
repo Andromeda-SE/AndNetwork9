@@ -35,6 +35,13 @@ public static class Startup
                 provider.GetRequiredService<IAuthTokenProvider>(),
                 provider.GetRequiredService<ILogger<DiscordConnection>>()));
         services.AddHostedService(provider => provider.GetRequiredService<DiscordConnection>());
+        services.AddSingleton<ElectionConnection>(
+            provider => new(
+                GetDefaultBuilder().WithUrl(Path.Combine(GetBaseAddress(provider), "election"),
+                    options => { options.AccessTokenProvider = GetTokenTask(provider); }).Build(),
+                provider.GetRequiredService<IAuthTokenProvider>(),
+                provider.GetRequiredService<ILogger<ElectionConnection>>()));
+        services.AddHostedService(provider => provider.GetRequiredService<ElectionConnection>());
         services.AddSingleton<RepositoryConnection<Member>>(
             provider => new(
                 GetDefaultBuilder().WithUrl(Path.Combine(GetBaseAddress(provider), "model/member"),

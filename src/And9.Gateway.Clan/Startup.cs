@@ -11,6 +11,7 @@ using And9.Lib.Broker;
 using And9.Service.Auth.Senders;
 using And9.Service.Award.Senders;
 using And9.Service.Core.Senders;
+using And9.Service.Election.Senders;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
@@ -77,6 +78,10 @@ public class Startup
         services.AddSingleton<SetPasswordSender>();
         services.AddSingleton<RaiseMemberUpdateSender>();
         services.AddSingleton<SyncUserSender>();
+        services.AddSingleton<RegisterSender>();
+        services.AddSingleton<CancelRegisterSender>();
+        services.AddSingleton<VoteSender>();
+        services.AddSingleton<CurrentElectionSender>();
 
         services.AddSingleton<MemberCrudSender>();
         services.AddSingleton<AwardCrudSender>();
@@ -89,6 +94,7 @@ public class Startup
         }).AddMessagePackProtocol();
 
         services.AddHostedService<RaiseMemberUpdateListener>();
+        services.AddHostedService<RaiseElectionUpdateListener>();
     }
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -106,6 +112,7 @@ public class Startup
             endpoints.MapHub<AuthHub>("hub/auth");
             endpoints.MapHub<CoreHub>("hub/core");
             endpoints.MapHub<DiscordHub>("hub/discord");
+            endpoints.MapHub<ElectionHub>("hub/election");
 
             endpoints.MapHub<MemberHub>("hub/model/member");
             endpoints.MapHub<AwardHub>("hub/model/award");

@@ -12,6 +12,7 @@
     <ProjectReference Include="..\And9.Service.Auth.API\And9.Service.Auth.API.csproj" />
     <ProjectReference Include="..\And9.Service.Award.API\And9.Service.Award.API.csproj" />
     <ProjectReference Include="..\And9.Service.Core.API\And9.Service.Core.API.csproj" />
+    <ProjectReference Include="..\And9.Service.Election.API\And9.Service.Election.API.csproj" />
   </ItemGroup>
 
   <ItemGroup>
