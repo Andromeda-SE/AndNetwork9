@@ -2,21 +2,21 @@
 using And9.Service.Election.Abstractions.Interfaces;
 using MessagePack;
 
-namespace And9.Service.Election.Database.Models;
+namespace And9.Service.Election.Abstractions.Models;
 
 [MessagePackObject]
 public class ElectionVote : IElectionVote
 {
+    [IgnoreMember]
+    public Election? Election { get; set; } = null;
     [Key(0)]
     public int Id { get; set; }
     [Key(1)]
     public short ElectionId { get; set; }
-    [IgnoreMember]
-    public IElection? Election { get; set; } = null;
     [Key(2)]
     public Direction Direction { get; set; }
     [Key(3)]
-    public int? MemberId { get; set; }
+    public int MemberId { get; set; }
     [Key(4)]
     public bool? Voted { get; set; }
     [Key(5)]

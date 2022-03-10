@@ -8,6 +8,8 @@ namespace And9.Service.Election.Abstractions.Models;
 [MessagePackObject]
 public class Election : IElection
 {
+    [Key(5)]
+    public IEnumerable<ElectionVote> Votes { get; set; } = null!;
     [Key(0)]
     public short ElectionId { get; set; }
     [Key(1)]
@@ -16,13 +18,13 @@ public class Election : IElection
     public DateOnly AdvisorsStartDate { get; set; }
     [Key(3)]
     public ElectionStatus Status { get; set; }
-    
-    [IgnoreMember]
-    public int AgainstAllVotes { get; set; }
+
     [Key(4)]
-    public ISet<IElectionVote> Votes { get; set; }
-    [Key(5)]
-    public DateTime LastChanged { get; set; }
+    public int AgainstAllVotes { get; set; }
     [Key(6)]
+    public DateTime LastChanged { get; set; }
+    [Key(7)]
     public Guid ConcurrencyToken { get; set; }
+
+    IEnumerable<IElectionVote> IElection.Votes => Votes;
 }

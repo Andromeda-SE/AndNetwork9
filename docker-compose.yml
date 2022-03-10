@@ -39,6 +39,15 @@ services:
       context: .
       dockerfile: src/And9.Service.Award/Dockerfile
 
+  and9.service.election:
+    container_name: And9.Service.Election
+    image: ${DOCKER_REGISTRY-}service-election
+    restart: "no"
+    env_file: .env
+    build:
+      context: .
+      dockerfile: src/And9.Service.Election/Dockerfile
+
   and9.integration.discord:
     container_name: And9.Integration.Discord
     image: ${DOCKER_REGISTRY-}integration-discord

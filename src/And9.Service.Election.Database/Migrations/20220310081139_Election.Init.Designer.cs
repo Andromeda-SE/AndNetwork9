@@ -12,30 +12,26 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace And9.Service.Election.Database.Migrations
 {
     [DbContext(typeof(ElectionDataContext))]
-    [Migration("20220219145328_Election.ElectionIdSequence")]
-    partial class ElectionElectionIdSequence
+    [Migration("20220310081139_Election.Init")]
+    partial class ElectionInit
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasDefaultSchema("Election")
-                .HasAnnotation("ProductVersion", "6.0.2")
+                .HasAnnotation("ProductVersion", "6.0.1")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
-
-            modelBuilder.HasSequence<short>("ElectionIds");
 
             modelBuilder.Entity("And9.Service.Election.Abstractions.Models.Election", b =>
                 {
                     b.Property<short>("ElectionId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("smallint")
-                        .HasDefaultValueSql("nextval('\"Election\".\"ElectionIds\"')");
-
-                    b.Property<short>("Direction")
                         .HasColumnType("smallint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<short>("ElectionId"));
 
                     b.Property<DateOnly>("AdvisorsStartDate")
                         .HasColumnType("date");
@@ -45,26 +41,32 @@ namespace And9.Service.Election.Database.Migrations
 
                     b.Property<Guid>("ConcurrencyToken")
                         .IsConcurrencyToken()
-                        .HasColumnType("uuid");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasDefaultValueSql("gen_random_uuid()");
+
+                    b.Property<short>("Direction")
+                        .HasColumnType("smallint");
 
                     b.Property<DateTime>("LastChanged")
                         .IsConcurrencyToken()
                         .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("now()");
 
                     b.Property<int>("Status")
                         .HasColumnType("integer");
 
-                    b.HasKey("ElectionId", "Direction");
+                    b.HasKey("ElectionId");
+
+                    b.HasAlternateKey("ElectionId", "Direction");
 
                     b.HasIndex("Direction");
-
-                    b.HasIndex("ElectionId");
 
                     b.ToTable("Elections", "Election");
                 });
 
-            modelBuilder.Entity("And9.Service.Election.Database.Models.ElectionVote", b =>
+            modelBuilder.Entity("And9.Service.Election.Abstractions.Models.ElectionVote", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -74,7 +76,9 @@ namespace And9.Service.Election.Database.Migrations
 
                     b.Property<Guid>("ConcurrencyToken")
                         .IsConcurrencyToken()
-                        .HasColumnType("uuid");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasDefaultValueSql("gen_random_uuid()");
 
                     b.Property<short>("Direction")
                         .HasColumnType("smallint");
@@ -82,10 +86,14 @@ namespace And9.Service.Election.Database.Migrations
                     b.Property<short>("ElectionId")
                         .HasColumnType("smallint");
 
+                    b.Property<short?>("ElectionId1")
+                        .HasColumnType("smallint");
+
                     b.Property<DateTime>("LastChanged")
                         .IsConcurrencyToken()
                         .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("now()");
 
                     b.Property<int>("MemberId")
                         .HasColumnType("integer");
@@ -98,13 +106,37 @@ namespace And9.Service.Election.Database.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasAlternateKey("ElectionId", "Direction", "MemberId");
+
                     b.HasIndex("Direction");
 
                     b.HasIndex("ElectionId");
 
+                    b.HasIndex("ElectionId1");
+
                     b.HasIndex("ElectionId", "Direction");
 
                     b.ToTable("ElectionVotes", "Election");
+                });
+
+            modelBuilder.Entity("And9.Service.Election.Abstractions.Models.ElectionVote", b =>
+                {
+                    b.HasOne("And9.Service.Election.Abstractions.Models.Election", null)
+                        .WithMany("Votes")
+                        .HasForeignKey("ElectionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("And9.Service.Election.Abstractions.Models.Election", "Election")
+                        .WithMany()
+                        .HasForeignKey("ElectionId1");
+
+                    b.Navigation("Election");
+                });
+
+            modelBuilder.Entity("And9.Service.Election.Abstractions.Models.Election", b =>
+                {
+                    b.Navigation("Votes");
                 });
 #pragma warning restore 612, 618
         }

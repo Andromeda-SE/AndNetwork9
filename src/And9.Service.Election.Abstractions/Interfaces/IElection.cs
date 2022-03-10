@@ -7,10 +7,11 @@ namespace And9.Service.Election.Abstractions.Interfaces;
 public interface IElection : IId
 {
     short ElectionId { get; }
-    int IId.Id => ElectionId << 16 + (int)Direction;
 
     DateOnly AdvisorsStartDate { get; }
     Direction Direction { get; }
     ElectionStatus Status { get; }
-    public ISet<IElectionVote> Votes { get; set; }
+    IEnumerable<IElectionVote> Votes { get; }
+    int AgainstAllVotes { get; }
+    int IId.Id => ElectionId << (16 + (int)Direction);
 }
