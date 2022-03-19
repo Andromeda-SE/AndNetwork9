@@ -6,6 +6,11 @@ services:
     image: ${DOCKER_REGISTRY-}gateway-clan
     restart: "no"
     env_file: .env
+    healthcheck:
+      test: curl --fail http://localhost:80/health || exit 1
+      interval: 15s
+      timeout: 10s
+      retries: 5
     ports:
       - "5240:80"
     build:
@@ -17,6 +22,11 @@ services:
     image: ${DOCKER_REGISTRY-}service-core
     restart: "no"
     env_file: .env
+    healthcheck:
+      test: curl --fail http://localhost:80/health || exit 1
+      interval: 15s
+      timeout: 10s
+      retries: 5
     build:
       context: .
       dockerfile: src/And9.Service.Core/Dockerfile
@@ -26,15 +36,25 @@ services:
     image: ${DOCKER_REGISTRY-}service-auth
     restart: "no"
     env_file: .env
+    healthcheck:
+      test: curl --fail http://localhost:80/health || exit 1
+      interval: 15s
+      timeout: 10s
+      retries: 5
     build:
       context: .
       dockerfile: src/And9.Service.Auth/Dockerfile
 
-  and9.service.Award:
+  and9.service.award:
     container_name: And9.Service.Award
     image: ${DOCKER_REGISTRY-}service-award
     restart: "no"
     env_file: .env
+    healthcheck:
+      test: curl --fail http://localhost:80/health || exit 1
+      interval: 15s
+      timeout: 10s
+      retries: 5
     build:
       context: .
       dockerfile: src/And9.Service.Award/Dockerfile
@@ -44,6 +64,11 @@ services:
     image: ${DOCKER_REGISTRY-}service-election
     restart: "no"
     env_file: .env
+    healthcheck:
+      test: curl --fail http://localhost:80/health || exit 1
+      interval: 15s
+      timeout: 10s
+      retries: 5
     build:
       context: .
       dockerfile: src/And9.Service.Election/Dockerfile
@@ -55,7 +80,7 @@ services:
     env_file: .env
     healthcheck:
       test: curl --fail http://localhost:80/health || exit 1
-      interval: 5s
+      interval: 15s
       timeout: 10s
       retries: 5
     build:
@@ -68,6 +93,11 @@ services:
     image: ${DOCKER_REGISTRY-}integration-steam
     restart: "no"
     env_file: .env
+    healthcheck:
+      test: curl --fail http://localhost:80/health || exit 1
+      interval: 15s
+      timeout: 10s
+      retries: 5
     build:
       context: .
       dockerfile: src/And9.Integration.Steam/Dockerfile
@@ -77,6 +107,11 @@ services:
     image: ${DOCKER_REGISTRY-}integration-vk
     restart: "no"
     env_file: .env
+    healthcheck:
+      test: curl --fail http://localhost:80/health || exit 1
+      interval: 15s
+      timeout: 10s
+      retries: 5
     build:
       context: .
       dockerfile: src/And9.Integration.VK/Dockerfile
@@ -87,6 +122,11 @@ services:
     restart: "no"
     volumes:
       - "./data/redis/:/usr/local/etc/redis/"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 1s
+      timeout: 3s
+      retries: 30
 
   and9.infra.database:
     container_name: And9.Infra.Database
@@ -95,6 +135,11 @@ services:
     env_file: .env
     volumes:
       - "./data/postgresql:/var/lib/postgresql/data"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   and9.infra.broker:
     container_name: And9.Infra.Broker
@@ -105,6 +150,11 @@ services:
       - "6379:6379"
     volumes:
       - "./data/rabbitmq/rabbitmq.conf:/var/lib/rabbitmq/rabbitmq.conf"
+    healthcheck:
+      test: rabbitmq-diagnostics -q ping
+      interval: 30s
+      timeout: 30s
+      retries: 3
 
   and9.monitoring.prometheus:
     image: prom/prometheus
@@ -116,17 +166,14 @@ services:
       - '--config.file=/etc/prometheus/prometheus.yml'
     ports:
       - 9090:9090
-
-#  and9.monitoring.grafana:
-#    image: grafana/grafana
-#    container_name: And9.Monitoring.Grafana
-#    volumes:
-#      - ./data/grafana:/var/lib/grafana
-#    ports:
-#      - 3000:3000
+    healthcheck:
+      test: wget --spider -S "http://localhost:9090/-/ready" || exit 1
+      interval: 30s
+      timeout: 10s
+      retries: 5
 
   and9.portainer:
-    image: portainer/portainer-ce
+    image: portainer/portainer-ce:alpine
     container_name: And9.Portainer
     privileged: true
     ports:
@@ -134,3 +181,8 @@ services:
     volumes:
     - /var/run/docker.sock:/var/run/docker.sock
     - /data/portainer:/data
+    healthcheck:
+      test: wget --spider -S --no-check-certificate "https://localhost:9443/api/status" || exit 1
+      interval: 30s
+      timeout: 10s
+      retries: 5

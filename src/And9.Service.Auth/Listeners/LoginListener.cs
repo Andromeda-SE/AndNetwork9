@@ -1,5 +1,6 @@
 ﻿using System.Globalization;
 using System.IdentityModel.Tokens.Jwt;
+using System.Runtime.CompilerServices;
 using System.Security.Claims;
 using And9.Lib.API;
 using And9.Lib.Broker;
@@ -17,28 +18,30 @@ namespace And9.Service.Auth.Listeners;
 
 public class LoginListener : BaseRabbitListenerWithResponse<AuthCredentials, string?>
 {
-    private readonly AuthDataContext _authDataContext;
-    private readonly MemberCrudSender _memberCrudSender;
     private readonly IConnectionMultiplexer _redis;
+    private readonly IServiceScopeFactory _serviceScopeFactory;
 
     public LoginListener(
         IConnection connection,
         ILogger<BaseRabbitListenerWithResponse<AuthCredentials, string?>> logger,
-        MemberCrudSender memberCrudSender,
-        AuthDataContext authDataContext,
-        IConnectionMultiplexer redis)
+        IConnectionMultiplexer redis,
+        IServiceScopeFactory serviceScopeFactory)
         : base(connection, LoginSender.QUEUE_NAME, logger)
     {
-        _memberCrudSender = memberCrudSender;
-        _authDataContext = authDataContext;
         _redis = redis;
+        _serviceScopeFactory = serviceScopeFactory;
     }
 
     protected override async Task<string?> GetResponseAsync(AuthCredentials request)
     {
-        IMember? member = await _memberCrudSender.ReadByNickname(request.Nickname).ConfigureAwait(false);
+        AsyncServiceScope scope = _serviceScopeFactory.CreateAsyncScope();
+        await using ConfiguredAsyncDisposable _ = scope.ConfigureAwait(false);
+        MemberCrudSender memberCrudSender = scope.ServiceProvider.GetRequiredService<MemberCrudSender>();
+        AuthDataContext authDataContext = scope.ServiceProvider.GetRequiredService<AuthDataContext>();
+        ;
+        IMember? member = await memberCrudSender.ReadByNickname(request.Nickname).ConfigureAwait(false);
         if (member is null) return null;
-        PasswordHash? storedPasswordHash = await _authDataContext.PasswordHashes.FindAsync(member.Id).ConfigureAwait(false);
+        PasswordHash? storedPasswordHash = await authDataContext.PasswordHashes.FindAsync(member.Id).ConfigureAwait(false);
         if (storedPasswordHash is null || !storedPasswordHash.Hash.SequenceEqual(request.Password.GetPasswordHash())) return null;
         string id = Guid.NewGuid().ToString("N");
         ClaimsIdentity? identity = GetIdentity(member, id);

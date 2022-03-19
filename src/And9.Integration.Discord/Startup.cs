@@ -23,6 +23,7 @@ public class Startup
 
         services.AddHealthChecks()
             .AddDbContextCheck<DiscordDataContext>()
+            .AddRabbitMQ()
             .AddCheck<DiscordConnectionHealthCheck>("DiscordConnection")
             .ForwardToPrometheus();
 

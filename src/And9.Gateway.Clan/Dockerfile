@@ -1,10 +1,14 @@
 #See https://aka.ms/containerfastmode to understand how Visual Studio uses this Dockerfile to build your images for faster debugging.
 
-FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS base
+FROM mcr.microsoft.com/dotnet/aspnet:6.0-alpine AS base
+RUN apk update
+RUN apk add --no-cache icu-libs
+RUN apk add --no-cache tzdata
+RUN apk add --no-cache curl
 WORKDIR /app
 EXPOSE 80
 
-FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:6.0-alpine AS build
 WORKDIR /src
 COPY ["src/And9.Gateway.Clan/And9.Gateway.Clan.csproj", "src/And9.Gateway.Clan/"]
 COPY ["src/And9.Lib.Utility/And9.Lib.Utility.csproj", "src/And9.Lib.Utility/"]

@@ -15,6 +15,7 @@ using And9.Service.Election.Senders;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
+using Prometheus;
 using StackExchange.Redis;
 
 namespace And9.Gateway.Clan;
@@ -95,6 +96,10 @@ public class Startup
 
         services.AddHostedService<RaiseMemberUpdateListener>();
         services.AddHostedService<RaiseElectionUpdateListener>();
+
+        services.AddHealthChecks()
+            .AddRabbitMQ()
+            .ForwardToPrometheus();
     }
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -106,6 +111,9 @@ public class Startup
 
         app.UseAuthentication();
         app.UseAuthorization();
+        app.UseHttpMetrics();
+        app.UseMetricServer();
+        app.UseHealthChecks("/health");
 
         app.UseEndpoints(endpoints =>
         {

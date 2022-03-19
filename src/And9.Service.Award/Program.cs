@@ -13,7 +13,7 @@ public class Program
     {
         return Host.CreateDefaultBuilder(args)
             .ConfigureAndNetConsole()
-            .ConfigureServices((context, collection) => Startup.ConfigureServices(collection, context.Configuration))
+            .ConfigureWebHostDefaults(builder => builder.UseStartup<Startup>())
             .UseDefaultServiceProvider(options =>
             {
 #if DEBUG

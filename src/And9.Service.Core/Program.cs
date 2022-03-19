@@ -13,7 +13,14 @@ public class Program
     {
         return Host.CreateDefaultBuilder(args)
             .ConfigureAndNetConsole()
-            .ConfigureServices((context, collection) => Startup.ConfigureServices(collection, context.Configuration))
-            .UseDefaultServiceProvider(options => options.ValidateScopes = true);
+            .ConfigureWebHostDefaults(builder => builder.UseStartup<Startup>())
+            .UseDefaultServiceProvider(options =>
+            {
+#if DEBUG
+                options.ValidateScopes = true;
+#else
+                options.ValidateScopes = false;
+#endif
+            });
     }
 }

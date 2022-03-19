@@ -9,13 +9,20 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<PackageReference Include="AspNetCore.HealthChecks.Rabbitmq" Version="6.0.2" />
 		<PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.15.0" />
+		<PackageReference Include="prometheus-net.AspNetCore" Version="6.0.0" />
+		<PackageReference Include="prometheus-net.AspNetCore.HealthChecks" Version="6.0.0" />
 		<PackageReference Include="VkNet" Version="1.68.0" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<ProjectReference Include="..\And9.Integration.VK.Senders\And9.Integration.VK.Senders.csproj" />
 		<ProjectReference Include="..\And9.Lib.Utility\And9.Lib.Utility.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="HealthChecks\" />
 	</ItemGroup>
 
 </Project>

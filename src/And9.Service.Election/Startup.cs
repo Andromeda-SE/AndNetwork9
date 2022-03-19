@@ -6,17 +6,20 @@ using And9.Service.Election.Listeners;
 using And9.Service.Election.Services.ElectionWatcher;
 using And9.Service.Election.Services.ElectionWatcher.Strategies;
 using Microsoft.EntityFrameworkCore;
+using Prometheus;
 
 namespace And9.Service.Election;
 
-public static class Startup
+public class Startup
 {
-    public static void ConfigureServices(IServiceCollection services, IConfiguration configuration)
+    public Startup(IConfiguration configuration) => Configuration = configuration;
+    public IConfiguration Configuration { get; }
+    public void ConfigureServices(IServiceCollection services)
     {
-        RabbitConnectionPool.SetConfiguration(configuration);
+        RabbitConnectionPool.SetConfiguration(Configuration);
         services.AddSingleton(_ => RabbitConnectionPool.Factory.CreateConnection());
 
-        services.AddDbContext<ElectionDataContext>(x => x.UseNpgsql(configuration["Postgres:ConnectionString"]));
+        services.AddDbContext<ElectionDataContext>(x => x.UseNpgsql(Configuration["Postgres:ConnectionString"]));
 
         services.AddSingleton<MemberCrudSender>();
         services.AddSingleton<SendLogMessageSender>();
@@ -31,5 +34,19 @@ public static class Startup
         services.AddHostedService<RegisterListener>();
         services.AddHostedService<CancelRegisterListener>();
         services.AddHostedService<VoteListener>();
+
+        services.AddHealthChecks()
+            .AddDbContextCheck<ElectionDataContext>()
+            .AddRabbitMQ()
+            .ForwardToPrometheus();
+    }
+    public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+    {
+        if (env.IsDevelopment()) app.UseDeveloperExceptionPage();
+
+        app.UseRouting();
+        app.UseHttpMetrics();
+        app.UseMetricServer();
+        app.UseHealthChecks("/health");
     }
 }
