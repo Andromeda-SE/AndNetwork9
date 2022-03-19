@@ -5,7 +5,7 @@ using RabbitMQ.Client;
 
 namespace And9.Integration.Discord.Senders;
 
-public class RegisterChannelSender : BaseRabbitSenderWithoutResponse<IChannel>
+public class RegisterChannelSender : BaseRabbitSenderWithResponse<IChannel, bool>
 {
     public const string QUEUE_NAME = "And9.Integration.Discord.RegisterChannel";
 

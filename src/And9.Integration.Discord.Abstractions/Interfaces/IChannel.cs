@@ -17,6 +17,7 @@ public interface IChannel : IConcurrencyToken, IDiscordId
     DiscordPermissions EveryonePermissions { get; }
     DiscordPermissions MemberPermissions { get; }
     DiscordPermissions SquadPartPermissions { get; }
+    DiscordPermissions SquadPartCommanderPermissions { get; }
     DiscordPermissions SquadPermissions { get; }
     DiscordPermissions SquadLieutenantsPermissions { get; }
     DiscordPermissions SquadCaptainPermissions { get; }

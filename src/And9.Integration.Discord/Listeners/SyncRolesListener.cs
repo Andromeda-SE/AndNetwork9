@@ -1,4 +1,5 @@
-﻿using And9.Integration.Discord.Database;
+﻿using System.Runtime.CompilerServices;
+using And9.Integration.Discord.Database;
 using And9.Integration.Discord.Database.Models;
 using And9.Integration.Discord.Extensions;
 using And9.Integration.Discord.Senders;
@@ -13,29 +14,32 @@ namespace And9.Integration.Discord.Listeners;
 public class SyncRolesListener : BaseRabbitListenerWithoutResponse<object>
 {
     private readonly DiscordBot _bot;
-    private readonly DiscordDataContext _discordDataContext;
+    private readonly IServiceScopeFactory _serviceScopeFactory;
 
     public SyncRolesListener(IConnection connection,
         ILogger<BaseRabbitListenerWithoutResponse<object>> logger,
-        DiscordDataContext discordDataContext,
-        DiscordBot bot)
+        DiscordBot bot,
+        IServiceScopeFactory serviceScopeFactory)
         : base(connection, SyncRolesSender.QUEUE_NAME, logger)
     {
-        _discordDataContext = discordDataContext;
         _bot = bot;
+        _serviceScopeFactory = serviceScopeFactory;
     }
 
     public override async Task Run(object _)
     {
         SocketGuild? guild = _bot.GetGuild(_bot.GuildId);
+        AsyncServiceScope scope = _serviceScopeFactory.CreateAsyncScope();
+        await using ConfiguredAsyncDisposable configuredAsyncDisposable = scope.ConfigureAwait(false);
+        DiscordDataContext discordDataContext = scope.ServiceProvider.GetRequiredService<DiscordDataContext>();
 
-        foreach (SocketRole? discordRole in guild.Roles.ExceptBy(_discordDataContext.Roles.Select(x => x.DiscordId), role => role.Id))
+        foreach (SocketRole? discordRole in guild.Roles.ExceptBy(discordDataContext.Roles.Select(x => x.DiscordId), role => role.Id))
         {
             if (discordRole.IsEveryone || discordRole.Tags.IsPremiumSubscriberRole) continue;
             await discordRole.DeleteAsync().ConfigureAwait(false);
         }
 
-        await foreach (Role role in _discordDataContext.Roles.ToAsyncEnumerable().OrderBy(x => x).ConfigureAwait(false))
+        await foreach (Role role in discordDataContext.Roles.ToAsyncEnumerable().OrderBy(x => x).ConfigureAwait(false))
         {
             SocketRole? discordRole = guild.GetRole(role.DiscordId);
             if (discordRole is null)
@@ -48,7 +52,7 @@ public class SyncRolesListener : BaseRabbitListenerWithoutResponse<object>
                     role.IsMentionable,
                     RequestOptions.Default).ConfigureAwait(false);
                 role.DiscordId = newRole.Id;
-                await _discordDataContext.SaveChangesAsync().ConfigureAwait(false);
+                await discordDataContext.SaveChangesAsync().ConfigureAwait(false);
                 continue;
             }
 

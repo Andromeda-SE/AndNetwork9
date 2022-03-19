@@ -1,8 +1,13 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using And9.Integration.Discord.Extensions;
+using And9.Integration.Discord.Senders;
+using And9.Service.Core.Abstractions.Enums;
+using And9.Service.Core.Abstractions.Models;
+using And9.Service.Core.Senders;
 using Discord;
 using Discord.WebSocket;
+using Direction = And9.Service.Core.Abstractions.Enums.Direction;
 
 namespace And9.Integration.Discord;
 
@@ -60,11 +65,42 @@ public class DiscordBot : DiscordSocketClient, IHostedService
 
     private async Task OnUserJoined(SocketGuildUser user)
     {
-        if (user.Guild.Id == GuildId)
+        if (user.Guild.Id != GuildId) return;
+        AsyncServiceScope scope = ScopeFactory.CreateAsyncScope();
+        await using ConfiguredAsyncDisposable _ = scope.ConfigureAwait(false);
+        MemberCrudSender memberCrudSender = scope.ServiceProvider.GetRequiredService<MemberCrudSender>();
+        Member? member = await memberCrudSender.ReadByDiscordId(user.Id).ConfigureAwait(false);
+        if (member is null)
         {
-            AsyncServiceScope scope = ScopeFactory.CreateAsyncScope();
-            await using ConfiguredAsyncDisposable _ = scope.ConfigureAwait(false);
-            //TODO send to Core service
+            int id = await memberCrudSender.Create(new()
+            {
+                Direction = Direction.None,
+                Rank = Rank.Guest,
+                TimeZone = null,
+                DiscordId = user.Id,
+                ConcurrencyToken = Guid.NewGuid(),
+                Nickname = user.Nickname,
+                IsSquadCommander = false,
+                LastChanged = DateTime.UtcNow,
+                RealName = null,
+                SquadPartNumber = 0,
+                JoinDate = DateOnly.MinValue,
+                MicrosoftId = null,
+                LastDirectionChange = DateOnly.MinValue,
+                SquadNumber = null,
+                SteamId = null,
+                TelegramId = null,
+                VkId = null,
+            }).ConfigureAwait(false);
+            member = await memberCrudSender.Read(id).ConfigureAwait(false);
+            if (member is null)
+            {
+                Logger.LogError("member not found after creation");
+                return;
+            }
         }
+
+        SyncUserSender syncUserSender = scope.ServiceProvider.GetRequiredService<SyncUserSender>();
+        await syncUserSender.CallAsync(member).ConfigureAwait(false);
     }
 }

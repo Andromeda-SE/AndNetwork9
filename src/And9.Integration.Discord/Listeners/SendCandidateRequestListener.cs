@@ -1,7 +1,7 @@
 ﻿using System.Runtime.CompilerServices;
 using And9.Integration.Discord.Abstractions.Enums;
+using And9.Integration.Discord.Abstractions.Models;
 using And9.Integration.Discord.Database;
-using And9.Integration.Discord.Database.Models;
 using And9.Integration.Discord.Senders;
 using And9.Lib.Broker;
 using And9.Service.Core.Abstractions.Interfaces;
