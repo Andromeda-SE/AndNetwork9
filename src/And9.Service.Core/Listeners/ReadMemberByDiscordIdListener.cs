@@ -7,12 +7,12 @@ using RabbitMQ.Client;
 
 namespace And9.Service.Core.Listeners;
 
-public class ReadMemberBySteamIdListener : BaseRabbitListenerWithResponse<ulong, Member?>
+public class ReadMemberByDiscordIdListener : BaseRabbitListenerWithResponse<ulong, Member?>
 {
     private readonly IServiceScopeFactory _scopeFactory;
 
-    public ReadMemberBySteamIdListener(IConnection connection, ILogger<ReadMemberBySteamIdListener> logger, IServiceScopeFactory scopeFactory)
-        : base(connection, ReadMemberBySteamIdSender.QUEUE_NAME, logger) => _scopeFactory = scopeFactory;
+    public ReadMemberByDiscordIdListener(IConnection connection, ILogger<ReadMemberByDiscordIdListener> logger, IServiceScopeFactory scopeFactory)
+        : base(connection, ReadMemberByDiscordIdSender.QUEUE_NAME, logger) => _scopeFactory = scopeFactory;
 
     protected override async Task<Member?> GetResponseAsync(ulong request)
     {
@@ -20,6 +20,6 @@ public class ReadMemberBySteamIdListener : BaseRabbitListenerWithResponse<ulong,
         await using ConfiguredAsyncDisposable _ = scope.ConfigureAwait(false);
         CoreDataContext coreDataContext = scope.ServiceProvider.GetRequiredService<CoreDataContext>();
 
-        return coreDataContext.Members.FirstOrDefault(x => x.SteamId == request);
+        return coreDataContext.Members.FirstOrDefault(x => x.DiscordId == request);
     }
 }

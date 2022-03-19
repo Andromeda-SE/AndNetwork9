@@ -11,7 +11,16 @@ public class Program
 
     public static IHostBuilder CreateHostBuilder(string[] args)
     {
-        return Host.CreateDefaultBuilder(args).ConfigureAndNetConsole().ConfigureServices((context, collection) =>
-            Startup.ConfigureServices(collection, context.Configuration));
+        return Host.CreateDefaultBuilder(args)
+            .ConfigureAndNetConsole()
+            .ConfigureWebHostDefaults(builder => builder.UseStartup<Startup>())
+            .UseDefaultServiceProvider(options =>
+            {
+#if DEBUG
+                options.ValidateScopes = true;
+#else
+                options.ValidateScopes = false;
+#endif
+            });
     }
 }

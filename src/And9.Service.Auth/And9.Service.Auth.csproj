@@ -20,7 +20,7 @@
 		<ProjectReference Include="..\And9.Lib.Utility\And9.Lib.Utility.csproj" />
 		<ProjectReference Include="..\And9.Service.Auth.Database\And9.Service.Auth.Database.csproj" />
 		<ProjectReference Include="..\And9.Service.Auth.Senders\And9.Service.Auth.Senders.csproj" />
-		<ProjectReference Include="..\And9.Service.Core.Database\And9.Service.Core.Database.csproj" />
+		<ProjectReference Include="..\And9.Service.Core.Senders\And9.Service.Core.Senders.csproj" />
 	</ItemGroup>
 
 </Project>

@@ -6,4 +6,5 @@ public interface IMemberModelServiceMethods
 {
     Task<Member?> ReadBySteamId(ulong steamId);
     Task<Member?> ReadByDiscordId(ulong discordId);
+    Task<Member?> ReadByNickname(string nickname);
 }

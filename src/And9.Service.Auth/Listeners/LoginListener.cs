@@ -8,8 +8,7 @@ using And9.Service.Auth.Database;
 using And9.Service.Auth.Database.Models;
 using And9.Service.Auth.Senders;
 using And9.Service.Core.Abstractions.Interfaces;
-using And9.Service.Core.Database;
-using Microsoft.EntityFrameworkCore;
+using And9.Service.Core.Senders;
 using Microsoft.IdentityModel.Tokens;
 using RabbitMQ.Client;
 using StackExchange.Redis;
@@ -19,25 +18,25 @@ namespace And9.Service.Auth.Listeners;
 public class LoginListener : BaseRabbitListenerWithResponse<AuthCredentials, string?>
 {
     private readonly AuthDataContext _authDataContext;
-    private readonly CoreDataContext _coreDataContext;
+    private readonly MemberCrudSender _memberCrudSender;
     private readonly IConnectionMultiplexer _redis;
 
     public LoginListener(
         IConnection connection,
         ILogger<BaseRabbitListenerWithResponse<AuthCredentials, string?>> logger,
-        CoreDataContext coreDataContext,
+        MemberCrudSender memberCrudSender,
         AuthDataContext authDataContext,
         IConnectionMultiplexer redis)
         : base(connection, LoginSender.QUEUE_NAME, logger)
     {
-        _coreDataContext = coreDataContext;
+        _memberCrudSender = memberCrudSender;
         _authDataContext = authDataContext;
         _redis = redis;
     }
 
     protected override async Task<string?> GetResponseAsync(AuthCredentials request)
     {
-        IMember? member = await _coreDataContext.Members.FirstOrDefaultAsync(x => x.Nickname == request.Nickname).ConfigureAwait(false);
+        IMember? member = await _memberCrudSender.ReadByNickname(request.Nickname).ConfigureAwait(false);
         if (member is null) return null;
         PasswordHash? storedPasswordHash = await _authDataContext.PasswordHashes.FindAsync(member.Id).ConfigureAwait(false);
         if (storedPasswordHash is null || !storedPasswordHash.Hash.SequenceEqual(request.Password.GetPasswordHash())) return null;
