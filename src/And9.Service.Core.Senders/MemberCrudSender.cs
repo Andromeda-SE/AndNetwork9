@@ -13,6 +13,7 @@ public class MemberCrudSender : RabbitCrudSender<Member>, IMemberModelServiceMet
     public const CrudFlags CRUD_FLAGS = CrudFlags.Create | CrudFlags.Read | CrudFlags.Update;
 
     private readonly ReadMemberBySteamIdSender _readMemberBySteamIdSender;
+    private readonly ReadMemberByDiscordIdSender _readMemberByDiscordIdSender;
 
     public MemberCrudSender(IConnection connection,
         ILogger<BaseRabbitSenderWithResponse<Member, int>> createLogger,
@@ -20,8 +21,14 @@ public class MemberCrudSender : RabbitCrudSender<Member>, IMemberModelServiceMet
         ILogger<BaseRabbitSenderWithStreamResponse<object, Member>> readCollectionLogger,
         ILogger<BaseRabbitSenderWithResponse<Member, Member>> updateLogger,
         ILogger<BaseRabbitSenderWithoutResponse<int>> deleteLogger,
-        ILogger<BaseRabbitSenderWithResponse<ulong, Member?>> readBySteamIdLogger)
-        : base(connection, QUEUE_NAME, CRUD_FLAGS, createLogger, readLogger, readCollectionLogger, updateLogger, deleteLogger) => _readMemberBySteamIdSender = new(connection, readBySteamIdLogger);
+        ILogger<ReadMemberBySteamIdSender> readBySteamIdLogger,
+        ILogger<ReadMemberByDiscordIdSender> readByDiscordIdLogger)
+        : base(connection, QUEUE_NAME, CRUD_FLAGS, createLogger, readLogger, readCollectionLogger, updateLogger, deleteLogger)
+    {
+        _readMemberByDiscordIdSender = new(connection, readByDiscordIdLogger);
+        _readMemberBySteamIdSender = new(connection, readBySteamIdLogger);
+    }
 
     public async Task<Member?> ReadBySteamId(ulong steamId) => await _readMemberBySteamIdSender.CallAsync(steamId).ConfigureAwait(false);
+    public async Task<Member?> ReadByDiscordId(ulong discordId) => await _readMemberByDiscordIdSender.CallAsync(discordId).ConfigureAwait(false);
 }

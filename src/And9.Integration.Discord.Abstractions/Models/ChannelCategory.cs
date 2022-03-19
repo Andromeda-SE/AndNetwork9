@@ -1,6 +1,6 @@
 ﻿using And9.Integration.Discord.Abstractions.Interfaces;
 
-namespace And9.Integration.Discord.Database.Models;
+namespace And9.Integration.Discord.Abstractions.Models;
 
 public record class ChannelCategory : IChannelCategory
 {

@@ -1,4 +1,5 @@
 ﻿using System.Drawing;
+using And9.Integration.Discord.Abstractions.Models;
 using And9.Integration.Discord.Database.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
@@ -46,6 +47,7 @@ public class DiscordDataContext : DbContext
             entity.Property(x => x.EveryonePermissions).IsRequired();
             entity.Property(x => x.MemberPermissions).IsRequired();
             entity.Property(x => x.SquadPartPermissions).IsRequired();
+            entity.Property(x => x.SquadPartCommanderPermissions).IsRequired();
             entity.Property(x => x.SquadPermissions).IsRequired();
             entity.Property(x => x.SquadLieutenantsPermissions).IsRequired();
             entity.Property(x => x.SquadCaptainPermissions).IsRequired();

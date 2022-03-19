@@ -38,6 +38,7 @@ public abstract class BaseRabbitSender : IDisposable
     public void Dispose()
     {
         GC.SuppressFinalize(this);
+        Consumer.Received -= Received!;
         Model.Dispose();
     }
 

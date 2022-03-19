@@ -53,9 +53,15 @@ services:
     image: ${DOCKER_REGISTRY-}integration-discord
     restart: "no"
     env_file: .env
+    healthcheck:
+      test: curl --fail http://localhost:80/health || exit 1
+      interval: 5s
+      timeout: 10s
+      retries: 5
     build:
       context: .
       dockerfile: src/And9.Integration.Discord/Dockerfile
+
 
   and9.integration.steam:
     container_name: And9.Integration.Steam
@@ -100,7 +106,6 @@ services:
     volumes:
       - "./data/rabbitmq/rabbitmq.conf:/var/lib/rabbitmq/rabbitmq.conf"
 
-
   and9.monitoring.prometheus:
     image: prom/prometheus
     container_name: And9.Monitoring.Prometheus
@@ -112,32 +117,20 @@ services:
     ports:
       - 9090:9090
 
-  and9.monitoring.grafana:
-    image: grafana/grafana
-    container_name: And9.Monitoring.Grafana
-    volumes:
-      - ./data/grafana:/var/lib/grafana
-    ports:
-      - 3000:3000
+#  and9.monitoring.grafana:
+#    image: grafana/grafana
+#    container_name: And9.Monitoring.Grafana
+#    volumes:
+#      - ./data/grafana:/var/lib/grafana
+#    ports:
+#      - 3000:3000
 
-  and9.monitoring.cadvisor:
-    image: gcr.io/cadvisor/cadvisor:latest
-    container_name: And9.Monitoring.Cadvisor
+  and9.portainer:
+    image: portainer/portainer-ce
+    container_name: And9.Portainer
     privileged: true
-    command: 
-      - '--housekeeping_interval=15s'
-      - '--docker_only=true'
-      - '--disable_metrics=disk'
     ports:
-    - 8080:8080
+    - 9443:9443 
     volumes:
-    - /:/rootfs:ro
-    - /var/run:/var/run:rw
-    - /sys:/sys:ro
-    - /var/lib/docker/:/var/lib/docker:ro
-
-  and9.monitoring.node-exporter:
-    image: prom/node-exporter:latest
-    container_name: And9.Monitoring.NodeExporter
-    ports:
-    - 9100:9100
+    - /var/run/docker.sock:/var/run/docker.sock
+    - /data/portainer:/data

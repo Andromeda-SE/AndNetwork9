@@ -1,11 +1,10 @@
-﻿using And9.Integration.Discord.Abstractions.Interfaces;
-using And9.Lib.Broker;
+﻿using And9.Lib.Broker;
 using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
 
 namespace And9.Integration.Discord.Senders;
 
-public class RegisterChannelCategorySender : BaseRabbitSenderWithoutResponse<IChannelCategory>
+public class RegisterChannelCategorySender : BaseRabbitSenderWithResponse<ulong, bool>
 {
     public const string QUEUE_NAME = "And9.Integration.Discord.RegisterChannelCategory";
 
