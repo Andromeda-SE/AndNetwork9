@@ -19,7 +19,9 @@ public static class Extensions
             .AppendSenderWithoutResponse<SendCandidateRequestSender, ICandidateRequest>()
             .AppendSenderWithResponse<ResolveDiscordUserNameSender, string, ulong?>()
             .AppendSenderWithResponse<RegisterChannelSender, IChannel, bool>()
-            .AppendSenderWithResponse<RegisterChannelCategorySender, ulong, bool>();
+            .AppendSenderWithResponse<RegisterChannelCategorySender, ulong, bool>()
+            .AppendSenderWithResponse<CreateChannelSender, IChannel, ulong>()
+            .AppendSenderWithResponse<UpdateChannelSender, IChannel, IChannel>();
         return builder;
     }
 }
