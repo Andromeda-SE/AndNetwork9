@@ -1,4 +1,5 @@
-﻿using And9.Integration.Discord.Abstractions.Models;
+﻿using And9.Integration.Discord.Abstractions.Interfaces;
+using And9.Integration.Discord.Abstractions.Models;
 using And9.Integration.Discord.ConsumerStrategies;
 using And9.Integration.Discord.Database;
 using And9.Integration.Discord.HealthChecks;
@@ -31,6 +32,8 @@ public class Startup
             .AppendConsumerWithResponse<ResolveDiscordUserNameConsumerStrategy, string, ulong?>()
             .AppendConsumerWithResponse<RegisterChannelConsumerStrategy, Channel, bool>()
             .AppendConsumerWithResponse<RegisterChannelCategoryConsumerStrategy, ulong, bool>()
+            .AppendConsumerWithResponse<CreateChannelConsumerStrategy, IChannel, IChannel>()
+            .AppendConsumerWithResponse<UpdateChannelConsumerStrategy, IChannel, IChannel>()
             .AddCoreSenders()
             .AddDiscordSenders()
             .Build();
