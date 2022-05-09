@@ -12,9 +12,10 @@ namespace And9.Gateway.Clan.Hubs.Model;
 public class MemberHub : Hub<IModelCrudClientMethods>, IModelCrudServerMethods<Member>
 {
     private readonly CreateMemberSender _createMemberSender;
-    private readonly UpdateMemberSender _updateMemberSender;
-    private readonly ReadMemberByIdSender _readMemberByIdSender;
     private readonly ReadAllMembersSender _readAllMembersSender;
+    private readonly ReadMemberByIdSender _readMemberByIdSender;
+    private readonly UpdateMemberSender _updateMemberSender;
+
     public MemberHub(
         CreateMemberSender createMemberSender,
         UpdateMemberSender updateMemberSender,
@@ -35,10 +36,7 @@ public class MemberHub : Hub<IModelCrudClientMethods>, IModelCrudServerMethods<M
     }
 
     [MinRankAuthorize(Rank.FirstAdvisor)]
-    public Task Delete(int id)
-    {
-        throw new NotSupportedException();
-    }
+    public Task Delete(int id) => throw new NotSupportedException();
 
     [MinRankAuthorize(Rank.FirstAdvisor)]
     public async Task Update(Member model)

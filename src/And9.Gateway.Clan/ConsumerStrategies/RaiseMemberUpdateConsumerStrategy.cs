@@ -35,9 +35,10 @@ public class RaiseMemberUpdateConsumerStrategy : IBrokerConsumerWithResponseStra
             new KeyValuePair<Rank, int>(Rank.SeniorSentinel, 150),
         }));
 
+    private readonly IHubContext<MemberHub> _memberHub;
+
     private readonly ReadMemberByIdSender _readMemberByIdSender;
     private readonly UpdateMemberSender _updateMemberSender;
-    private readonly IHubContext<MemberHub> _memberHub;
 
     public RaiseMemberUpdateConsumerStrategy(
         IHubContext<MemberHub> memberHub,

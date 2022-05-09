@@ -58,35 +58,38 @@ public class Startup
 
             DateTimeOffset now = DateTimeOffset.UtcNow;
             configurator.ScheduleJob<RankUpdateJob>(triggerConfigurator =>
-            {
-                triggerConfigurator.WithIdentity(nameof(RankUpdateJob) + "_Trigger");
-                triggerConfigurator.StartNow();
-                triggerConfigurator.WithSimpleSchedule(builder =>
                 {
-                    builder.WithIntervalInSeconds(10);
-                    builder.RepeatForever();
-                });
-            }, jobConfigurator => jobConfigurator.WithIdentity(nameof(RankUpdateJob) + "_Job"));
+                    triggerConfigurator.WithIdentity(nameof(RankUpdateJob) + "_Trigger");
+                    triggerConfigurator.StartNow();
+                    triggerConfigurator.WithSimpleSchedule(builder =>
+                    {
+                        builder.WithIntervalInSeconds(10);
+                        builder.RepeatForever();
+                    });
+                },
+                jobConfigurator => jobConfigurator.WithIdentity(nameof(RankUpdateJob) + "_Job"));
             configurator.ScheduleJob<AwardDispenseJob<InGameAwardDispenserStrategy>>(triggerConfigurator =>
-            {
-                triggerConfigurator.WithIdentity(nameof(InGameAwardDispenserStrategy) + "_Trigger");
-                triggerConfigurator.StartAt(now.AddSeconds(60 + 5));
-                triggerConfigurator.WithSimpleSchedule(builder =>
                 {
-                    builder.WithIntervalInMinutes(3);
-                    builder.RepeatForever();
-                });
-            }, jobConfigurator => jobConfigurator.WithIdentity(nameof(InGameAwardDispenserStrategy) + "_Job"));
+                    triggerConfigurator.WithIdentity(nameof(InGameAwardDispenserStrategy) + "_Trigger");
+                    triggerConfigurator.StartAt(now.AddSeconds(60 + 5));
+                    triggerConfigurator.WithSimpleSchedule(builder =>
+                    {
+                        builder.WithIntervalInMinutes(3);
+                        builder.RepeatForever();
+                    });
+                },
+                jobConfigurator => jobConfigurator.WithIdentity(nameof(InGameAwardDispenserStrategy) + "_Job"));
             configurator.ScheduleJob<AwardDispenseJob<TogetherInGameAwardDispenserStrategy>>(triggerConfigurator =>
-            {
-                triggerConfigurator.WithIdentity(nameof(TogetherInGameAwardDispenserStrategy) + "_Trigger");
-                triggerConfigurator.StartAt(now.AddSeconds(60 + 10));
-                triggerConfigurator.WithSimpleSchedule(builder =>
                 {
-                    builder.WithIntervalInMinutes(3);
-                    builder.RepeatForever();
-                });
-            }, jobConfigurator => jobConfigurator.WithIdentity(nameof(TogetherInGameAwardDispenserStrategy) + "_Job"));
+                    triggerConfigurator.WithIdentity(nameof(TogetherInGameAwardDispenserStrategy) + "_Trigger");
+                    triggerConfigurator.StartAt(now.AddSeconds(60 + 10));
+                    triggerConfigurator.WithSimpleSchedule(builder =>
+                    {
+                        builder.WithIntervalInMinutes(3);
+                        builder.RepeatForever();
+                    });
+                },
+                jobConfigurator => jobConfigurator.WithIdentity(nameof(TogetherInGameAwardDispenserStrategy) + "_Job"));
         });
         services.AddQuartzHostedService(options =>
         {

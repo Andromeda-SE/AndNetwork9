@@ -1,5 +1,4 @@
 ﻿using System.Globalization;
-using System.Runtime.CompilerServices;
 using System.Text;
 using And9.Integration.Discord.Senders;
 using And9.Service.Core.Abstractions;
@@ -21,7 +20,7 @@ public class NewElectionStrategy : IElectionWatcherStrategy
 
     public NewElectionStrategy(
         ElectionDataContext electionDataContext,
-        ReadAllMembersSender readAllMembersSender, 
+        ReadAllMembersSender readAllMembersSender,
         ReadMemberByIdSender readMemberByIdSender,
         SendLogMessageSender sendLogMessageSender)
     {

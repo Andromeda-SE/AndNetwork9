@@ -21,10 +21,7 @@ internal sealed class BrokerPublisherWithResponse<TRequest, TResponse> : BaseBro
         ReadOnlyMemory<byte> body)
     {
         Guid guid = Guid.Parse(properties.CorrelationId);
-        if (properties.Headers?["Success"] is false)
-        {
-            throw new Exception(MessagePackSerializer.Deserialize<string>(properties.Headers["Exception"] as byte[]));
-        }
+        if (properties.Headers?["Success"] is false) throw new(MessagePackSerializer.Deserialize<string>(properties.Headers["Exception"] as byte[]));
         TResponse response = MessagePackSerializer.Deserialize<TResponse>(body);
         _responses.AddOrUpdate(guid, response, (_, _) => response);
         _semaphores[guid].Release();
@@ -49,7 +46,7 @@ internal sealed class BrokerPublisherWithResponse<TRequest, TResponse> : BaseBro
         _semaphores.AddOrUpdate(guid,
             semaphore,
             (_, _) => throw new DuplicateWaitObjectException(guid.ToString()));
-        
+
         try
         {
             Logger.LogInformation($"Send {guid}");

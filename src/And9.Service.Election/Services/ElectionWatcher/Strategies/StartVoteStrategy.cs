@@ -1,5 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-using And9.Service.Core.Abstractions.Enums;
+﻿using And9.Service.Core.Abstractions.Enums;
 using And9.Service.Core.Abstractions.Models;
 using And9.Service.Core.Senders;
 using And9.Service.Election.Abstractions.Enums;
@@ -11,8 +10,9 @@ namespace And9.Service.Election.Services.ElectionWatcher.Strategies;
 
 public class StartVoteStrategy : IElectionWatcherStrategy
 {
-    private readonly ElectionDataContext _electionDataContext;
     private readonly ReadAllMembersSender _allMembersSender;
+    private readonly ElectionDataContext _electionDataContext;
+
     public StartVoteStrategy(ElectionDataContext electionDataContext, ReadAllMembersSender allMembersSender)
     {
         _electionDataContext = electionDataContext;

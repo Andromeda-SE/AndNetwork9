@@ -13,18 +13,18 @@ namespace And9.Integration.Discord;
 
 public class DiscordBot : DiscordSocketClient, IHostedService, IAsyncDisposable
 {
-    private readonly ReadMemberByDiscordIdSender _readMemberByDiscordIdSender;
+    private readonly ConfiguredAsyncDisposable _configuredAsyncDisposable;
     private readonly CreateMemberSender _createMemberSender;
+    private readonly ReadMemberByDiscordIdSender _readMemberByDiscordIdSender;
     private readonly ReadMemberByIdSender _readMemberByIdSender;
     private readonly SyncUserSender _syncUserSender;
-    private readonly ConfiguredAsyncDisposable _configuredAsyncDisposable;
     public readonly ulong GuildId;
     protected readonly string Token;
 
     [Localizable(false)]
     public DiscordBot(
         ILogger<DiscordBot> logger,
-        IConfiguration configuration, 
+        IConfiguration configuration,
         IServiceScopeFactory serviceScopeFactory) :
         base(new()
         {
@@ -49,6 +49,8 @@ public class DiscordBot : DiscordSocketClient, IHostedService, IAsyncDisposable
     }
 
     internal ILogger<DiscordBot> Logger { get; }
+
+    public async ValueTask DisposeAsync() => await _configuredAsyncDisposable.DisposeAsync();
 
     public async Task StartAsync(CancellationToken cancellationToken)
     {
@@ -112,6 +114,4 @@ public class DiscordBot : DiscordSocketClient, IHostedService, IAsyncDisposable
 
         await _syncUserSender.CallAsync(member).ConfigureAwait(false);
     }
-
-    public async ValueTask DisposeAsync() => await _configuredAsyncDisposable.DisposeAsync();
 }

@@ -10,10 +10,7 @@ public sealed class ElectionWatcher : IHostedService
 {
     private readonly IServiceScopeFactory _serviceScopeFactory;
 
-    public ElectionWatcher(IServiceScopeFactory serviceScopeFactory)
-    {
-        _serviceScopeFactory = serviceScopeFactory;
-    }
+    public ElectionWatcher(IServiceScopeFactory serviceScopeFactory) => _serviceScopeFactory = serviceScopeFactory;
 
     public CancellationTokenSource? CancellationTokenSource { get; private set; }
 

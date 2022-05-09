@@ -16,17 +16,19 @@ public class CoreHub : Hub<ICoreClientMethods>, ICoreServerMethods
 {
     private readonly AcceptCandidateRequestSender _acceptCandidateRequestSender;
     private readonly DeclineCandidateRequestSender _declineCandidateRequestSender;
-    private readonly RegisterCandidateRequestSender _registerCandidateRequestSender;
     private readonly ReadCandidateRequestSender _readCandidateRequestSender;
+
+    private readonly ReadMemberByIdSender _readMemberByIdSender;
+    private readonly RegisterCandidateRequestSender _registerCandidateRequestSender;
 
     private readonly SendCandidateRequestSender _sendCandidateRequestSender;
     private readonly SendDirectMessageSender _sendDirectMessageSender;
     private readonly SendLogMessageSender _sendLogMessageSender;
-
-    private readonly ReadMemberByIdSender _readMemberByIdSender;
     private readonly UpdateMemberSender _updateMemberSender;
 
-    public CoreHub(AcceptCandidateRequestSender acceptCandidateRequestSender, DeclineCandidateRequestSender declineCandidateRequestSender, RegisterCandidateRequestSender registerCandidateRequestSender, ReadCandidateRequestSender readCandidateRequestSender, SendCandidateRequestSender sendCandidateRequestSender, SendDirectMessageSender sendDirectMessageSender, SendLogMessageSender sendLogMessageSender, ReadMemberByIdSender readMemberByIdSender, UpdateMemberSender updateMemberSender)
+    public CoreHub(AcceptCandidateRequestSender acceptCandidateRequestSender, DeclineCandidateRequestSender declineCandidateRequestSender, RegisterCandidateRequestSender registerCandidateRequestSender,
+        ReadCandidateRequestSender readCandidateRequestSender, SendCandidateRequestSender sendCandidateRequestSender, SendDirectMessageSender sendDirectMessageSender, SendLogMessageSender sendLogMessageSender,
+        ReadMemberByIdSender readMemberByIdSender, UpdateMemberSender updateMemberSender)
     {
         _acceptCandidateRequestSender = acceptCandidateRequestSender;
         _declineCandidateRequestSender = declineCandidateRequestSender;
@@ -38,6 +40,7 @@ public class CoreHub : Hub<ICoreClientMethods>, ICoreServerMethods
         _readMemberByIdSender = readMemberByIdSender;
         _updateMemberSender = updateMemberSender;
     }
+
     public async Task<Member?> ReadMe() => await _readMemberByIdSender.CallAsync(int.Parse(Context.UserIdentifier!)).ConfigureAwait(false);
 
     [AllowAnonymous]

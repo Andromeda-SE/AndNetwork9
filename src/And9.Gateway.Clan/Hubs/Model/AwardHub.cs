@@ -10,11 +10,11 @@ namespace And9.Gateway.Clan.Hubs.Model;
 
 public class AwardHub : Hub<IModelCrudClientMethods>
 {
-    private readonly SyncUserSender _syncUserSender;
     private readonly CreateAwardSender _createAwardSender;
     private readonly ReadAllAwardsSender _readAllAwardsSender;
     private readonly ReadAwardSender _readAwardSender;
     private readonly ReadMemberByIdSender _readMemberByIdSender;
+    private readonly SyncUserSender _syncUserSender;
 
     public AwardHub(SyncUserSender syncUserSender, CreateAwardSender createAwardSender, ReadAllAwardsSender readAllAwardsSender, ReadAwardSender readAwardSender, ReadMemberByIdSender readMemberByIdSender)
     {

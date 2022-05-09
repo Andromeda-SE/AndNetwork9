@@ -4,7 +4,6 @@ using And9.Lib.Broker.ConsumerStrategy;
 using And9.Lib.Broker.Publishers;
 using And9.Lib.Broker.Senders;
 using Microsoft.Extensions.DependencyInjection;
-using RabbitMQ.Client;
 
 namespace And9.Lib.Broker;
 

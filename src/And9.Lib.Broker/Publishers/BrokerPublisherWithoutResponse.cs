@@ -49,6 +49,7 @@ internal sealed class BrokerPublisherWithoutResponse<TRequest> : BaseBrokerPubli
             Logger.LogWarning($"Timeout {guid}");
             throw new TimeoutException();
         }
+
         Logger.LogInformation($"Finish {guid}");
     }
 }

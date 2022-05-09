@@ -15,11 +15,11 @@ public class AuthHub : Hub, IAuthServerMethods
 {
     private readonly GeneratePasswordSender _generatePasswordSender;
     private readonly LoginSender _loginSender;
+    private readonly ReadMemberByIdSender _readMemberByIdSender;
 
     private readonly IConnectionMultiplexer _redis;
     private readonly SendDirectMessageSender _sendDirectMessageSender;
     private readonly SetPasswordSender _setPasswordSender;
-    private readonly ReadMemberByIdSender _readMemberByIdSender;
 
     public AuthHub(
         GeneratePasswordSender generatePasswordSender,

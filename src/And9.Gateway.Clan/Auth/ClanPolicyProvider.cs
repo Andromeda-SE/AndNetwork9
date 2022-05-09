@@ -1,5 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-using System.Security.Claims;
+﻿using System.Security.Claims;
 using And9.Lib.API;
 using And9.Service.Core.Abstractions.Interfaces;
 using And9.Service.Core.Abstractions.Models;
@@ -12,8 +11,9 @@ namespace And9.Gateway.Clan.Auth;
 
 public class ClanPolicyProvider : IAuthorizationHandler
 {
-    private IConnectionMultiplexer _redis;
     private readonly ReadMemberByIdSender _readMemberByIdSender;
+    private readonly IConnectionMultiplexer _redis;
+
     public ClanPolicyProvider(IConnectionMultiplexer redis, ReadMemberByIdSender readMemberByIdSender)
     {
         _redis = redis;

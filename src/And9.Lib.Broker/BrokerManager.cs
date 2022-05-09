@@ -1,5 +1,4 @@
 ﻿using System.Runtime.CompilerServices;
-using And9.Lib.Broker.Consumers;
 using And9.Lib.Broker.Publishers;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -12,10 +11,7 @@ public sealed class BrokerManager : IHostedService
     private readonly IServiceScopeFactory _serviceScopeFactory;
     private AsyncServiceScope _scope;
 
-    public BrokerManager(IServiceScopeFactory serviceScopeFactory)
-    {
-        _serviceScopeFactory = serviceScopeFactory;
-    }
+    public BrokerManager(IServiceScopeFactory serviceScopeFactory) => _serviceScopeFactory = serviceScopeFactory;
 
     internal IDictionary<string, Type> Consumers { private get; init; }
     internal IDictionary<string, Func<IServiceScope, BaseBrokerPublisher>> Publishers { private get; init; }
@@ -32,6 +28,7 @@ public sealed class BrokerManager : IHostedService
             object consumer = scope.ServiceProvider.GetRequiredService(consumerType);
             model.BasicConsume((AsyncDefaultBasicConsumer)consumer, queueName);
         }
+
         return Task.CompletedTask;
     }
 
@@ -55,7 +52,6 @@ public sealed class BrokerManager : IHostedService
         {
             publisher.Dispose();
         }
-        
     }
 
     internal async ValueTask<TResponse> CallWithResponse<TArg, TResponse>(string queueName, TArg arg, CancellationToken token = default)
@@ -72,7 +68,6 @@ public sealed class BrokerManager : IHostedService
         {
             publisher.Dispose();
         }
-        
     }
 
     internal async IAsyncEnumerable<TResponse> CallWithCollectionResponse<TArg, TResponse>(string queueName, TArg arg, [EnumeratorCancellation] CancellationToken token = default)
@@ -89,6 +84,5 @@ public sealed class BrokerManager : IHostedService
         {
             publisher.Dispose();
         }
-       
     }
 }
