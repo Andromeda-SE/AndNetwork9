@@ -1,11 +1,11 @@
 ﻿using And9.Lib.Broker;
-using Microsoft.Extensions.Logging;
-using RabbitMQ.Client;
+using And9.Lib.Broker.Senders;
 
 namespace And9.Service.Election.Senders;
 
-public class CancelRegisterSender : BaseRabbitSenderWithResponse<int, bool>
+[QueueName(QUEUE_NAME)]
+public class CancelRegisterSender : BrokerSenderWithResponse<int, bool>
 {
     public const string QUEUE_NAME = "And9.Service.Election.CancelRegister";
-    public CancelRegisterSender(IConnection connection, ILogger<CancelRegisterSender> logger) : base(connection, QUEUE_NAME, logger) { }
+    public CancelRegisterSender(BrokerManager brokerManager) : base(brokerManager) { }
 }

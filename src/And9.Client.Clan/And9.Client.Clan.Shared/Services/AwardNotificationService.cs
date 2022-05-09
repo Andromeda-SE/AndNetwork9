@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.UI.Notifications;
+using And9.Client.Clan.Config.Services;
 using And9.Gateway.Clan.Client.Connections;
 using And9.Service.Award.Abstractions;
 using And9.Service.Award.Abstractions.Models;

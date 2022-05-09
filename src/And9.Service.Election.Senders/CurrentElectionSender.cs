@@ -1,11 +1,11 @@
 ﻿using And9.Lib.Broker;
-using Microsoft.Extensions.Logging;
-using RabbitMQ.Client;
+using And9.Lib.Broker.Senders;
 
 namespace And9.Service.Election.Senders;
 
-public class CurrentElectionSender : BaseRabbitSenderWithStreamResponse<int, Abstractions.Models.Election>
+[QueueName(QUEUE_NAME)]
+public class CurrentElectionSender : BrokerSenderWithCollectionResponse<int, Abstractions.Models.Election>
 {
     public const string QUEUE_NAME = "And9.Service.Election.CurrentElection";
-    protected CurrentElectionSender(IConnection connection, ILogger<CurrentElectionSender> logger) : base(connection, QUEUE_NAME, logger) { }
+    public CurrentElectionSender(BrokerManager brokerManager) : base(brokerManager) { }
 }

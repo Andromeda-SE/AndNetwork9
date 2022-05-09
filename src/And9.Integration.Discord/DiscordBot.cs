@@ -11,14 +11,21 @@ using Direction = And9.Service.Core.Abstractions.Enums.Direction;
 
 namespace And9.Integration.Discord;
 
-public class DiscordBot : DiscordSocketClient, IHostedService
+public class DiscordBot : DiscordSocketClient, IHostedService, IAsyncDisposable
 {
+    private readonly ReadMemberByDiscordIdSender _readMemberByDiscordIdSender;
+    private readonly CreateMemberSender _createMemberSender;
+    private readonly ReadMemberByIdSender _readMemberByIdSender;
+    private readonly SyncUserSender _syncUserSender;
+    private readonly ConfiguredAsyncDisposable _configuredAsyncDisposable;
     public readonly ulong GuildId;
-    internal readonly IServiceScopeFactory ScopeFactory;
     protected readonly string Token;
 
     [Localizable(false)]
-    public DiscordBot(ILogger<DiscordBot> logger, IConfiguration configuration, IServiceScopeFactory scopeFactory) :
+    public DiscordBot(
+        ILogger<DiscordBot> logger,
+        IConfiguration configuration, 
+        IServiceScopeFactory serviceScopeFactory) :
         base(new()
         {
             LogLevel = LogSeverity.Info,
@@ -31,9 +38,14 @@ public class DiscordBot : DiscordSocketClient, IHostedService
     {
         Log += OnLog;
         Logger = logger;
+        AsyncServiceScope scope = serviceScopeFactory.CreateAsyncScope();
+        _configuredAsyncDisposable = scope.ConfigureAwait(false);
+        _readMemberByDiscordIdSender = scope.ServiceProvider.GetRequiredService<ReadMemberByDiscordIdSender>();
+        _createMemberSender = scope.ServiceProvider.GetRequiredService<CreateMemberSender>();
+        _readMemberByIdSender = scope.ServiceProvider.GetRequiredService<ReadMemberByIdSender>();
+        _syncUserSender = scope.ServiceProvider.GetRequiredService<SyncUserSender>();
         Token = configuration["Discord:Token"];
         GuildId = ulong.Parse(configuration["Discord:Id"]);
-        ScopeFactory = scopeFactory;
     }
 
     internal ILogger<DiscordBot> Logger { get; }
@@ -66,13 +78,11 @@ public class DiscordBot : DiscordSocketClient, IHostedService
     private async Task OnUserJoined(SocketGuildUser user)
     {
         if (user.Guild.Id != GuildId) return;
-        AsyncServiceScope scope = ScopeFactory.CreateAsyncScope();
-        await using ConfiguredAsyncDisposable _ = scope.ConfigureAwait(false);
-        MemberCrudSender memberCrudSender = scope.ServiceProvider.GetRequiredService<MemberCrudSender>();
-        Member? member = await memberCrudSender.ReadByDiscordId(user.Id).ConfigureAwait(false);
+
+        Member? member = await _readMemberByDiscordIdSender.CallAsync(user.Id).ConfigureAwait(false);
         if (member is null)
         {
-            int id = await memberCrudSender.Create(new()
+            int id = await _createMemberSender.CallAsync(new()
             {
                 Direction = Direction.None,
                 Rank = Rank.Guest,
@@ -92,7 +102,7 @@ public class DiscordBot : DiscordSocketClient, IHostedService
                 TelegramId = null,
                 VkId = null,
             }).ConfigureAwait(false);
-            member = await memberCrudSender.Read(id).ConfigureAwait(false);
+            member = await _readMemberByIdSender.CallAsync(id).ConfigureAwait(false);
             if (member is null)
             {
                 Logger.LogError("member not found after creation");
@@ -100,7 +110,8 @@ public class DiscordBot : DiscordSocketClient, IHostedService
             }
         }
 
-        SyncUserSender syncUserSender = scope.ServiceProvider.GetRequiredService<SyncUserSender>();
-        await syncUserSender.CallAsync(member).ConfigureAwait(false);
+        await _syncUserSender.CallAsync(member).ConfigureAwait(false);
     }
+
+    public async ValueTask DisposeAsync() => await _configuredAsyncDisposable.DisposeAsync();
 }

@@ -1,15 +1,17 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using And9.Gateway.Clan.Auth;
+using And9.Gateway.Clan.ConsumerStrategies;
 using And9.Gateway.Clan.Hubs;
 using And9.Gateway.Clan.Hubs.Model;
-using And9.Gateway.Clan.Listeners;
 using And9.Gateway.Clan.Senders;
+using And9.Gateway.Clan.Senders.Models;
 using And9.Integration.Discord.Senders;
 using And9.Lib.API;
 using And9.Lib.Broker;
 using And9.Service.Auth.Senders;
 using And9.Service.Award.Senders;
+using And9.Service.Core.Abstractions.Enums;
 using And9.Service.Core.Senders;
 using And9.Service.Election.Senders;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -28,9 +30,6 @@ public class Startup
     public void ConfigureServices(IServiceCollection services)
     {
         AuthOptions.IssuerKey = Configuration["ISSUER_KEY"];
-
-        RabbitConnectionPool.SetConfiguration(Configuration);
-        services.AddSingleton(_ => RabbitConnectionPool.Factory.CreateConnection());
 
         services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect("and9.infra.redis"));
 
@@ -68,34 +67,22 @@ public class Startup
             };
         });
 
-        services.AddSingleton<AcceptCandidateRequestSender>();
-        services.AddSingleton<DeclineCandidateRequestSender>();
-        services.AddSingleton<RegisterCandidateRequestSender>();
-        services.AddSingleton<SendCandidateRequestSender>();
-        services.AddSingleton<SendLogMessageSender>();
-        services.AddSingleton<GeneratePasswordSender>();
-        services.AddSingleton<LoginSender>();
-        services.AddSingleton<SendDirectMessageSender>();
-        services.AddSingleton<SetPasswordSender>();
-        services.AddSingleton<RaiseMemberUpdateSender>();
-        services.AddSingleton<SyncUserSender>();
-        services.AddSingleton<RegisterSender>();
-        services.AddSingleton<CancelRegisterSender>();
-        services.AddSingleton<VoteSender>();
-        services.AddSingleton<CurrentElectionSender>();
-
-        services.AddSingleton<MemberCrudSender>();
-        services.AddSingleton<AwardCrudSender>();
-        services.AddSingleton<CandidateRequestCrudSender>();
-
         services.AddSignalR(options =>
         {
             options.EnableDetailedErrors = true;
-            options.MaximumParallelInvocationsPerClient = 16;
+            options.MaximumParallelInvocationsPerClient = 4;
         }).AddMessagePackProtocol();
 
-        services.AddHostedService<RaiseMemberUpdateListener>();
-        services.AddHostedService<RaiseElectionUpdateListener>();
+        services.WithBroker(Configuration)
+            .AppendConsumerWithoutResponse<RaiseElectionUpdateConsumerStrategy, int>()
+            .AppendConsumerWithResponse<RaiseMemberUpdateConsumerStrategy, RaiseMemberUpdateArg, Rank>()
+            .AddAuthSenders()
+            .AddGatewaySenders()
+            .AddAwardSenders()
+            .AddCoreSenders()
+            .AddElectionSenders()
+            .AddDiscordSenders()
+            .Build();
 
         services.AddHealthChecks()
             .AddRabbitMQ()

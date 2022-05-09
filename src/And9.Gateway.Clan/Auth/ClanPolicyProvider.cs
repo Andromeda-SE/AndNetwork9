@@ -12,14 +12,16 @@ namespace And9.Gateway.Clan.Auth;
 
 public class ClanPolicyProvider : IAuthorizationHandler
 {
-    private readonly IServiceScopeFactory _scopeFactory;
-
-    public ClanPolicyProvider(IServiceScopeFactory scopeFactory) => _scopeFactory = scopeFactory;
+    private IConnectionMultiplexer _redis;
+    private readonly ReadMemberByIdSender _readMemberByIdSender;
+    public ClanPolicyProvider(IConnectionMultiplexer redis, ReadMemberByIdSender readMemberByIdSender)
+    {
+        _redis = redis;
+        _readMemberByIdSender = readMemberByIdSender;
+    }
 
     public async Task HandleAsync(AuthorizationHandlerContext context)
     {
-        AsyncServiceScope scope = _scopeFactory.CreateAsyncScope();
-        await using ConfiguredAsyncDisposable _ = scope.ConfigureAwait(false);
         string? userId = context.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         if (!int.TryParse(userId, out int memberId))
         {
@@ -27,11 +29,9 @@ public class ClanPolicyProvider : IAuthorizationHandler
             return;
         }
 
-        MemberCrudSender memberCrudSender = scope.ServiceProvider.GetRequiredService<MemberCrudSender>();
-        Task<Member?> gettingMember = memberCrudSender.Read(memberId);
+        ValueTask<Member?> gettingMember = _readMemberByIdSender.CallAsync(memberId);
 
-        IConnectionMultiplexer redis = scope.ServiceProvider.GetRequiredService<IConnectionMultiplexer>();
-        IDatabase? db = redis.GetDatabase(AuthOptions.REDIS_DATABASE_ID, new());
+        IDatabase? db = _redis.GetDatabase(AuthOptions.REDIS_DATABASE_ID, new());
         string? tokenId = context.User.FindFirst(ClaimTypes.Hash)?.Value;
         try
         {

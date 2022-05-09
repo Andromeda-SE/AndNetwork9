@@ -10,13 +10,14 @@
 
   <ItemGroup>
     <PackageReference Include="AspNetCore.HealthChecks.Rabbitmq" Version="6.0.2" />
-    <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" Version="6.0.3" />
-    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.15.0" />
+    <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" Version="6.0.4" />
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.15.1" />
     <PackageReference Include="prometheus-net.AspNetCore" Version="6.0.0" />
     <PackageReference Include="prometheus-net.AspNetCore.HealthChecks" Version="6.0.0" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\And9.Gateway.Clan.Senders\And9.Gateway.Clan.Senders.csproj" />
     <ProjectReference Include="..\And9.Lib.Broker\And9.Lib.Broker.csproj" />
     <ProjectReference Include="..\And9.Lib.Utility\And9.Lib.Utility.csproj" />
     <ProjectReference Include="..\And9.Service.Core.Database\And9.Service.Core.Database.csproj" />

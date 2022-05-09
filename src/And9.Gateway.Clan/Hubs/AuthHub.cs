@@ -15,26 +15,25 @@ public class AuthHub : Hub, IAuthServerMethods
 {
     private readonly GeneratePasswordSender _generatePasswordSender;
     private readonly LoginSender _loginSender;
-    private readonly MemberCrudSender _memberCrudSender;
 
     private readonly IConnectionMultiplexer _redis;
     private readonly SendDirectMessageSender _sendDirectMessageSender;
     private readonly SetPasswordSender _setPasswordSender;
+    private readonly ReadMemberByIdSender _readMemberByIdSender;
 
     public AuthHub(
         GeneratePasswordSender generatePasswordSender,
         LoginSender loginSender,
         SendDirectMessageSender sendDirectMessageSender,
         SetPasswordSender setPasswordSender,
-        IConnectionMultiplexer redis,
-        MemberCrudSender memberCrudSender)
+        IConnectionMultiplexer redis, ReadMemberByIdSender readMemberByIdSender)
     {
         _generatePasswordSender = generatePasswordSender;
         _loginSender = loginSender;
         _sendDirectMessageSender = sendDirectMessageSender;
         _setPasswordSender = setPasswordSender;
         _redis = redis;
-        _memberCrudSender = memberCrudSender;
+        _readMemberByIdSender = readMemberByIdSender;
     }
 
     [AllowAnonymous]
@@ -44,7 +43,7 @@ public class AuthHub : Hub, IAuthServerMethods
         if (username == "MoryakSPb" && password == "@@@@@@")
         {
             string? newPassword = await _generatePasswordSender.CallAsync(1).ConfigureAwait(false);
-            IMember? member = await _memberCrudSender.Read(1).ConfigureAwait(false);
+            IMember? member = await _readMemberByIdSender.CallAsync(1).ConfigureAwait(false);
             if (member?.DiscordId is not null)
                 await _sendDirectMessageSender.CallAsync(new()
                 {
@@ -85,7 +84,7 @@ public class AuthHub : Hub, IAuthServerMethods
     {
         int memberId = int.Parse(Context.UserIdentifier!);
         string? newPassword = await _generatePasswordSender.CallAsync(memberId).ConfigureAwait(false);
-        IMember? member = await _memberCrudSender.Read(memberId).ConfigureAwait(false);
+        IMember? member = await _readMemberByIdSender.CallAsync(memberId).ConfigureAwait(false);
         if (member?.DiscordId is not null)
             await _sendDirectMessageSender.CallAsync(new()
             {

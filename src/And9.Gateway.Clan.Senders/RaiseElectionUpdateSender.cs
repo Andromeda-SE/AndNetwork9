@@ -1,13 +1,11 @@
 ﻿using And9.Lib.Broker;
-using Microsoft.Extensions.Logging;
-using RabbitMQ.Client;
+using And9.Lib.Broker.Senders;
 
 namespace And9.Gateway.Clan.Senders;
 
-public class RaiseElectionUpdateSender : BaseRabbitSenderWithoutResponse<int>
+[QueueName(QUEUE_NAME)]
+public class RaiseElectionUpdateSender : BrokerSenderWithoutResponse<int>
 {
     public const string QUEUE_NAME = "And9.Gateway.Clan.RaiseElectionUpdate";
-
-    public RaiseElectionUpdateSender(IConnection connection, ILogger<BaseRabbitSenderWithoutResponse<int>> logger)
-        : base(connection, QUEUE_NAME, logger) { }
+    public RaiseElectionUpdateSender(BrokerManager brokerManager) : base(brokerManager) { }
 }

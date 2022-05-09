@@ -1,13 +1,12 @@
 ﻿using And9.Lib.Broker;
+using And9.Lib.Broker.Senders;
 using And9.Service.Core.Abstractions.Models;
-using And9.Service.Core.Senders.Interfaces;
-using Microsoft.Extensions.Logging;
-using RabbitMQ.Client;
 
 namespace And9.Service.Core.Senders;
 
-public class ReadMemberBySteamIdSender : BaseRabbitSenderWithResponse<ulong, Member?>
+[QueueName(QUEUE_NAME)]
+public class ReadMemberBySteamIdSender : BrokerSenderWithResponse<ulong, Member?>
 {
-    public const string QUEUE_NAME = MemberCrudSender.QUEUE_NAME + "." + nameof(IMemberModelServiceMethods.ReadBySteamId);
-    internal ReadMemberBySteamIdSender(IConnection connection, ILogger<BaseRabbitSenderWithResponse<ulong, Member?>> logger) : base(connection, QUEUE_NAME, logger) { }
+    public const string QUEUE_NAME = "And9.Service.Core.Member.ReadBySteamId";
+    public ReadMemberBySteamIdSender(BrokerManager brokerManager) : base(brokerManager) { }
 }

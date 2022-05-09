@@ -6,7 +6,7 @@ scrape_configs:
   - job_name: 'prometheus'
     static_configs:
       - targets: ['and9.monitoring.prometheus:9090']
-
+      
   - job_name: 'docker'
     static_configs:
       - targets: ['localhost:9323']
@@ -14,3 +14,35 @@ scrape_configs:
   - job_name: 'and9.integration.discord'
     static_configs:
       - targets: ['and9.integration.discord:80']
+      
+  - job_name: 'and9.gateway.clan'
+    static_configs:
+      - targets: ['and9.gateway.clan:80']
+      
+  - job_name: 'and9.service.core'
+    static_configs:
+      - targets: ['and9.service.core:80']
+      
+  - job_name: 'and9.service.auth'
+    static_configs:
+      - targets: ['and9.service.auth:80']
+      
+  - job_name: 'and9.service.award'
+    static_configs:
+      - targets: ['and9.service.award:80']
+      
+  - job_name: 'and9.service.election'
+    static_configs:
+      - targets: ['and9.service.election:80']
+      
+  - job_name: 'and9.integration.steam'
+    static_configs:
+      - targets: ['and9.integration.steam:80']
+      
+  - job_name: 'and9.integration.vk'
+    static_configs:
+      - targets: ['and9.integration.vk:80']
+      
+  - job_name: 'and9.infra.broker'
+    static_configs:
+      - targets: ['and9.infra.broker:15692']

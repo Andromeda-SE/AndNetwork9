@@ -1,11 +1,12 @@
 ﻿using And9.Lib.Broker;
-using Microsoft.Extensions.Logging;
-using RabbitMQ.Client;
+using And9.Lib.Broker.Senders;
 
 namespace And9.Service.Core.Senders;
 
-public class AcceptCandidateRequestSender : BaseRabbitSenderWithoutResponse<int>
+[QueueName(QUEUE_NAME)]
+public class AcceptCandidateRequestSender : BrokerSenderWithoutResponse<int>
 {
-    public const string QUEUE_NAME = "And9.Service.Core.AcceptCandidateRequest";
-    public AcceptCandidateRequestSender(IConnection connection, ILogger<AcceptCandidateRequestSender> logger) : base(connection, QUEUE_NAME, logger) { }
+    public const string QUEUE_NAME = "And9.Service.Core.CandidateRequest.Accept";
+
+    public AcceptCandidateRequestSender(BrokerManager brokerManager) : base(brokerManager) { }
 }

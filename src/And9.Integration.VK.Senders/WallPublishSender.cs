@@ -1,13 +1,12 @@
 ﻿using And9.Lib.Broker;
-using Microsoft.Extensions.Logging;
-using RabbitMQ.Client;
+using And9.Lib.Broker.Senders;
 
 namespace And9.Integration.VK.Senders;
 
-public class WallPublishSender : BaseRabbitSenderWithoutResponse<string>
+[QueueName(QUEUE_NAME)]
+public class WallPublishSender : BrokerSenderWithoutResponse<string>
 {
     public const string QUEUE_NAME = "And9.Integration.Vk.WallPublish";
 
-    protected WallPublishSender(IConnection connection, ILogger<BaseRabbitSenderWithoutResponse<string>> logger) :
-        base(connection, QUEUE_NAME, logger) { }
+    public WallPublishSender(BrokerManager brokerManager) : base(brokerManager) { }
 }

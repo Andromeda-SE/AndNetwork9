@@ -6,10 +6,8 @@ namespace And9.Integration.VK.HealthChecks;
 public class VkHealthCheck : IHealthCheck
 {
     private readonly VkApi _vkApi;
-    public VkHealthCheck(VkApi vkApi)
-    {
-        _vkApi = vkApi;
-    }
+
+    public VkHealthCheck(VkApi vkApi) => _vkApi = vkApi;
 
     public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = default)
     {

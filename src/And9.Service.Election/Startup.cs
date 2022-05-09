@@ -1,8 +1,9 @@
-﻿using And9.Integration.Discord.Senders;
+﻿using And9.Gateway.Clan.Senders;
 using And9.Lib.Broker;
+using And9.Service.Core.Abstractions.Enums;
 using And9.Service.Core.Senders;
+using And9.Service.Election.ConsumerStrategies;
 using And9.Service.Election.Database;
-using And9.Service.Election.Listeners;
 using And9.Service.Election.Services.ElectionWatcher;
 using And9.Service.Election.Services.ElectionWatcher.Strategies;
 using Microsoft.EntityFrameworkCore;
@@ -14,32 +15,32 @@ public class Startup
 {
     public Startup(IConfiguration configuration) => Configuration = configuration;
     public IConfiguration Configuration { get; }
+
     public void ConfigureServices(IServiceCollection services)
     {
-        RabbitConnectionPool.SetConfiguration(Configuration);
-        services.AddSingleton(_ => RabbitConnectionPool.Factory.CreateConnection());
-
         services.AddDbContext<ElectionDataContext>(x => x.UseNpgsql(Configuration["Postgres:ConnectionString"]));
 
-        services.AddSingleton<MemberCrudSender>();
-        services.AddSingleton<SendLogMessageSender>();
+        services.WithBroker(Configuration)
+            .AppendConsumerWithResponse<VoteConsumerStrategy, (int MemberId, IReadOnlyDictionary<Direction, IReadOnlyDictionary<int?, int>> Votes), bool>()
+            .AppendConsumerWithResponse<RegisterConsumerStrategy, int, bool>()
+            .AppendConsumerWithCollectionResponse<CurrentElectionConsumerStrategy, int, Abstractions.Models.Election>()
+            .AppendConsumerWithResponse<CancelRegisterConsumerStrategy, int, bool>()
+            .AddGatewaySenders()
+            .AddCoreSenders()
+            .Build();
 
-        services.AddTransient<NewElectionStrategy>();
-        services.AddTransient<StartAnnouncementStrategy>();
-        services.AddTransient<StartVoteStrategy>();
+        services.AddScoped<NewElectionStrategy>();
+        services.AddScoped<StartAnnouncementStrategy>();
+        services.AddScoped<StartVoteStrategy>();
 
         services.AddHostedService<ElectionWatcher>();
-
-        services.AddHostedService<CurrentElectionListener>();
-        services.AddHostedService<RegisterListener>();
-        services.AddHostedService<CancelRegisterListener>();
-        services.AddHostedService<VoteListener>();
 
         services.AddHealthChecks()
             .AddDbContextCheck<ElectionDataContext>()
             .AddRabbitMQ()
             .ForwardToPrometheus();
     }
+
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
     {
         if (env.IsDevelopment()) app.UseDeveloperExceptionPage();

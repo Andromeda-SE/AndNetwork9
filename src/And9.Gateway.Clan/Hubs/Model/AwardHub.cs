@@ -10,20 +10,24 @@ namespace And9.Gateway.Clan.Hubs.Model;
 
 public class AwardHub : Hub<IModelCrudClientMethods>
 {
-    private readonly AwardCrudSender _awardCrudSender;
-    private readonly MemberCrudSender _memberCrudSender;
     private readonly SyncUserSender _syncUserSender;
+    private readonly CreateAwardSender _createAwardSender;
+    private readonly ReadAllAwardsSender _readAllAwardsSender;
+    private readonly ReadAwardSender _readAwardSender;
+    private readonly ReadMemberByIdSender _readMemberByIdSender;
 
-    public AwardHub(AwardCrudSender awardCrudSender, SyncUserSender syncUserSender, MemberCrudSender memberCrudSender)
+    public AwardHub(SyncUserSender syncUserSender, CreateAwardSender createAwardSender, ReadAllAwardsSender readAllAwardsSender, ReadAwardSender readAwardSender, ReadMemberByIdSender readMemberByIdSender)
     {
-        _awardCrudSender = awardCrudSender;
         _syncUserSender = syncUserSender;
-        _memberCrudSender = memberCrudSender;
+        _createAwardSender = createAwardSender;
+        _readAllAwardsSender = readAllAwardsSender;
+        _readAwardSender = readAwardSender;
+        _readMemberByIdSender = readMemberByIdSender;
     }
 
     public async Task Create(Award model)
     {
-        int id = await _awardCrudSender.Create(new()
+        int id = await _createAwardSender.CallAsync(new()
         {
             AutomationTag = null,
             Date = DateOnly.FromDateTime(DateTime.UtcNow),
@@ -33,17 +37,17 @@ public class AwardHub : Hub<IModelCrudClientMethods>
             Description = model.Description,
         }).ConfigureAwait(false);
         await Clients.All.ModelUpdated(id, ModelState.Created).ConfigureAwait(false);
-        await _syncUserSender.CallAsync(await _memberCrudSender.Read(model.MemberId).ConfigureAwait(false)).ConfigureAwait(false);
+        await _syncUserSender.CallAsync(await _readMemberByIdSender.CallAsync(model.MemberId).ConfigureAwait(false)).ConfigureAwait(false);
     }
 
     public Task Delete(int id) => throw new NotSupportedException();
 
     public Task Update(Award model) => throw new NotSupportedException();
 
-    public async Task<Award?> Read(int id) => await _awardCrudSender.Read(id).ConfigureAwait(false);
+    public async Task<Award?> Read(int id) => await _readAwardSender.CallAsync(id).ConfigureAwait(false);
 
     public async IAsyncEnumerable<Award> ReadAll([EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
-        await foreach (Award award in _awardCrudSender.ReadAll(cancellationToken).WithCancellation(cancellationToken).ConfigureAwait(false)) yield return award;
+        await foreach (Award award in _readAllAwardsSender.CallAsync(0, cancellationToken).ConfigureAwait(false)) yield return award;
     }
 }

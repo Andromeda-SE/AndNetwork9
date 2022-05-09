@@ -1,6 +1,8 @@
-﻿using And9.Lib.Broker;
+﻿using And9.Gateway.Clan.Senders;
+using And9.Lib.Broker;
+using And9.Service.Core.Abstractions.Models;
+using And9.Service.Core.ConsumerStrategy;
 using And9.Service.Core.Database;
-using And9.Service.Core.Listeners;
 using And9.Service.Core.Senders;
 using Microsoft.EntityFrameworkCore;
 using Prometheus;
@@ -11,23 +13,27 @@ public class Startup
 {
     public Startup(IConfiguration configuration) => Configuration = configuration;
     public IConfiguration Configuration { get; }
+
     public void ConfigureServices(IServiceCollection services)
     {
-        RabbitConnectionPool.SetConfiguration(Configuration);
-        services.AddSingleton(_ => RabbitConnectionPool.Factory.CreateConnection());
-
         services.AddDbContext<CoreDataContext>(x => x.UseNpgsql(Configuration["Postgres:ConnectionString"]));
 
-        services.AddScoped<MemberCrudSender>();
-
-        services.AddHostedService<AcceptCandidateListener>();
-        services.AddHostedService<DeclineCandidateListener>();
-        services.AddHostedService<RegisterCandidateRequestListener>();
-        services.AddHostedService<MemberCrudListener>();
-        services.AddHostedService<CandidateRequestListener>();
-        services.AddHostedService<ReadMemberBySteamIdListener>();
-        services.AddHostedService<ReadMemberByDiscordIdListener>();
-        services.AddHostedService<ReadMemberByNicknameListener>();
+        services.WithBroker(Configuration)
+            .AppendConsumerWithoutResponse<AcceptCandidateRequestConsumerStrategy, int>()
+            .AppendConsumerWithResponse<CreateMemberConsumerStrategy, Member, int>()
+            .AppendConsumerWithoutResponse<DeclineCandidateRequestConsumerStrategy, int>()
+            .AppendConsumerWithCollectionResponse<ReadAllCandidateRequestConsumerStrategy, int, CandidateRegisteredRequest>()
+            .AppendConsumerWithCollectionResponse<ReadAllMembersConsumerStrategy, int, Member>()
+            .AppendConsumerWithResponse<ReadCandidateRequestConsumerStrategy, int, CandidateRegisteredRequest?>()
+            .AppendConsumerWithResponse<ReadMemberByDiscordIdConsumerStrategy, ulong, Member?>()
+            .AppendConsumerWithResponse<ReadMemberByIdConsumerStrategy, int, Member?>()
+            .AppendConsumerWithResponse<ReadMemberByNicknameConsumerStrategy, string, Member?>()
+            .AppendConsumerWithResponse<ReadMemberBySteamIdConsumerStrategy, ulong, Member?>()
+            .AppendConsumerWithResponse<RegisterCandidateRequestConsumerStrategy, CandidateRequest, int>()
+            .AppendConsumerWithResponse<UpdateMemberConsumerStrategy, Member, Member>()
+            .AddCoreSenders()
+            .AddGatewaySenders()
+            .Build();
 
         services.AddHealthChecks()
             .AddDbContextCheck<CoreDataContext>()

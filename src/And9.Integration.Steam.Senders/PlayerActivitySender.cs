@@ -1,16 +1,12 @@
 ﻿using And9.Integration.Steam.Senders.Models;
 using And9.Lib.Broker;
-using Microsoft.Extensions.Logging;
-using RabbitMQ.Client;
+using And9.Lib.Broker.Senders;
 
 namespace And9.Integration.Steam.Senders;
 
-public class PlayerActivitySender : BaseRabbitSenderWithResponse<ulong[], PlayerActivityResultNode[]>
+[QueueName(QUEUE_NAME)]
+public class PlayerActivitySender : BrokerSenderWithResponse<ulong[], PlayerActivityResultNode[]>
 {
     public const string QUEUE_NAME = "And9.Integration.Steam.PlayerActivity";
-
-    public PlayerActivitySender(IConnection connection,
-        ILogger<BaseRabbitSenderWithResponse<ulong[], PlayerActivityResultNode[]>> logger) : base(connection,
-        QUEUE_NAME,
-        logger) { }
+    public PlayerActivitySender(BrokerManager brokerManager) : base(brokerManager) { }
 }

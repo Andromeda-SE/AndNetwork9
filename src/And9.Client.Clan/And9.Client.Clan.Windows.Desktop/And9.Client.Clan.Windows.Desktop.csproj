@@ -24,21 +24,17 @@
 		<PackageReference Include="CommunityToolkit.WinUI.UI.Controls.DataGrid" Version="7.1.2" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0" />
 		<PackageReference Include="Microsoft.Toolkit.Mvvm" Version="7.1.2" />
-		<PackageReference Include="Microsoft.WindowsAppSDK" Version="1.0.0" />
+		<PackageReference Include="Microsoft.WindowsAppSDK" Version="1.0.3" />
 		<PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.22000.197" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="6.0.0" />
 		<PackageReference Include="Microsoft.Xaml.Behaviors.WinUI.Managed" Version="2.0.8" />
 		<PackageReference Include="Uno.Core.Extensions.Logging.Singleton" Version="4.0.1" />
-		<PackageReference Include="WinUIEx" Version="1.1.0" />
+		<PackageReference Include="WinUIEx" Version="1.3.0" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\..\And9.Client.Clan.Config\And9.Client.Clan.Config.csproj" />
-	  <ProjectReference Include="..\..\And9.Gateway.Clan.Client\And9.Gateway.Clan.Client.csproj" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+		<ProjectReference Include="..\..\And9.Gateway.Clan.Client\And9.Gateway.Clan.Client.csproj" />
+	  <ProjectReference Include="..\And9.Client.Clan.Config\And9.Client.Clan.Config.csproj" />
 	</ItemGroup>
 
 	<!--<ItemGroup>

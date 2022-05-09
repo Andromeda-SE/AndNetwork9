@@ -186,3 +186,14 @@ services:
       interval: 30s
       timeout: 10s
       retries: 5
+  
+  and9.monitoring.grafana:
+    image: grafana/grafana:main
+    container_name: And9.Monitoring.Grafana
+    ports:
+    - 3000:3000 
+    healthcheck:
+      test: wget --spider -S --no-check-certificate "http://localhost:3000/api/health" || exit 1
+      interval: 30s
+      timeout: 10s
+      retries: 5

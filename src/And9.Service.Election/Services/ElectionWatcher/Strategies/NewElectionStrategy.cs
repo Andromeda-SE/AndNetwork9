@@ -14,31 +14,34 @@ namespace And9.Service.Election.Services.ElectionWatcher.Strategies;
 
 public class NewElectionStrategy : IElectionWatcherStrategy
 {
-    private readonly MemberCrudSender _memberCrudSender;
+    private readonly ElectionDataContext _electionDataContext;
+    private readonly ReadAllMembersSender _readAllMembersSender;
+    private readonly ReadMemberByIdSender _readMemberByIdSender;
     private readonly SendLogMessageSender _sendLogMessageSender;
-    private readonly IServiceScopeFactory _serviceScopeFactory;
 
-    public NewElectionStrategy(MemberCrudSender memberCrudSender, SendLogMessageSender sendLogMessageSender, IServiceScopeFactory serviceScopeFactory)
+    public NewElectionStrategy(
+        ElectionDataContext electionDataContext,
+        ReadAllMembersSender readAllMembersSender, 
+        ReadMemberByIdSender readMemberByIdSender,
+        SendLogMessageSender sendLogMessageSender)
     {
-        _memberCrudSender = memberCrudSender;
+        _electionDataContext = electionDataContext;
+        _readAllMembersSender = readAllMembersSender;
+        _readMemberByIdSender = readMemberByIdSender;
         _sendLogMessageSender = sendLogMessageSender;
-        _serviceScopeFactory = serviceScopeFactory;
     }
 
     public async Task UpdateElections()
     {
-        AsyncServiceScope scope = _serviceScopeFactory.CreateAsyncScope();
-        await using ConfiguredAsyncDisposable configuredAsyncDisposable = scope.ConfigureAwait(false);
-        ElectionDataContext electionDataContext = scope.ServiceProvider.GetRequiredService<ElectionDataContext>();
-        Member[] oldAdvisors = await _memberCrudSender.ReadAll(CancellationToken.None).Where(x => x.Rank == Rank.Advisor).ToArrayAsync().ConfigureAwait(false);
+        Member[] oldAdvisors = await _readAllMembersSender.CallAsync(0).Where(x => x.Rank == Rank.Advisor).ToArrayAsync().ConfigureAwait(false);
         StringBuilder result = new(4096);
         result.AppendLine("Результаты выборов: ");
         result.AppendLine();
-        await foreach (Abstractions.Models.Election election in electionDataContext.GetCurrentElectionsAsync().ConfigureAwait(false))
+        await foreach (Abstractions.Models.Election election in _electionDataContext.GetCurrentElectionsAsync().ConfigureAwait(false))
         {
             if (election.Status != ElectionStatus.Announcement) throw new();
             election.Status = ElectionStatus.Ended;
-            electionDataContext.Elections.Add(new()
+            _electionDataContext.Elections.Add(new()
             {
                 AdvisorsStartDate = election.AdvisorsStartDate.AddDays(90),
                 AgainstAllVotes = 0,
@@ -54,7 +57,7 @@ public class NewElectionStrategy : IElectionWatcherStrategy
             IElectionVote? winner = election.Votes.Where(x => !x.Voted.HasValue).MaxBy(x => x.Votes);
             if (winner is null) continue;
             if (election.AgainstAllVotes > winner.Votes) continue;
-            Member member = await _memberCrudSender.Read(winner.MemberId).ConfigureAwait(false) ?? throw new();
+            Member member = await _readMemberByIdSender.CallAsync(winner.MemberId).ConfigureAwait(false) ?? throw new();
             member.Rank = Rank.Advisor;
             member.Direction = election.Direction;
 
@@ -75,7 +78,7 @@ public class NewElectionStrategy : IElectionWatcherStrategy
             foreach ((int? id, int votes) in allVotes)
             {
                 string nickname = id is not null
-                    ? (await _memberCrudSender.Read(winner.MemberId).ConfigureAwait(false) ?? throw new()).Nickname
+                    ? (await _readMemberByIdSender.CallAsync(winner.MemberId).ConfigureAwait(false) ?? throw new()).Nickname
                     : "Против всех";
                 result.Append(nickname.PadLeft(24, ' '));
                 result.Append(' ');
@@ -105,8 +108,8 @@ public class NewElectionStrategy : IElectionWatcherStrategy
         }
 
         await Task.WhenAll(
-                _sendLogMessageSender.CallAsync(result.ToString()),
-                electionDataContext.SaveChangesAsync())
+                _sendLogMessageSender.CallAsync(result.ToString()).AsTask(),
+                _electionDataContext.SaveChangesAsync())
             .ConfigureAwait(false);
     }
 }

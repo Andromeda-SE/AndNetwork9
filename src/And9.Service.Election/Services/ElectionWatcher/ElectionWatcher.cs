@@ -8,20 +8,10 @@ namespace And9.Service.Election.Services.ElectionWatcher;
 
 public sealed class ElectionWatcher : IHostedService
 {
-    private readonly NewElectionStrategy _newElectionStrategy;
     private readonly IServiceScopeFactory _serviceScopeFactory;
-    private readonly StartAnnouncementStrategy _startAnnouncementStrategy;
-    private readonly StartVoteStrategy _startVoteStrategy;
 
-    public ElectionWatcher(
-        IServiceScopeFactory serviceScopeFactory,
-        NewElectionStrategy newElectionStrategy,
-        StartVoteStrategy startVoteStrategy,
-        StartAnnouncementStrategy startAnnouncementStrategy)
+    public ElectionWatcher(IServiceScopeFactory serviceScopeFactory)
     {
-        _newElectionStrategy = newElectionStrategy;
-        _startVoteStrategy = startVoteStrategy;
-        _startAnnouncementStrategy = startAnnouncementStrategy;
         _serviceScopeFactory = serviceScopeFactory;
     }
 
@@ -89,9 +79,9 @@ public sealed class ElectionWatcher : IHostedService
         Abstractions.Models.Election[] elections = await electionDataContext.GetCurrentElectionsAsync().ToArrayAsync(token).ConfigureAwait(false);
         IElectionWatcherStrategy electionWatcherStrategy = elections.First().Status switch
         {
-            ElectionStatus.Registration => _startVoteStrategy,
-            ElectionStatus.Voting => _startAnnouncementStrategy,
-            ElectionStatus.Announcement => _newElectionStrategy,
+            ElectionStatus.Registration => scope.ServiceProvider.GetRequiredService<StartVoteStrategy>(),
+            ElectionStatus.Voting => scope.ServiceProvider.GetRequiredService<StartAnnouncementStrategy>(),
+            ElectionStatus.Announcement => scope.ServiceProvider.GetRequiredService<NewElectionStrategy>(),
             _ => throw new ArgumentOutOfRangeException(),
         };
         await electionWatcherStrategy.UpdateElections().ConfigureAwait(false);

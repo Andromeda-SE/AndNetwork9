@@ -2,6 +2,8 @@
 
 FROM mcr.microsoft.com/dotnet/aspnet:6.0-alpine AS base
 RUN apk update
+RUN apk add --no-cache icu-libs
+RUN apk add --no-cache tzdata
 RUN apk add --no-cache curl
 WORKDIR /app
 EXPOSE 80

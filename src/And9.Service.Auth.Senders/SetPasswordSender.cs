@@ -1,11 +1,11 @@
 ﻿using And9.Lib.Broker;
-using Microsoft.Extensions.Logging;
-using RabbitMQ.Client;
+using And9.Lib.Broker.Senders;
 
 namespace And9.Service.Auth.Senders;
 
-public class SetPasswordSender : BaseRabbitSenderWithoutResponse<(int memberId, string newPassword)>
+[QueueName(QUEUE_NAME)]
+public class SetPasswordSender : BrokerSenderWithoutResponse<(int memberId, string newPassword)>
 {
     public const string QUEUE_NAME = "And9.Service.Auth.SetPassword";
-    public SetPasswordSender(IConnection connection, ILogger<BaseRabbitSenderWithoutResponse<(int memberId, string newPassword)>> logger) : base(connection, QUEUE_NAME, logger) { }
+    public SetPasswordSender(BrokerManager brokerManager) : base(brokerManager) { }
 }
