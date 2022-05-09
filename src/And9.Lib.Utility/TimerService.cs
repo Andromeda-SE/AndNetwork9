@@ -2,6 +2,7 @@
 
 namespace And9.Lib.Utility;
 
+[Obsolete("Use Quartz library")]
 public abstract class TimerService : IHostedService
 {
     protected CancellationTokenSource? CancellationTokenSource { get; set; }

@@ -1,5 +1,6 @@
 ﻿namespace And9.Lib.Utility;
 
+[Obsolete("Use Quartz library")]
 public class FuncTimer : TimerService
 {
     private readonly Func<Task> _func;
