@@ -1,6 +1,6 @@
 ﻿using And9.Lib.Models.Abstractions.Interfaces;
 
-namespace And9.Service.Squad.Abstractions.Interfaces;
+namespace And9.Service.Core.Abstractions.Interfaces;
 
 public interface ISquadPart : IId
 {

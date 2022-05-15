@@ -1,4 +1,5 @@
 ﻿using And9.Service.Core.Abstractions.Enums;
+using And9.Service.Core.Abstractions.Interfaces;
 using And9.Service.Core.Abstractions.Models;
 
 namespace And9.Service.Core.API.Interfaces;
@@ -13,9 +14,34 @@ public interface ICoreServerMethods
 
     Task ChangeNickname(string newNickname);
     Task ChangeRealName(string newRealName);
-    Task ChangeDirection(Direction direction);
     Task ChangeTimezone(string timezoneId);
 
     Task Kick(int memberId);
     Task Exile(int memberId);
+
+    Task CreateSquad(short? number);
+    Task DisbandSquad();
+    Task<ISquad> ReadSquad(short number);
+    IAsyncEnumerable<ISquad> ReadAllSquads();
+
+    Task AppendSquadName(short number, string name);
+
+    Task CreateSquadPart(int leaderId);
+    Task MoveMemberToSquadPart(short targetSquadPart, int memberId);
+    Task SetSquadPartLeader(int memberId);
+
+    Task SendSquadJoinRequest(short squadNumber, int memberId);
+    Task AcceptSquadJoinRequest(short squadNumber, int memberId);
+    Task DeclineSquadJoinRequest(short squadNumber, int memberId);
+    Task CancelSquadJoinRequest(short squadNumber);
+    IAsyncEnumerable<ISquadRequest> ReadSquadJoinRequests(short squadNumber);
+
+    Task RiseAuxiliary(int memberId);
+    Task DemoteAuxiliary(int memberId);
+
+    Task KickFromSquad(int memberId);
+
+    IAsyncEnumerable<ISquadMembershipHistoryEntry> ReadSquadMembershipHistory(short squadNumber);
+    IAsyncEnumerable<ISquadMembershipHistoryEntry> ReadMemberSquadMembershipHistory(int memberId);
+
 }

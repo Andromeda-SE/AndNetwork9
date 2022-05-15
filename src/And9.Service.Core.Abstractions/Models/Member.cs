@@ -33,13 +33,17 @@ public record Member : IMember
     [Key(8)]
     public Rank Rank { get; set; }
     [Key(9)]
-    public Direction Direction { get; set; }
+    public IList<MemberSpecialization> Specializations { get; set; } = new List<MemberSpecialization>();
     [Key(10)]
     public bool IsSquadCommander { get; set; }
     [Key(11)]
     public short? SquadNumber { get; set; }
+    [IgnoreMember]
+    public Squad? Squad { get; set; }
     [Key(12)]
     public short SquadPartNumber { get; set; }
+    [IgnoreMember]
+    public SquadPart? SquadPart { get; set; }
     [Key(13)]
     [MessagePackFormatter(typeof(TimeZoneInfoFormatter))]
     [JsonConverter(typeof(TimeZoneInfoConverter))]
@@ -48,10 +52,10 @@ public record Member : IMember
     [MessagePackFormatter(typeof(DateOnlyFormatter))]
     [JsonConverter(typeof(DateOnlyConverter))]
     public DateOnly JoinDate { get; set; }
-    [Key(15)]
-    [MessagePackFormatter(typeof(DateOnlyFormatter))]
-    [JsonConverter(typeof(DateOnlyConverter))]
-    public DateOnly LastDirectionChange { get; set; }
+    [IgnoreMember]
+    public IList<SquadMembershipHistoryEntry> SquadMembershipHistoryEntries { get; set; } = new List<SquadMembershipHistoryEntry>();
+    [IgnoreMember]
+    public IList<SquadRequest> SquadRequests { get; set; } = new List<SquadRequest>();
     [Key(16)]
     public DateTime LastChanged { get; set; }
     [Key(17)]

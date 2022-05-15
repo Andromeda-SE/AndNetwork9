@@ -86,7 +86,6 @@ public class DiscordBot : DiscordSocketClient, IHostedService, IAsyncDisposable
         {
             int id = await _createMemberSender.CallAsync(new()
             {
-                Direction = Direction.None,
                 Rank = Rank.Guest,
                 TimeZone = null,
                 DiscordId = user.Id,
@@ -98,7 +97,6 @@ public class DiscordBot : DiscordSocketClient, IHostedService, IAsyncDisposable
                 SquadPartNumber = 0,
                 JoinDate = DateOnly.MinValue,
                 MicrosoftId = null,
-                LastDirectionChange = DateOnly.MinValue,
                 SquadNumber = null,
                 SteamId = null,
                 TelegramId = null,

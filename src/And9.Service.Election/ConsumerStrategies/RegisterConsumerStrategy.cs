@@ -11,7 +11,7 @@ using And9.Service.Election.Senders;
 namespace And9.Service.Election.ConsumerStrategies;
 
 [QueueName(RegisterSender.QUEUE_NAME)]
-public class RegisterConsumerStrategy : IBrokerConsumerWithResponseStrategy<int, bool>
+public class RegisterConsumerStrategy : IBrokerConsumerWithResponseStrategy<(int memberId, Direction direction), bool>
 {
     private readonly ElectionDataContext _electionDataContext;
     private readonly RaiseElectionUpdateSender _raiseElectionUpdateSender;
@@ -24,19 +24,20 @@ public class RegisterConsumerStrategy : IBrokerConsumerWithResponseStrategy<int,
         _readMemberByIdSender = readMemberByIdSender;
     }
 
-    public async ValueTask<bool> ExecuteAsync(int request)
+    public async ValueTask<bool> ExecuteAsync((int, Direction) request)
     {
-        Member? member = await _readMemberByIdSender.CallAsync(request).ConfigureAwait(false);
+        (int memberId, Direction direction) = request;
+        Member? member = await _readMemberByIdSender.CallAsync(memberId).ConfigureAwait(false);
         if (member?.Rank is null or <= Rank.None or Rank.FirstAdvisor) return false;
-        if (member.Direction <= Direction.None) return false;
+        if (direction <= Direction.None) return false;
 
-        (short id, _, ElectionStatus status) = await _electionDataContext.GetCurrentElectionStatusAsync(member.Direction).ConfigureAwait(false);
+        (short id, _, ElectionStatus status) = await _electionDataContext.GetCurrentElectionStatusAsync(direction).ConfigureAwait(false);
         if (status is not ElectionStatus.Registration) return false;
-        if (_electionDataContext.ElectionVotes.Any(x => x.MemberId == request)) return false;
+        if (_electionDataContext.ElectionVotes.Any(x => x.MemberId == memberId)) return false;
 
         _electionDataContext.ElectionVotes.Add(new()
         {
-            Direction = member.Direction,
+            Direction = direction,
             ElectionId = id,
             MemberId = member.Id,
             Voted = null,

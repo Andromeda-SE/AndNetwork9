@@ -19,11 +19,10 @@ public class CreateMemberConsumerStrategy : IBrokerConsumerWithResponseStrategy<
 
         EntityEntry<Member> result = await _coreDataContext.Members.AddAsync(new()
         {
-            Direction = entity.Direction,
+            //Direction = entity.Direction,
             DiscordId = entity.DiscordId,
             IsSquadCommander = entity.IsSquadCommander,
             JoinDate = entity.JoinDate,
-            LastDirectionChange = DateOnly.FromDateTime(DateTime.UtcNow),
             MicrosoftId = entity.MicrosoftId,
             Nickname = entity.Nickname,
             Rank = entity.Rank,

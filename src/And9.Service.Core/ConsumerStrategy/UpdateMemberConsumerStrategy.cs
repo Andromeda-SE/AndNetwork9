@@ -20,18 +20,18 @@ public class UpdateMemberConsumerStrategy : IBrokerConsumerWithResponseStrategy<
         Member? member = await _coreDataContext.Members.FindAsync(entity.Id).ConfigureAwait(false);
         if (member is null) throw new ArgumentException("Member not found", nameof(entity));
 
-        if (member.Direction != entity.Direction)
+        /*if (member.Direction != entity.Direction)
         {
             member.Direction = entity.Direction;
             member.LastDirectionChange = DateOnly.FromDateTime(DateTime.UtcNow);
-        }
+        }*/
 
         if (member.DiscordId != entity.DiscordId) member.DiscordId = entity.DiscordId;
         if (member.IsSquadCommander != entity.IsSquadCommander) member.IsSquadCommander = entity.IsSquadCommander;
         if (member.JoinDate != entity.JoinDate) member.JoinDate = entity.JoinDate;
         if (member.MicrosoftId != entity.MicrosoftId) member.MicrosoftId = entity.MicrosoftId;
         if (member.Nickname != entity.Nickname) member.Nickname = entity.Nickname;
-        //if (member.Rank != entity.Rank) member.Rank = entity.Rank;
+        if (member.Rank != entity.Rank) member.Rank = entity.Rank;
         if (member.RealName != entity.RealName) member.RealName = entity.RealName;
         if (member.SquadNumber != entity.SquadNumber) member.SquadNumber = entity.SquadNumber;
         if (member.SquadPartNumber != entity.SquadPartNumber) member.SquadPartNumber = entity.SquadPartNumber;

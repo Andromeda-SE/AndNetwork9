@@ -30,11 +30,9 @@ public class RegisterCandidateRequestConsumerStrategy : IBrokerConsumerWithRespo
             {
                 EntityEntry<Member> memberEntry = await _coreDataContext.Members.AddAsync(new()
                 {
-                    Direction = Direction.None,
                     DiscordId = request.DiscordId,
                     IsSquadCommander = false,
                     JoinDate = DateOnly.MaxValue,
-                    LastDirectionChange = DateOnly.MinValue,
                     MicrosoftId = null,
                     Nickname = request.Nickname,
                     Rank = request.AuxiliarySquad is null ? Rank.Candidate : Rank.Guest,

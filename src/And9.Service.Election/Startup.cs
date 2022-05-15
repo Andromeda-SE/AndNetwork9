@@ -22,7 +22,7 @@ public class Startup
 
         services.WithBroker(Configuration)
             .AppendConsumerWithResponse<VoteConsumerStrategy, (int MemberId, IReadOnlyDictionary<Direction, IReadOnlyDictionary<int?, int>> Votes), bool>()
-            .AppendConsumerWithResponse<RegisterConsumerStrategy, int, bool>()
+            .AppendConsumerWithResponse<RegisterConsumerStrategy, (int memberId, Direction direction), bool>()
             .AppendConsumerWithCollectionResponse<CurrentElectionConsumerStrategy, int, Abstractions.Models.Election>()
             .AppendConsumerWithResponse<CancelRegisterConsumerStrategy, int, bool>()
             .AddGatewaySenders()

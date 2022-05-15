@@ -105,17 +105,6 @@ public class CoreHub : Hub<ICoreClientMethods>, ICoreServerMethods
     }
 
     [Authorize]
-    public async Task ChangeDirection(Direction direction)
-    {
-        Member? caller = await _readMemberByIdSender.CallAsync(int.Parse(Context.UserIdentifier!)).ConfigureAwait(false);
-        if (caller is null) throw new ArgumentException("Member not found");
-        if (caller.LastDirectionChange.AddDays(14) > DateOnly.FromDateTime(DateTime.UtcNow)) throw new ArgumentException("Dircetion change not allowed");
-        caller.Direction = direction;
-        await _updateMemberSender.CallAsync(caller).ConfigureAwait(false);
-        await _sendLogMessageSender.CallAsync(string.Format("Игрок **{0}** сменил направление на «{1}»", caller.Nickname, direction.GetDisplayString())).ConfigureAwait(false);
-    }
-
-    [Authorize]
     public async Task ChangeTimezone(string? timezoneId)
     {
         Member? caller = await _readMemberByIdSender.CallAsync(int.Parse(Context.UserIdentifier!)).ConfigureAwait(false);

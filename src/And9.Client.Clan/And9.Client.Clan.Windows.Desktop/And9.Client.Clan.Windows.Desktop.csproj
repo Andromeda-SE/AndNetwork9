@@ -14,6 +14,12 @@
 		<TransformOutOfDateOnly>false</TransformOutOfDateOnly>
 		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+	  <NoWarn>CA1416</NoWarn>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+	  <NoWarn>CA1416</NoWarn>
+	</PropertyGroup>
 
 	<ItemGroup>
 		<Manifest Include="$(ApplicationManifest)" />

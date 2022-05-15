@@ -29,8 +29,7 @@ public class AcceptCandidateRequestConsumerStrategy : IBrokerConsumerWithoutResp
 
         request.Accepted = true;
         request.Member.Rank = Rank.Neophyte;
-        request.Member.Direction = Direction.Training;
-        request.Member.JoinDate = request.Member.LastDirectionChange = DateOnly.FromDateTime(DateTime.UtcNow);
+        request.Member.JoinDate = DateOnly.FromDateTime(DateTime.UtcNow);
 
         await _coreDataContext.SaveChangesAsync().ConfigureAwait(false);
         await _raiseMemberUpdateSender.CallAsync(new()

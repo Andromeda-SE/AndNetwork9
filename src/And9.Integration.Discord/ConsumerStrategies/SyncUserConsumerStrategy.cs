@@ -45,11 +45,6 @@ public class SyncUserConsumerStrategy : IBrokerConsumerWithoutResponseStrategy<M
                         && member.Rank >= Rank.Neophyte)
                         rolesId.Add(role.DiscordId);
                     break;
-                case DiscordRoleScope.Direction:
-                    if (member.Direction == role.Direction
-                        && member.Rank >= Rank.Neophyte)
-                        rolesId.Add(role.DiscordId);
-                    break;
                 case DiscordRoleScope.Advisor:
                     if (member.Rank >= Rank.Advisor) rolesId.Add(role.DiscordId);
                     break;

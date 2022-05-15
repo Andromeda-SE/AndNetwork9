@@ -8,7 +8,7 @@ namespace And9.Service.Auth.Abstractions.Interfaces;
 public interface IAccessRule : IId
 {
     Rank MinRank { get; }
-    Direction[] Directions { get; }
+    //Direction[] Directions { get; }
     public short? SquadNumber { get; }
     public short? SquadPartNumber { get; }
 
@@ -17,8 +17,8 @@ public interface IAccessRule : IId
     public Expression<Func<IMember, bool>> HasAccessExpression => member => member.Rank == Rank.FirstAdvisor
                                                                             || AllowedMembersIds.Any(
                                                                                 x => x == member.Id)
-                                                                            || Directions.Any(
-                                                                                x => x == member.Direction)
+                                                                            /*|| Directions.Any(
+                                                                                x => x == member.Direction)*/
                                                                             && member.Rank >= MinRank
                                                                             && (
                                                                                 SquadNumber == null
