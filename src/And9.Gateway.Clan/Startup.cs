@@ -111,6 +111,7 @@ public class Startup
 
             endpoints.MapHub<MemberHub>("hub/model/member");
             endpoints.MapHub<AwardHub>("hub/model/award");
+            endpoints.MapHub<SquadHub>("hub/model/squad");
         });
     }
 }

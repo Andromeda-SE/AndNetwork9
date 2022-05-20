@@ -1,7 +1,7 @@
 ﻿using And9.Gateway.Clan.Senders;
 using And9.Service.Award.Database;
 using And9.Service.Core.Abstractions.Enums;
-using And9.Service.Core.Senders;
+using And9.Service.Core.Senders.Member;
 using Quartz;
 
 namespace And9.Service.Award.Jobs;

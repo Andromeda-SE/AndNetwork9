@@ -7,7 +7,7 @@ using And9.Lib.Broker.ConsumerStrategy;
 using And9.Lib.Models.Abstractions;
 using And9.Service.Core.Abstractions.Enums;
 using And9.Service.Core.Abstractions.Models;
-using And9.Service.Core.Senders;
+using And9.Service.Core.Senders.Member;
 using Microsoft.AspNetCore.SignalR;
 
 namespace And9.Gateway.Clan.ConsumerStrategies;

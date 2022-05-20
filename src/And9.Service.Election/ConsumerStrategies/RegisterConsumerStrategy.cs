@@ -3,7 +3,7 @@ using And9.Lib.Broker;
 using And9.Lib.Broker.ConsumerStrategy;
 using And9.Service.Core.Abstractions.Enums;
 using And9.Service.Core.Abstractions.Models;
-using And9.Service.Core.Senders;
+using And9.Service.Core.Senders.Member;
 using And9.Service.Election.Abstractions.Enums;
 using And9.Service.Election.Database;
 using And9.Service.Election.Senders;

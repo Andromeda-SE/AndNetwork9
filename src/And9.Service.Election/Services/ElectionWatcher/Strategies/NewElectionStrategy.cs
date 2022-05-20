@@ -4,7 +4,7 @@ using And9.Integration.Discord.Senders;
 using And9.Service.Core.Abstractions;
 using And9.Service.Core.Abstractions.Enums;
 using And9.Service.Core.Abstractions.Models;
-using And9.Service.Core.Senders;
+using And9.Service.Core.Senders.Member;
 using And9.Service.Election.Abstractions.Enums;
 using And9.Service.Election.Abstractions.Interfaces;
 using And9.Service.Election.Database;
@@ -35,10 +35,7 @@ public class NewElectionStrategy : IElectionWatcherStrategy
         StringBuilder result = new(4096);
         result.AppendLine("Результаты выборов: ");
         result.AppendLine();
-        await foreach (Member oldAdvisor in _readAllMembersSender.CallAsync(0).Where(x => x.Rank == Rank.Advisor).ConfigureAwait(false))
-        {
-            oldAdvisor.Rank = Rank.Neophyte;
-        }
+        await foreach (Member oldAdvisor in _readAllMembersSender.CallAsync(0).Where(x => x.Rank == Rank.Advisor).ConfigureAwait(false)) oldAdvisor.Rank = Rank.Neophyte;
         await foreach (Abstractions.Models.Election election in _electionDataContext.GetCurrentElectionsAsync().ConfigureAwait(false))
         {
             if (election.Status != ElectionStatus.Announcement) throw new();

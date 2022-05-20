@@ -1,5 +1,4 @@
-﻿using And9.Service.Core.Abstractions.Enums;
-using And9.Service.Core.Abstractions.Interfaces;
+﻿using And9.Service.Core.Abstractions.Interfaces;
 using And9.Service.Core.Abstractions.Models;
 
 namespace And9.Service.Core.API.Interfaces;
@@ -29,12 +28,14 @@ public interface ICoreServerMethods
     Task CreateSquadPart(int leaderId);
     Task MoveMemberToSquadPart(short targetSquadPart, int memberId);
     Task SetSquadPartLeader(int memberId);
+    Task SetSquadPartLeader(short targetSquadPart, int memberId);
 
-    Task SendSquadJoinRequest(short squadNumber, int memberId);
-    Task AcceptSquadJoinRequest(short squadNumber, int memberId);
+    Task SendSquadJoinRequest(short squadNumber);
+    Task AcceptSquadJoinRequest(short squadNumber, short squadPartNumber, int memberId);
     Task DeclineSquadJoinRequest(short squadNumber, int memberId);
     Task CancelSquadJoinRequest(short squadNumber);
     IAsyncEnumerable<ISquadRequest> ReadSquadJoinRequests(short squadNumber);
+    IAsyncEnumerable<ISquadRequest> ReadMySquadJoinRequests();
 
     Task RiseAuxiliary(int memberId);
     Task DemoteAuxiliary(int memberId);
@@ -43,5 +44,4 @@ public interface ICoreServerMethods
 
     IAsyncEnumerable<ISquadMembershipHistoryEntry> ReadSquadMembershipHistory(short squadNumber);
     IAsyncEnumerable<ISquadMembershipHistoryEntry> ReadMemberSquadMembershipHistory(int memberId);
-
 }

@@ -4,7 +4,7 @@ using And9.Service.Award.Abstractions.Enums;
 using And9.Service.Award.Database;
 using And9.Service.Core.Abstractions.Enums;
 using And9.Service.Core.Abstractions.Models;
-using And9.Service.Core.Senders;
+using And9.Service.Core.Senders.Member;
 
 namespace And9.Service.Award.Jobs.AwardDispense.Strategy;
 

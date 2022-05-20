@@ -15,13 +15,14 @@ internal static class SpecializationsData
         TrimData = true,
         Comparer = StringComparer.Ordinal,
     };
+
     public static IEnumerable<Specialization> GetSpecializations() => CsvReader.ReadFromText(Resources.specializations, CsvOptions)
-        .Select(line => new Specialization()
-    {
-        Id = int.Parse(line[0]),
-        Direction = Enum.Parse<Direction>(line[1]),
-        Name = line[2],
-        LastChanged = DateTime.UtcNow,
-        ConcurrencyToken = Guid.NewGuid(),
-    });
+        .Select(line => new Specialization
+        {
+            Id = int.Parse(line[0]),
+            Direction = Enum.Parse<Direction>(line[1]),
+            Name = line[2],
+            LastChanged = DateTime.UtcNow,
+            ConcurrencyToken = Guid.NewGuid(),
+        });
 }

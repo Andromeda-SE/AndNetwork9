@@ -1,6 +1,6 @@
 ﻿using And9.Service.Core.Abstractions.Enums;
 using And9.Service.Core.Abstractions.Models;
-using And9.Service.Core.Senders;
+using And9.Service.Core.Senders.Member;
 using And9.Service.Election.Abstractions.Enums;
 using And9.Service.Election.Abstractions.Models;
 using And9.Service.Election.Database;
