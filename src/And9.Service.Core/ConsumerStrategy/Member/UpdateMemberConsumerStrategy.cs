@@ -62,17 +62,8 @@ public class UpdateMemberConsumerStrategy : IBrokerConsumerWithResponseStrategy<
 
                 if (memberSpecialization is null)
                 {
-                    memberSpecialization = new()
-                    {
-                        MemberId = entity.Id,
-                        ApproveDateTime = null,
-                        SpecializationId = entitySpecialization.SpecializationId,
-                        Priority = entitySpecialization.Priority
-                    };
-                    await _coreDataContext.MemberSpecializations.AddAsync(memberSpecialization).ConfigureAwait(false);
-                }
-                if (specialization.MustApproved && memberSpecialization.ApproveDateTime is null) 
                     throw new InvalidOperationException($"«{specialization.Name}» specialization must be approved");
+                }
                 memberSpecialization.Priority = entitySpecialization.Priority;
             }
         }
