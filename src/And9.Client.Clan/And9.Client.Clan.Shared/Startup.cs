@@ -1,4 +1,5 @@
 ﻿using And9.Client.Clan.Config.Services;
+using And9.Client.Clan.Services;
 using And9.Client.Clan.ViewModels;
 using And9.Client.Clan.Views;
 using And9.Client.Clan.Views.Dialogs;
@@ -16,8 +17,8 @@ public class Startup
 #if WINDOWS
         services.AddScoped<IConfiguration, ApplicationDataService>(provider => provider.GetRequiredService<ApplicationDataService>());
 
-        services.AddHostedService<Services.AwardNotificationService>();
-        services.AddHostedService<Services.RankNotificationService>();
+        services.AddHostedService<AwardNotificationService>();
+        services.AddHostedService<RankNotificationService>();
 #endif
 
         services.AddSingleton<LoginViewModel>();

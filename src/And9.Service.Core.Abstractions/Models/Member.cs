@@ -13,6 +13,12 @@ public record Member : IMember
     [IgnoreMember]
     [JsonIgnore]
     public string RankIcon => $"{this.GetSquadMemberLevel().GetIconString()}{Rank.GetIconString()}";
+    [IgnoreMember]
+    public Squad? Squad { get; set; }
+    [IgnoreMember]
+    public IList<SquadMembershipHistoryEntry> SquadMembershipHistoryEntries { get; set; } = new List<SquadMembershipHistoryEntry>();
+    [IgnoreMember]
+    public IList<SquadRequest> SquadRequests { get; set; } = new List<SquadRequest>();
     [Key(0)]
 
     public int Id { get; set; }
@@ -33,7 +39,7 @@ public record Member : IMember
     [Key(8)]
     public Rank Rank { get; set; }
     [Key(9)]
-    public Direction Direction { get; set; }
+    public IList<MemberSpecialization> Specializations { get; set; } = new List<MemberSpecialization>();
     [Key(10)]
     public bool IsSquadCommander { get; set; }
     [Key(11)]
@@ -48,10 +54,6 @@ public record Member : IMember
     [MessagePackFormatter(typeof(DateOnlyFormatter))]
     [JsonConverter(typeof(DateOnlyConverter))]
     public DateOnly JoinDate { get; set; }
-    [Key(15)]
-    [MessagePackFormatter(typeof(DateOnlyFormatter))]
-    [JsonConverter(typeof(DateOnlyConverter))]
-    public DateOnly LastDirectionChange { get; set; }
     [Key(16)]
     public DateTime LastChanged { get; set; }
     [Key(17)]

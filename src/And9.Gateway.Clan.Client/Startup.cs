@@ -18,7 +18,7 @@ public static class Startup
         connection = new(GetDefaultBuilder().WithUrl(Path.Combine(GetBaseAddress(localProvider), "auth"),
             options => { options.AccessTokenProvider = (connection?.GetToken() ?? ValueTask.FromResult(string.Empty)).AsTask!; }).Build());
         localProvider.Dispose();
-        services.AddSingleton<AuthConnection>(provider => connection);
+        services.AddSingleton<AuthConnection>(_ => connection);
         services.AddSingleton<IAuthTokenProvider>(provider => provider.GetRequiredService<AuthConnection>());
 
         services.AddSingleton<CoreConnection>(
@@ -56,6 +56,13 @@ public static class Startup
                 provider.GetRequiredService<IAuthTokenProvider>(),
                 provider.GetRequiredService<ILogger<RepositoryConnection<Award>>>()));
         services.AddHostedService(provider => provider.GetRequiredService<RepositoryConnection<Award>>());
+        services.AddSingleton<ReadOnlyRepositoryConnection<Squad>>(
+            provider => new(
+                GetDefaultBuilder().WithUrl(Path.Combine(GetBaseAddress(provider), "model/squad"),
+                    options => { options.AccessTokenProvider = GetTokenTask(provider); }).Build(),
+                provider.GetRequiredService<IAuthTokenProvider>(),
+                provider.GetRequiredService<ILogger<ReadOnlyRepositoryConnection<Squad>>>()));
+        services.AddHostedService(provider => provider.GetRequiredService<ReadOnlyRepositoryConnection<Squad>>());
     }
 
     private static IHubConnectionBuilder GetDefaultBuilder() => new HubConnectionBuilder().WithAutomaticReconnect() /*.AddMessagePackProtocol()*/;

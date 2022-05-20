@@ -9,7 +9,7 @@ using And9.Service.Auth.Database;
 using And9.Service.Auth.Database.Models;
 using And9.Service.Auth.Senders;
 using And9.Service.Core.Abstractions.Interfaces;
-using And9.Service.Core.Senders;
+using And9.Service.Core.Senders.Member;
 using Microsoft.IdentityModel.Tokens;
 using StackExchange.Redis;
 

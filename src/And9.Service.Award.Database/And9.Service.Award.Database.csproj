@@ -22,7 +22,7 @@
   <ItemGroup>
     <ProjectReference Include="..\And9.Lib.Database\And9.Lib.Database.csproj" />
     <ProjectReference Include="..\And9.Service.Award.Abstractions\And9.Service.Award.Abstractions.csproj" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.4">
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.5">
 	    <PrivateAssets>all</PrivateAssets>
 	    <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>

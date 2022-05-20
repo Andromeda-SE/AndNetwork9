@@ -2,7 +2,7 @@
 using And9.Lib.API;
 using And9.Service.Core.Abstractions.Interfaces;
 using And9.Service.Core.Abstractions.Models;
-using And9.Service.Core.Senders;
+using And9.Service.Core.Senders.Member;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authorization.Infrastructure;
 using StackExchange.Redis;

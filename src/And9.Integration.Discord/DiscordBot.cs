@@ -4,10 +4,9 @@ using And9.Integration.Discord.Extensions;
 using And9.Integration.Discord.Senders;
 using And9.Service.Core.Abstractions.Enums;
 using And9.Service.Core.Abstractions.Models;
-using And9.Service.Core.Senders;
+using And9.Service.Core.Senders.Member;
 using Discord;
 using Discord.WebSocket;
-using Direction = And9.Service.Core.Abstractions.Enums.Direction;
 
 namespace And9.Integration.Discord;
 
@@ -86,7 +85,6 @@ public class DiscordBot : DiscordSocketClient, IHostedService, IAsyncDisposable
         {
             int id = await _createMemberSender.CallAsync(new()
             {
-                Direction = Direction.None,
                 Rank = Rank.Guest,
                 TimeZone = null,
                 DiscordId = user.Id,
@@ -98,7 +96,6 @@ public class DiscordBot : DiscordSocketClient, IHostedService, IAsyncDisposable
                 SquadPartNumber = 0,
                 JoinDate = DateOnly.MinValue,
                 MicrosoftId = null,
-                LastDirectionChange = DateOnly.MinValue,
                 SquadNumber = null,
                 SteamId = null,
                 TelegramId = null,

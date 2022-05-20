@@ -3,7 +3,7 @@ using And9.Integration.Discord.Senders;
 using And9.Lib.Models.Abstractions;
 using And9.Service.Award.Abstractions.Models;
 using And9.Service.Award.Senders;
-using And9.Service.Core.Senders;
+using And9.Service.Core.Senders.Member;
 using Microsoft.AspNetCore.SignalR;
 
 namespace And9.Gateway.Clan.Hubs.Model;

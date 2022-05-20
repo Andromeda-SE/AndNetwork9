@@ -5,6 +5,6 @@ public enum DiscordRoleScope
     Member,
     SquadPart,
     Squad,
-    Direction,
+    [Obsolete("Directions is canceled", true)] Direction,
     Advisor,
 }

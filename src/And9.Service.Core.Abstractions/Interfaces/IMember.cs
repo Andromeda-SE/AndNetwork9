@@ -1,4 +1,6 @@
-﻿namespace And9.Service.Core.Abstractions.Interfaces;
+﻿using And9.Service.Core.Abstractions.Models;
+
+namespace And9.Service.Core.Abstractions.Interfaces;
 
 public interface IMember : IPublicMember
 {
@@ -7,8 +9,7 @@ public interface IMember : IPublicMember
     long? MicrosoftId { get; }
     long? VkId { get; }
     long? TelegramId { get; }
+    IList<MemberSpecialization> Specializations { get; }
     TimeZoneInfo? TimeZone { get; set; }
     DateOnly JoinDate { get; }
-
-    DateOnly LastDirectionChange { get; }
 }

@@ -4,7 +4,7 @@ using And9.Lib.API;
 using And9.Service.Auth.API.Interfaces;
 using And9.Service.Auth.Senders;
 using And9.Service.Core.Abstractions.Interfaces;
-using And9.Service.Core.Senders;
+using And9.Service.Core.Senders.Member;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 using StackExchange.Redis;

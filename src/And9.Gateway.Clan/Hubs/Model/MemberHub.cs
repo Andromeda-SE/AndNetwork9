@@ -3,7 +3,7 @@ using And9.Gateway.Clan.Auth.Attributes;
 using And9.Lib.Models.Abstractions;
 using And9.Service.Core.Abstractions.Enums;
 using And9.Service.Core.Abstractions.Models;
-using And9.Service.Core.Senders;
+using And9.Service.Core.Senders.Member;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 

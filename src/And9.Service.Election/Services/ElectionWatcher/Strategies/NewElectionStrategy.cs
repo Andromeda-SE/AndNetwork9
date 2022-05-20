@@ -4,7 +4,7 @@ using And9.Integration.Discord.Senders;
 using And9.Service.Core.Abstractions;
 using And9.Service.Core.Abstractions.Enums;
 using And9.Service.Core.Abstractions.Models;
-using And9.Service.Core.Senders;
+using And9.Service.Core.Senders.Member;
 using And9.Service.Election.Abstractions.Enums;
 using And9.Service.Election.Abstractions.Interfaces;
 using And9.Service.Election.Database;
@@ -32,10 +32,10 @@ public class NewElectionStrategy : IElectionWatcherStrategy
 
     public async Task UpdateElections()
     {
-        Member[] oldAdvisors = await _readAllMembersSender.CallAsync(0).Where(x => x.Rank == Rank.Advisor).ToArrayAsync().ConfigureAwait(false);
         StringBuilder result = new(4096);
         result.AppendLine("Результаты выборов: ");
         result.AppendLine();
+        await foreach (Member oldAdvisor in _readAllMembersSender.CallAsync(0).Where(x => x.Rank == Rank.Advisor).ConfigureAwait(false)) oldAdvisor.Rank = Rank.Neophyte;
         await foreach (Abstractions.Models.Election election in _electionDataContext.GetCurrentElectionsAsync().ConfigureAwait(false))
         {
             if (election.Status != ElectionStatus.Announcement) throw new();
@@ -49,16 +49,12 @@ public class NewElectionStrategy : IElectionWatcherStrategy
                 ConcurrencyToken = Guid.NewGuid(),
                 LastChanged = DateTime.UtcNow,
             });
-            ;
-            Member? oldAdvisor = oldAdvisors.FirstOrDefault(x => x.Direction == election.Direction);
-            if (oldAdvisor is not null) oldAdvisor.Rank = Rank.Neophyte;
 
             IElectionVote? winner = election.Votes.Where(x => !x.Voted.HasValue).MaxBy(x => x.Votes);
             if (winner is null) continue;
             if (election.AgainstAllVotes > winner.Votes) continue;
             Member member = await _readMemberByIdSender.CallAsync(winner.MemberId).ConfigureAwait(false) ?? throw new();
             member.Rank = Rank.Advisor;
-            member.Direction = election.Direction;
 
             result.Append("**");
             result.Append("Итоги выборов");

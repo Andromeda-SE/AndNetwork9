@@ -9,7 +9,6 @@ public interface IPublicMember : IId
     string? RealName { get; set; }
     ulong? DiscordId { get; }
     Rank Rank { get; }
-    Direction Direction { get; set; }
     bool IsSquadCommander { get; }
     short? SquadNumber { get; }
     short SquadPartNumber { get; }
