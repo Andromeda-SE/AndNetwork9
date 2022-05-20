@@ -41,6 +41,7 @@ public interface ICoreServerMethods
     Task DemoteAuxiliary(int memberId);
 
     Task KickFromSquad(int memberId);
+    Task LeaveFromSquad();
 
     IAsyncEnumerable<ISquadMembershipHistoryEntry> ReadSquadMembershipHistory(short squadNumber);
     IAsyncEnumerable<ISquadMembershipHistoryEntry> ReadMemberSquadMembershipHistory(int memberId);

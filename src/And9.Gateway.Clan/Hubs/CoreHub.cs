@@ -418,6 +418,7 @@ public class CoreHub : Hub<ICoreClientMethods>, ICoreServerMethods
     public async Task CancelSquadJoinRequest(short squadNumber) => await _declineSquadJoinRequestSender.CallAsync((squadNumber, int.Parse(Context.UserIdentifier!), true)).ConfigureAwait(false);
 
     [SquadMemberAuthorize]
+    [MinRankAuthorize]
     public IAsyncEnumerable<ISquadRequest> ReadSquadJoinRequests(short squadNumber) => _readSquadRequestSender.CallAsync(squadNumber);
 
     [NotInSquadAuthorize]
@@ -488,6 +489,24 @@ public class CoreHub : Hub<ICoreClientMethods>, ICoreServerMethods
     }
 
     [SquadMemberAuthorize]
+    public async Task LeaveFromSquad()
+    {
+        int memberId = int.Parse(Context.UserIdentifier!);
+        Member? caller = await _readMemberByIdSender.CallAsync(memberId).ConfigureAwait(false);
+        if (caller is null) throw new ArgumentNullException(nameof(memberId));
+        caller = await _updateMemberSender.CallAsync(caller with
+        {
+            SquadNumber = null,
+            SquadPartNumber = default,
+            Rank = caller.Rank is Rank.SeniorAuxiliary or Rank.Auxiliary ? Rank.Ally : caller.Rank,
+        }).ConfigureAwait(false);
+        await _closeSquadMembershipHistorySender.CallAsync(memberId).ConfigureAwait(false);
+        await _syncUserSender.CallAsync(caller).ConfigureAwait(false);
+        await _memberHub.Clients.All.SendAsync(nameof(IModelCrudClientMethods.ModelUpdated), memberId, ModelState.Updated).ConfigureAwait(false);
+    }
+
+    [SquadMemberAuthorize]
+    [MinRankAuthorize]
     public IAsyncEnumerable<ISquadMembershipHistoryEntry> ReadSquadMembershipHistory(short squadNumber) => _readSquadMembershipHistorySender.CallAsync(squadNumber);
 
     [MinRankAuthorize]

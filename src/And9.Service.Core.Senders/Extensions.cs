@@ -30,8 +30,6 @@ public static class Extensions
         builder.AppendSenderWithResponse<CreateSquadSender, short, short>();
         builder.AppendSenderWithoutResponse<DeclineSquadJoinRequestSender, (short number, int memberId, bool byMember)>();
         builder.AppendSenderWithCollectionResponse<ReadAllSquadSender, int, ISquad>();
-        builder.AppendSenderWithCollectionResponse<ReadMemberSquadMembershipHistorySender, int, ISquadMembershipHistoryEntry>();
-        builder.AppendSenderWithCollectionResponse<ReadSquadMembershipHistorySender, short, ISquadMembershipHistoryEntry>();
         builder.AppendSenderWithResponse<ReadSquadSender, int, Abstractions.Models.Squad>();
         builder.AppendSenderWithoutResponse<SendSquadJoinRequestSender, (int memberId, short squadNumber)>();
         builder.AppendSenderWithCollectionResponse<ReadSquadRequestSender, short, SquadRequest>();
@@ -39,6 +37,8 @@ public static class Extensions
 
         builder.AppendSenderWithoutResponse<OpenSquadMembershipHistorySender, (int memberId, short squadNumber)>();
         builder.AppendSenderWithoutResponse<CloseSquadMembershipHistorySender, int>();
+        builder.AppendSenderWithCollectionResponse<ReadMemberSquadMembershipHistorySender, int, ISquadMembershipHistoryEntry>();
+        builder.AppendSenderWithCollectionResponse<ReadSquadMembershipHistorySender, short, ISquadMembershipHistoryEntry>();
 
         return builder;
     }

@@ -1,5 +1,6 @@
 ﻿using And9.Lib.Broker;
 using And9.Lib.Broker.ConsumerStrategy;
+using And9.Service.Core.Abstractions.Enums;
 using And9.Service.Core.Database;
 using And9.Service.Core.Senders.Squad.SquadRequest;
 using Microsoft.EntityFrameworkCore;
@@ -18,6 +19,7 @@ public class AcceptSquadJoinRequestConsumerStrategy : IBrokerConsumerWithoutResp
         Abstractions.Models.Member? member = await _coreDataContext.Members.FindAsync(memberId).ConfigureAwait(false);
         if (member is null) throw new KeyNotFoundException();
         if (member.SquadNumber is not null) throw new InvalidOperationException();
+        if (member.Rank <= Rank.Enemy) throw new InvalidOperationException();
         Abstractions.Models.SquadRequest? squadRequest = await _coreDataContext.SquadRequests.FirstOrDefaultAsync(x => x.SquadNumber == number && x.MemberId == memberId).ConfigureAwait(false);
         if (squadRequest is null) throw new KeyNotFoundException();
         _coreDataContext.SquadRequests.Update(squadRequest with
@@ -28,6 +30,7 @@ public class AcceptSquadJoinRequestConsumerStrategy : IBrokerConsumerWithoutResp
         {
             SquadNumber = number,
             SquadPartNumber = squadPart,
+            Rank = member.Rank <= Rank.None ? Rank.Auxiliary : member.Rank,
         });
         await _coreDataContext.SaveChangesAsync().ConfigureAwait(false);
     }

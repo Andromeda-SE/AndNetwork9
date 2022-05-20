@@ -61,6 +61,7 @@ public class CoreConnection : ConnectionBase, ICoreServerMethods
     public async Task DemoteAuxiliary(int memberId) => await Connection.InvokeAsync(nameof(DemoteAuxiliary), memberId).ConfigureAwait(false);
 
     public async Task KickFromSquad(int memberId) => await Connection.InvokeAsync(nameof(KickFromSquad), memberId).ConfigureAwait(false);
+    public async Task LeaveFromSquad() => await Connection.InvokeAsync(nameof(LeaveFromSquad)).ConfigureAwait(false);
 
     public IAsyncEnumerable<ISquadMembershipHistoryEntry> ReadSquadMembershipHistory(short squadNumber) => Connection.StreamAsync<ISquadMembershipHistoryEntry>(nameof(ReadSquadMembershipHistory), squadNumber);
 
