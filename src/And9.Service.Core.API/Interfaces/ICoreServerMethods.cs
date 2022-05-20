@@ -27,7 +27,7 @@ public interface ICoreServerMethods
 
     Task CreateSquadPart(int leaderId);
     Task MoveMemberToSquadPart(short targetSquadPart, int memberId);
-    Task SetSquadPartLeader(int memberId);
+    Task SetMySquadPartLeader(int memberId);
     Task SetSquadPartLeader(short targetSquadPart, int memberId);
 
     Task SendSquadJoinRequest(short squadNumber);

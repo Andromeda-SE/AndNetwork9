@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using And9.Service.Core.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -12,9 +13,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace And9.Service.Core.Database.Migrations
 {
     [DbContext(typeof(CoreDataContext))]
-    partial class CoreDataContextModelSnapshot : ModelSnapshot
+    [Migration("20220520195042_specializatonMustApproved")]
+    partial class specializatonMustApproved
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -246,351 +248,351 @@ namespace And9.Service.Core.Database.Migrations
                         new
                         {
                             Id = 1,
-                            ConcurrencyToken = new Guid("65db8906-aff4-44bd-b398-2b18117b867a"),
+                            ConcurrencyToken = new Guid("409896dd-bcb5-41d7-8e54-afcf6e634004"),
                             Direction = (short)2,
-                            LastChanged = new DateTime(2022, 5, 20, 19, 56, 47, 811, DateTimeKind.Utc).AddTicks(1062),
+                            LastChanged = new DateTime(2022, 5, 20, 19, 50, 41, 794, DateTimeKind.Utc).AddTicks(8468),
                             MustApproved = false,
                             Name = "Шахтер"
                         },
                         new
                         {
                             Id = 2,
-                            ConcurrencyToken = new Guid("b0dca3c0-be77-48cb-9de4-2df954baa817"),
+                            ConcurrencyToken = new Guid("1f7bcd42-822a-4ec9-ad55-4e5dc908195b"),
                             Direction = (short)2,
-                            LastChanged = new DateTime(2022, 5, 20, 19, 56, 47, 811, DateTimeKind.Utc).AddTicks(1137),
+                            LastChanged = new DateTime(2022, 5, 20, 19, 50, 41, 794, DateTimeKind.Utc).AddTicks(8576),
                             MustApproved = false,
                             Name = "Монтажник"
                         },
                         new
                         {
                             Id = 3,
-                            ConcurrencyToken = new Guid("fe429647-9361-4cad-808d-a94099f8c100"),
+                            ConcurrencyToken = new Guid("c43adce1-19f8-4eb0-95b8-2b699571f215"),
                             Direction = (short)2,
-                            LastChanged = new DateTime(2022, 5, 20, 19, 56, 47, 811, DateTimeKind.Utc).AddTicks(1180),
+                            LastChanged = new DateTime(2022, 5, 20, 19, 50, 41, 794, DateTimeKind.Utc).AddTicks(8615),
                             MustApproved = false,
                             Name = "Пилот гражданских кораблей"
                         },
                         new
                         {
                             Id = 4,
-                            ConcurrencyToken = new Guid("c86e8167-339f-4293-8ed2-dd876fdfabf3"),
+                            ConcurrencyToken = new Guid("719fd852-e9e3-49b5-8db8-a3e886088e51"),
                             Direction = (short)2,
-                            LastChanged = new DateTime(2022, 5, 20, 19, 56, 47, 811, DateTimeKind.Utc).AddTicks(1218),
+                            LastChanged = new DateTime(2022, 5, 20, 19, 50, 41, 794, DateTimeKind.Utc).AddTicks(8654),
                             MustApproved = false,
                             Name = "Управляющий станцией"
                         },
                         new
                         {
                             Id = 5,
-                            ConcurrencyToken = new Guid("3f3c37ae-12c7-46d9-840d-466198d6f31f"),
+                            ConcurrencyToken = new Guid("78c1f3c8-34c3-4e6c-8f34-e162f1e59ad5"),
                             Direction = (short)2,
-                            LastChanged = new DateTime(2022, 5, 20, 19, 56, 47, 811, DateTimeKind.Utc).AddTicks(1256),
-                            MustApproved = true,
+                            LastChanged = new DateTime(2022, 5, 20, 19, 50, 41, 794, DateTimeKind.Utc).AddTicks(8683),
+                            MustApproved = false,
                             Name = "Комендант"
                         },
                         new
                         {
                             Id = 6,
-                            ConcurrencyToken = new Guid("5a1f7b94-701e-4d6b-9c0e-885f69231c73"),
+                            ConcurrencyToken = new Guid("654feebf-90d6-4beb-bd08-783e50e051d4"),
                             Direction = (short)3,
-                            LastChanged = new DateTime(2022, 5, 20, 19, 56, 47, 811, DateTimeKind.Utc).AddTicks(1300),
+                            LastChanged = new DateTime(2022, 5, 20, 19, 50, 41, 794, DateTimeKind.Utc).AddTicks(8711),
                             MustApproved = false,
                             Name = "Скриптер"
                         },
                         new
                         {
                             Id = 7,
-                            ConcurrencyToken = new Guid("d8bad8da-eccb-4d22-89ce-65c5609a5b7b"),
+                            ConcurrencyToken = new Guid("bc429f2e-1f4b-4dcd-9d8c-e3e28903324f"),
                             Direction = (short)3,
-                            LastChanged = new DateTime(2022, 5, 20, 19, 56, 47, 811, DateTimeKind.Utc).AddTicks(1332),
-                            MustApproved = true,
+                            LastChanged = new DateTime(2022, 5, 20, 19, 50, 41, 794, DateTimeKind.Utc).AddTicks(8737),
+                            MustApproved = false,
                             Name = "Программист"
                         },
                         new
                         {
                             Id = 8,
-                            ConcurrencyToken = new Guid("92775f7f-454d-4b95-a269-88a2b48c77cf"),
+                            ConcurrencyToken = new Guid("0883c1fa-a7c0-426e-804c-9ff1305eea9a"),
                             Direction = (short)3,
-                            LastChanged = new DateTime(2022, 5, 20, 19, 56, 47, 811, DateTimeKind.Utc).AddTicks(1372),
+                            LastChanged = new DateTime(2022, 5, 20, 19, 50, 41, 794, DateTimeKind.Utc).AddTicks(8772),
                             MustApproved = false,
                             Name = "Разработчик малых гр. кораблей"
                         },
                         new
                         {
                             Id = 9,
-                            ConcurrencyToken = new Guid("79cfa3c2-1675-4e20-a5d5-f5431c95dd4e"),
+                            ConcurrencyToken = new Guid("6e9e486b-5f6c-4abe-b695-270f8076db5f"),
                             Direction = (short)3,
-                            LastChanged = new DateTime(2022, 5, 20, 19, 56, 47, 811, DateTimeKind.Utc).AddTicks(1417),
+                            LastChanged = new DateTime(2022, 5, 20, 19, 50, 41, 794, DateTimeKind.Utc).AddTicks(8816),
                             MustApproved = false,
                             Name = "Разработчик больших гр. кораблей"
                         },
                         new
                         {
                             Id = 10,
-                            ConcurrencyToken = new Guid("d550cdfc-f266-4ed8-ac9d-09d397f19c4e"),
+                            ConcurrencyToken = new Guid("18d0adb9-e5d9-46e1-9c6d-c5b76b68e243"),
                             Direction = (short)3,
-                            LastChanged = new DateTime(2022, 5, 20, 19, 56, 47, 811, DateTimeKind.Utc).AddTicks(1461),
+                            LastChanged = new DateTime(2022, 5, 20, 19, 50, 41, 794, DateTimeKind.Utc).AddTicks(8859),
                             MustApproved = false,
                             Name = "Разработчик внутренних интерьеров"
                         },
                         new
                         {
                             Id = 11,
-                            ConcurrencyToken = new Guid("9667b3ec-f2e5-4341-bac2-bec7622f8536"),
+                            ConcurrencyToken = new Guid("4f49adc6-3285-4aec-8455-20021b54e134"),
                             Direction = (short)3,
-                            LastChanged = new DateTime(2022, 5, 20, 19, 56, 47, 811, DateTimeKind.Utc).AddTicks(1497),
-                            MustApproved = true,
+                            LastChanged = new DateTime(2022, 5, 20, 19, 50, 41, 794, DateTimeKind.Utc).AddTicks(8889),
+                            MustApproved = false,
                             Name = "Дизайнер кораблей"
                         },
                         new
                         {
                             Id = 12,
-                            ConcurrencyToken = new Guid("9f011ee6-035f-48fe-9c43-b0218105ef60"),
+                            ConcurrencyToken = new Guid("2b2a504a-b6bf-4540-ab8d-715eaf3d8f89"),
                             Direction = (short)3,
-                            LastChanged = new DateTime(2022, 5, 20, 19, 56, 47, 811, DateTimeKind.Utc).AddTicks(1538),
-                            MustApproved = true,
+                            LastChanged = new DateTime(2022, 5, 20, 19, 50, 41, 794, DateTimeKind.Utc).AddTicks(8927),
+                            MustApproved = false,
                             Name = "Разработчик малых военных кораблей"
                         },
                         new
                         {
                             Id = 13,
-                            ConcurrencyToken = new Guid("f0de66fa-5b48-4a60-bd39-0bacbeb57a52"),
+                            ConcurrencyToken = new Guid("ab4327f6-00b2-4961-b7cd-720716bf5aea"),
                             Direction = (short)3,
-                            LastChanged = new DateTime(2022, 5, 20, 19, 56, 47, 811, DateTimeKind.Utc).AddTicks(1660),
-                            MustApproved = true,
+                            LastChanged = new DateTime(2022, 5, 20, 19, 50, 41, 794, DateTimeKind.Utc).AddTicks(8965),
+                            MustApproved = false,
                             Name = "Разработчик больших военных кораблей"
                         },
                         new
                         {
                             Id = 14,
-                            ConcurrencyToken = new Guid("50c98a7e-29e1-41c9-a9b9-691c3214cf6a"),
+                            ConcurrencyToken = new Guid("c471551c-d720-484c-aa2f-6620ba15b138"),
                             Direction = (short)3,
-                            LastChanged = new DateTime(2022, 5, 20, 19, 56, 47, 811, DateTimeKind.Utc).AddTicks(1729),
-                            MustApproved = true,
+                            LastChanged = new DateTime(2022, 5, 20, 19, 50, 41, 794, DateTimeKind.Utc).AddTicks(9005),
+                            MustApproved = false,
                             Name = "Разработчик специальных систем"
                         },
                         new
                         {
                             Id = 15,
-                            ConcurrencyToken = new Guid("7a67917b-c7c0-48f5-a538-7667a90f2d8b"),
+                            ConcurrencyToken = new Guid("b692bd6e-b822-489d-a67d-347d4c4734cd"),
                             Direction = (short)3,
-                            LastChanged = new DateTime(2022, 5, 20, 19, 56, 47, 811, DateTimeKind.Utc).AddTicks(1771),
+                            LastChanged = new DateTime(2022, 5, 20, 19, 50, 41, 794, DateTimeKind.Utc).AddTicks(9040),
                             MustApproved = false,
                             Name = "Разработчик наземной техники"
                         },
                         new
                         {
                             Id = 16,
-                            ConcurrencyToken = new Guid("3de946e8-1c98-435c-b059-18864d34a1c9"),
+                            ConcurrencyToken = new Guid("096b2075-2a3b-43de-b40b-fa09aca51c9a"),
                             Direction = (short)3,
-                            LastChanged = new DateTime(2022, 5, 20, 19, 56, 47, 811, DateTimeKind.Utc).AddTicks(1807),
-                            MustApproved = true,
+                            LastChanged = new DateTime(2022, 5, 20, 19, 50, 41, 794, DateTimeKind.Utc).AddTicks(9071),
+                            MustApproved = false,
                             Name = "Управляющий проектами"
                         },
                         new
                         {
                             Id = 17,
-                            ConcurrencyToken = new Guid("150a7e4b-71af-41a9-a868-19a009e3e343"),
+                            ConcurrencyToken = new Guid("b325f032-32ec-4488-8ca4-d1949fed053e"),
                             Direction = (short)3,
-                            LastChanged = new DateTime(2022, 5, 20, 19, 56, 47, 811, DateTimeKind.Utc).AddTicks(1843),
+                            LastChanged = new DateTime(2022, 5, 20, 19, 50, 41, 794, DateTimeKind.Utc).AddTicks(9102),
                             MustApproved = false,
                             Name = "Интегратор скриптов"
                         },
                         new
                         {
                             Id = 18,
-                            ConcurrencyToken = new Guid("ce7d643e-dbde-4db1-a5c2-07dbeeed3f14"),
+                            ConcurrencyToken = new Guid("463bc69c-edc4-4d14-9b2b-ce4af08a9eeb"),
                             Direction = (short)3,
-                            LastChanged = new DateTime(2022, 5, 20, 19, 56, 47, 811, DateTimeKind.Utc).AddTicks(1884),
+                            LastChanged = new DateTime(2022, 5, 20, 19, 50, 41, 794, DateTimeKind.Utc).AddTicks(9136),
                             MustApproved = false,
                             Name = "Интегратор чертежей"
                         },
                         new
                         {
                             Id = 19,
-                            ConcurrencyToken = new Guid("c9444435-8043-44f9-8dc6-50cba245bc71"),
+                            ConcurrencyToken = new Guid("a7b58bb2-623d-4a88-9f98-7d16f4f725f3"),
                             Direction = (short)4,
-                            LastChanged = new DateTime(2022, 5, 20, 19, 56, 47, 811, DateTimeKind.Utc).AddTicks(1920),
-                            MustApproved = true,
+                            LastChanged = new DateTime(2022, 5, 20, 19, 50, 41, 794, DateTimeKind.Utc).AddTicks(9171),
+                            MustApproved = false,
                             Name = "Пехотинец-диверсант"
                         },
                         new
                         {
                             Id = 20,
-                            ConcurrencyToken = new Guid("e166d54a-7250-4f90-ae03-526d364d7309"),
+                            ConcurrencyToken = new Guid("9e5fac28-a844-4590-ba54-8e62aa68229c"),
                             Direction = (short)4,
-                            LastChanged = new DateTime(2022, 5, 20, 19, 56, 47, 811, DateTimeKind.Utc).AddTicks(1954),
+                            LastChanged = new DateTime(2022, 5, 20, 19, 50, 41, 794, DateTimeKind.Utc).AddTicks(9201),
                             MustApproved = false,
                             Name = "Наводчик турелей"
                         },
                         new
                         {
                             Id = 21,
-                            ConcurrencyToken = new Guid("60c4beb7-d15e-4284-87d3-fb40a940793f"),
+                            ConcurrencyToken = new Guid("cc019687-182c-4ebb-a5a0-00f5e6bdd79f"),
                             Direction = (short)4,
-                            LastChanged = new DateTime(2022, 5, 20, 19, 56, 47, 811, DateTimeKind.Utc).AddTicks(1992),
-                            MustApproved = true,
+                            LastChanged = new DateTime(2022, 5, 20, 19, 50, 41, 794, DateTimeKind.Utc).AddTicks(9235),
+                            MustApproved = false,
                             Name = "Оператор специальных систем"
                         },
                         new
                         {
                             Id = 22,
-                            ConcurrencyToken = new Guid("7c4ae393-3e8b-4c55-9927-47105ac07b44"),
+                            ConcurrencyToken = new Guid("4886f539-9513-4115-9f19-38663ab14efa"),
                             Direction = (short)4,
-                            LastChanged = new DateTime(2022, 5, 20, 19, 56, 47, 811, DateTimeKind.Utc).AddTicks(2050),
+                            LastChanged = new DateTime(2022, 5, 20, 19, 50, 41, 794, DateTimeKind.Utc).AddTicks(9278),
                             MustApproved = false,
                             Name = "Пилот истребителя / перехватчика / разрушителя"
                         },
                         new
                         {
                             Id = 23,
-                            ConcurrencyToken = new Guid("c0df6216-ff99-46db-ac42-ac3b757ce181"),
+                            ConcurrencyToken = new Guid("8629e6d8-210a-4302-a4ee-95582963ad3a"),
                             Direction = (short)4,
-                            LastChanged = new DateTime(2022, 5, 20, 19, 56, 47, 811, DateTimeKind.Utc).AddTicks(2087),
-                            MustApproved = true,
+                            LastChanged = new DateTime(2022, 5, 20, 19, 50, 41, 794, DateTimeKind.Utc).AddTicks(9309),
+                            MustApproved = false,
                             Name = "Пилот снайпера / САУ"
                         },
                         new
                         {
                             Id = 24,
-                            ConcurrencyToken = new Guid("42528b43-4bce-4be6-8b0c-dea85ea846e5"),
+                            ConcurrencyToken = new Guid("97e62735-09e7-4439-81ec-35a37c6b58da"),
                             Direction = (short)4,
-                            LastChanged = new DateTime(2022, 5, 20, 19, 56, 47, 811, DateTimeKind.Utc).AddTicks(2123),
-                            MustApproved = true,
+                            LastChanged = new DateTime(2022, 5, 20, 19, 50, 41, 794, DateTimeKind.Utc).AddTicks(9341),
+                            MustApproved = false,
                             Name = "Пилот катера / самбуки"
                         },
                         new
                         {
                             Id = 25,
-                            ConcurrencyToken = new Guid("7c9451c8-dc67-4142-8243-06a66ff53b99"),
+                            ConcurrencyToken = new Guid("c5e206b0-39c9-43ee-9906-c0e45258a4d0"),
                             Direction = (short)4,
-                            LastChanged = new DateTime(2022, 5, 20, 19, 56, 47, 811, DateTimeKind.Utc).AddTicks(2162),
-                            MustApproved = true,
+                            LastChanged = new DateTime(2022, 5, 20, 19, 50, 41, 794, DateTimeKind.Utc).AddTicks(9380),
+                            MustApproved = false,
                             Name = "Пилот штурмовика / монитора"
                         },
                         new
                         {
                             Id = 26,
-                            ConcurrencyToken = new Guid("350a2baf-2a88-429f-9fce-c4f9728c68d9"),
+                            ConcurrencyToken = new Guid("3372f33d-b0a3-4f6f-9a94-cd7a0388d5d6"),
                             Direction = (short)4,
-                            LastChanged = new DateTime(2022, 5, 20, 19, 56, 47, 811, DateTimeKind.Utc).AddTicks(2200),
-                            MustApproved = true,
+                            LastChanged = new DateTime(2022, 5, 20, 19, 50, 41, 794, DateTimeKind.Utc).AddTicks(9412),
+                            MustApproved = false,
                             Name = "Пилот канонерки"
                         },
                         new
                         {
                             Id = 27,
-                            ConcurrencyToken = new Guid("cd072bbf-6532-4d2f-97d3-8f4e1532292a"),
+                            ConcurrencyToken = new Guid("a695d2e5-aff2-4e7d-baf9-dbefce297797"),
                             Direction = (short)4,
-                            LastChanged = new DateTime(2022, 5, 20, 19, 56, 47, 811, DateTimeKind.Utc).AddTicks(2240),
-                            MustApproved = true,
+                            LastChanged = new DateTime(2022, 5, 20, 19, 50, 41, 794, DateTimeKind.Utc).AddTicks(9446),
+                            MustApproved = false,
                             Name = "Пилот торпедоносца / эсминца"
                         },
                         new
                         {
                             Id = 28,
-                            ConcurrencyToken = new Guid("78cb6d1f-393c-494b-b4bf-c85d5d940d6d"),
+                            ConcurrencyToken = new Guid("5c007876-4560-40d6-9569-51f1867d7ce9"),
                             Direction = (short)4,
-                            LastChanged = new DateTime(2022, 5, 20, 19, 56, 47, 811, DateTimeKind.Utc).AddTicks(2272),
-                            MustApproved = true,
+                            LastChanged = new DateTime(2022, 5, 20, 19, 50, 41, 794, DateTimeKind.Utc).AddTicks(9474),
+                            MustApproved = false,
                             Name = "Пилот фрегата"
                         },
                         new
                         {
                             Id = 29,
-                            ConcurrencyToken = new Guid("f4984dfa-a063-4f0a-ae64-6791cdf6c6bb"),
+                            ConcurrencyToken = new Guid("b2a4db2c-4b02-4242-ad8d-2a565b1a4210"),
                             Direction = (short)4,
-                            LastChanged = new DateTime(2022, 5, 20, 19, 56, 47, 811, DateTimeKind.Utc).AddTicks(2305),
+                            LastChanged = new DateTime(2022, 5, 20, 19, 50, 41, 794, DateTimeKind.Utc).AddTicks(9502),
                             MustApproved = false,
                             Name = "Пилот корвета"
                         },
                         new
                         {
                             Id = 30,
-                            ConcurrencyToken = new Guid("a1c5d002-607c-44a6-8b5c-ed7e0013eeb3"),
+                            ConcurrencyToken = new Guid("05a56e08-86a2-442a-a696-51c7069b40a0"),
                             Direction = (short)4,
-                            LastChanged = new DateTime(2022, 5, 20, 19, 56, 47, 811, DateTimeKind.Utc).AddTicks(2347),
-                            MustApproved = true,
+                            LastChanged = new DateTime(2022, 5, 20, 19, 50, 41, 794, DateTimeKind.Utc).AddTicks(9540),
+                            MustApproved = false,
                             Name = "Пилот броненосца / линкора"
                         },
                         new
                         {
                             Id = 31,
-                            ConcurrencyToken = new Guid("8d757e42-146d-4b65-a531-598cf8bcbd4c"),
+                            ConcurrencyToken = new Guid("7bfee45a-dd22-4eee-b0e9-b0234665c34f"),
                             Direction = (short)4,
-                            LastChanged = new DateTime(2022, 5, 20, 19, 56, 47, 811, DateTimeKind.Utc).AddTicks(2384),
-                            MustApproved = true,
+                            LastChanged = new DateTime(2022, 5, 20, 19, 50, 41, 794, DateTimeKind.Utc).AddTicks(9569),
+                            MustApproved = false,
                             Name = "Командир звена"
                         },
                         new
                         {
                             Id = 32,
-                            ConcurrencyToken = new Guid("249dd02b-fb83-400d-8edf-67106c2e4b6e"),
+                            ConcurrencyToken = new Guid("7ca60d2a-45da-4392-b1ce-b922534c6caf"),
                             Direction = (short)4,
-                            LastChanged = new DateTime(2022, 5, 20, 19, 56, 47, 811, DateTimeKind.Utc).AddTicks(2419),
-                            MustApproved = true,
+                            LastChanged = new DateTime(2022, 5, 20, 19, 50, 41, 794, DateTimeKind.Utc).AddTicks(9598),
+                            MustApproved = false,
                             Name = "Командир флотилии"
                         },
                         new
                         {
                             Id = 33,
-                            ConcurrencyToken = new Guid("a37600d1-1a3c-4a0f-8c28-b37657941e8a"),
+                            ConcurrencyToken = new Guid("c16c96af-a05e-4995-887e-59d707d40b28"),
                             Direction = (short)5,
-                            LastChanged = new DateTime(2022, 5, 20, 19, 56, 47, 811, DateTimeKind.Utc).AddTicks(2450),
-                            MustApproved = true,
+                            LastChanged = new DateTime(2022, 5, 20, 19, 50, 41, 794, DateTimeKind.Utc).AddTicks(9624),
+                            MustApproved = false,
                             Name = "Дипломат"
                         },
                         new
                         {
                             Id = 34,
-                            ConcurrencyToken = new Guid("684d86b0-10a2-4741-8685-0ed3af160f98"),
+                            ConcurrencyToken = new Guid("73657d94-e9ba-47a6-944c-ed0a05f375f6"),
                             Direction = (short)5,
-                            LastChanged = new DateTime(2022, 5, 20, 19, 56, 47, 811, DateTimeKind.Utc).AddTicks(2482),
-                            MustApproved = true,
+                            LastChanged = new DateTime(2022, 5, 20, 19, 50, 41, 794, DateTimeKind.Utc).AddTicks(9654),
+                            MustApproved = false,
                             Name = "Агитатор"
                         },
                         new
                         {
                             Id = 35,
-                            ConcurrencyToken = new Guid("4f011990-b3d7-434f-9bb6-0791a844fd52"),
+                            ConcurrencyToken = new Guid("5be9f8a1-fa3c-4d2c-93e0-7bedfe71cf35"),
                             Direction = (short)5,
-                            LastChanged = new DateTime(2022, 5, 20, 19, 56, 47, 811, DateTimeKind.Utc).AddTicks(2519),
-                            MustApproved = true,
+                            LastChanged = new DateTime(2022, 5, 20, 19, 50, 41, 794, DateTimeKind.Utc).AddTicks(9684),
+                            MustApproved = false,
                             Name = "Монтажёр"
                         },
                         new
                         {
                             Id = 36,
-                            ConcurrencyToken = new Guid("829085be-f004-4620-bd02-6eac873675c8"),
+                            ConcurrencyToken = new Guid("b3770fe4-9fee-4d62-b9cd-57375ddeb7e8"),
                             Direction = (short)5,
-                            LastChanged = new DateTime(2022, 5, 20, 19, 56, 47, 811, DateTimeKind.Utc).AddTicks(2551),
+                            LastChanged = new DateTime(2022, 5, 20, 19, 50, 41, 794, DateTimeKind.Utc).AddTicks(9709),
                             MustApproved = false,
                             Name = "Репортёр"
                         },
                         new
                         {
                             Id = 37,
-                            ConcurrencyToken = new Guid("36e9ee9e-0b5d-4806-aa16-03755dbd09c6"),
+                            ConcurrencyToken = new Guid("cdd206f6-d831-4bd4-b078-f73b032a2621"),
                             Direction = (short)5,
-                            LastChanged = new DateTime(2022, 5, 20, 19, 56, 47, 811, DateTimeKind.Utc).AddTicks(2581),
+                            LastChanged = new DateTime(2022, 5, 20, 19, 50, 41, 794, DateTimeKind.Utc).AddTicks(9734),
                             MustApproved = false,
                             Name = "Стример"
                         },
                         new
                         {
                             Id = 38,
-                            ConcurrencyToken = new Guid("5d02caf0-63ac-480d-a542-c3aa64df7442"),
+                            ConcurrencyToken = new Guid("7b417a51-b495-4d86-8754-843692c5bf19"),
                             Direction = (short)1,
-                            LastChanged = new DateTime(2022, 5, 20, 19, 56, 47, 811, DateTimeKind.Utc).AddTicks(2614),
-                            MustApproved = true,
+                            LastChanged = new DateTime(2022, 5, 20, 19, 50, 41, 794, DateTimeKind.Utc).AddTicks(9760),
+                            MustApproved = false,
                             Name = "Наставник"
                         },
                         new
                         {
                             Id = 39,
-                            ConcurrencyToken = new Guid("5a2fc03e-e6b7-449d-a59b-effcb58c9856"),
+                            ConcurrencyToken = new Guid("9f7ad8dd-f22f-483d-8dde-86b5c1b7bb7f"),
                             Direction = (short)1,
-                            LastChanged = new DateTime(2022, 5, 20, 19, 56, 47, 811, DateTimeKind.Utc).AddTicks(2643),
+                            LastChanged = new DateTime(2022, 5, 20, 19, 50, 41, 794, DateTimeKind.Utc).AddTicks(9784),
                             MustApproved = false,
                             Name = "Ментор"
                         });

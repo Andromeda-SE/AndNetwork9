@@ -7,4 +7,5 @@ public interface ISpecialization : IId
 {
     public Direction Direction { get; }
     public string Name { get; }
+    public bool MustApproved { get; }
 }

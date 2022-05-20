@@ -11,4 +11,8 @@
     <ProjectReference Include="..\And9.Service.Core.Abstractions\And9.Service.Core.Abstractions.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Specializations\" />
+  </ItemGroup>
+
 </Project>

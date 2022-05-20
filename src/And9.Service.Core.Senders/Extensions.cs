@@ -28,6 +28,7 @@ public static class Extensions
 
         builder.AppendSenderWithoutResponse<AcceptSquadJoinRequestSender, (short number, short part, int memberId)>();
         builder.AppendSenderWithResponse<CreateSquadSender, short, short>();
+        builder.AppendSenderWithResponse<UpdateSquadSender, Abstractions.Models.Squad, Abstractions.Models.Squad>();
         builder.AppendSenderWithoutResponse<DeclineSquadJoinRequestSender, (short number, int memberId, bool byMember)>();
         builder.AppendSenderWithCollectionResponse<ReadAllSquadSender, int, ISquad>();
         builder.AppendSenderWithResponse<ReadSquadSender, int, Abstractions.Models.Squad>();

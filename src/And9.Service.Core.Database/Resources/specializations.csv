@@ -1,39 +1,39 @@
-1;Infrastructure;Шахтер
-2;Infrastructure;Монтажник
-3;Infrastructure;Пилот гражданских кораблей
-4;Infrastructure;Управляющий станцией
-5;Infrastructure;Комендант
-6;Research;Скриптер
-7;Research;Программист
-8;Research;Разработчик малых гр. кораблей
-9;Research;Разработчик больших гр. кораблей
-10;Research;Разработчик внутренних интерьеров
-11;Research;Дизайнер кораблей
-12;Research;Разработчик малых военных кораблей
-13;Research;Разработчик больших военных кораблей
-14;Research;Разработчик специальных систем
-15;Research;Разработчик наземной техники
-16;Research;Управляющий проектами
-17;Research;Интегратор скриптов
-18;Research;Интегратор чертежей
-19;Military;Пехотинец-диверсант
-20;Military;Наводчик турелей
-21;Military;Оператор специальных систем
-22;Military;Пилот истребителя / перехватчика / разрушителя
-23;Military;Пилот снайпера / САУ
-24;Military;Пилот катера / самбуки
-25;Military;Пилот штурмовика / монитора
-26;Military;Пилот канонерки
-27;Military;Пилот торпедоносца / эсминца
-28;Military;Пилот фрегата
-29;Military;Пилот корвета
-30;Military;Пилот броненосца / линкора
-31;Military;Командир звена
-32;Military;Командир флотилии
-33;Agitation;Дипломат
-34;Agitation;Агитатор
-35;Agitation;Монтажёр
-36;Agitation;Репортёр
-37;Agitation;Стример
-38;Training;Наставник
-39;Training;Ментор
+1;Infrastructure;Шахтер;false
+2;Infrastructure;Монтажник;false
+3;Infrastructure;Пилот гражданских кораблей;false
+4;Infrastructure;Управляющий станцией;false
+5;Infrastructure;Комендант;true
+6;Research;Скриптер;false
+7;Research;Программист;true
+8;Research;Разработчик малых гр. кораблей;false
+9;Research;Разработчик больших гр. кораблей;false
+10;Research;Разработчик внутренних интерьеров;false
+11;Research;Дизайнер кораблей;true
+12;Research;Разработчик малых военных кораблей;true
+13;Research;Разработчик больших военных кораблей;true
+14;Research;Разработчик специальных систем;true
+15;Research;Разработчик наземной техники;false
+16;Research;Управляющий проектами;true
+17;Research;Интегратор скриптов;false
+18;Research;Интегратор чертежей;false
+19;Military;Пехотинец-диверсант;true
+20;Military;Наводчик турелей;false
+21;Military;Оператор специальных систем;true
+22;Military;Пилот истребителя / перехватчика / разрушителя;false
+23;Military;Пилот снайпера / САУ;true
+24;Military;Пилот катера / самбуки;true
+25;Military;Пилот штурмовика / монитора;true
+26;Military;Пилот канонерки;true
+27;Military;Пилот торпедоносца / эсминца;true
+28;Military;Пилот фрегата;true
+29;Military;Пилот корвета;false
+30;Military;Пилот броненосца / линкора;true
+31;Military;Командир звена;true
+32;Military;Командир флотилии;true
+33;Agitation;Дипломат;true
+34;Agitation;Агитатор;true
+35;Agitation;Монтажёр;true
+36;Agitation;Репортёр;false
+37;Agitation;Стример;false
+38;Training;Наставник;true
+39;Training;Ментор;false

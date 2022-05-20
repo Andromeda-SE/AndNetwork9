@@ -83,6 +83,7 @@ public class CoreDataContext : DbContext
 
             entity.Property(x => x.Direction);
             entity.Property(x => x.Name);
+            entity.Property(x => x.MustApproved).IsRequired(true);
             entity.HasIndex(x => x.Direction).IsUnique(false);
             entity.HasIndex(x => new {x.Direction, x.Name}).IsUnique();
 

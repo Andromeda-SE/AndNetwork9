@@ -330,7 +330,7 @@ public class CoreHub : Hub<ICoreClientMethods>, ICoreServerMethods
     }
 
     [LieutenantAuthorize]
-    public async Task SetSquadPartLeader(int memberId)
+    public async Task SetMySquadPartLeader(int memberId)
     {
         Member caller = await _readMemberByIdSender.CallAsync(int.Parse(Context.UserIdentifier!)).ConfigureAwait(false) ?? throw new ArgumentException();
         Member newLeader = await _readMemberByIdSender.CallAsync(memberId).ConfigureAwait(false) ?? throw new ArgumentException();
