@@ -3,6 +3,7 @@ using And9.Service.Core.Abstractions.Interfaces;
 using And9.Service.Core.Abstractions.Models;
 using And9.Service.Core.Senders.CandidateRequest;
 using And9.Service.Core.Senders.Member;
+using And9.Service.Core.Senders.Specializations;
 using And9.Service.Core.Senders.Squad;
 using And9.Service.Core.Senders.Squad.SquadMembershipHistory;
 using And9.Service.Core.Senders.Squad.SquadRequest;
@@ -40,6 +41,10 @@ public static class Extensions
         builder.AppendSenderWithoutResponse<CloseSquadMembershipHistorySender, int>();
         builder.AppendSenderWithCollectionResponse<ReadMemberSquadMembershipHistorySender, int, ISquadMembershipHistoryEntry>();
         builder.AppendSenderWithCollectionResponse<ReadSquadMembershipHistorySender, short, ISquadMembershipHistoryEntry>();
+
+        builder.AppendSenderWithoutResponse<WithdrawSpecializationSender, (int memberId, int specialzationId)>();
+        builder.AppendSenderWithoutResponse<ApproveSpecializationSender, (int memberId, int specialzationId)>();
+        builder.AppendSenderWithCollectionResponse<ReadAllSpecializationsSender, int, Specialization>();
 
         return builder;
     }
