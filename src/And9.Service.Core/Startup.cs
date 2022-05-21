@@ -4,6 +4,7 @@ using And9.Service.Core.Abstractions.Interfaces;
 using And9.Service.Core.Abstractions.Models;
 using And9.Service.Core.ConsumerStrategy.CandidateRequests;
 using And9.Service.Core.ConsumerStrategy.Member;
+using And9.Service.Core.ConsumerStrategy.Specializations;
 using And9.Service.Core.ConsumerStrategy.Squad;
 using And9.Service.Core.ConsumerStrategy.Squad.SquadMembershipHistory;
 using And9.Service.Core.ConsumerStrategy.Squad.SquadRequest;
@@ -49,6 +50,9 @@ public class Startup
             .AppendConsumerWithCollectionResponse<ReadSquadMembershipHistoryConsumerStrategy, short, ISquadMembershipHistoryEntry>()
             .AppendConsumerWithoutResponse<OpenSquadMembershipHistoryConsumerStrategy, (int memberId, short squadNumber)>()
             .AppendConsumerWithoutResponse<CloseSquadMembershipHistoryConsumerStrategy, int>()
+            .AppendConsumerWithoutResponse<WithdrawSpecializationConsumerStrategy, (int memberId, int specialzationId)>()
+            .AppendConsumerWithoutResponse<ApproveSpecializationConsumerStrategy, (int memberId, int specialzationId)>()
+            .AppendConsumerWithCollectionResponse<ReadAllSpecializationsConsumerStrategy, int, Specialization>()
             .AddCoreSenders()
             .AddGatewaySenders()
             .Build();

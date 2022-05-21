@@ -1,6 +1,5 @@
 ﻿using And9.Lib.Broker;
 using And9.Lib.Broker.Senders;
-using And9.Service.Core.Abstractions.Interfaces;
 using And9.Service.Core.Abstractions.Models;
 
 namespace And9.Service.Core.Senders.Specializations;
