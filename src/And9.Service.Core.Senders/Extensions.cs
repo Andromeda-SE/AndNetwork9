@@ -42,8 +42,8 @@ public static class Extensions
         builder.AppendSenderWithCollectionResponse<ReadMemberSquadMembershipHistorySender, int, ISquadMembershipHistoryEntry>();
         builder.AppendSenderWithCollectionResponse<ReadSquadMembershipHistorySender, short, ISquadMembershipHistoryEntry>();
 
-        builder.AppendSenderWithoutResponse<WithdrawSpecializationSender, (int memberId, int specialzationId)>();
-        builder.AppendSenderWithoutResponse<ApproveSpecializationSender, (int memberId, int specialzationId)>();
+        builder.AppendSenderWithoutResponse<WithdrawSpecializationSender, (int memberId, int specialzationId, int callerId)>();
+        builder.AppendSenderWithoutResponse<ApproveSpecializationSender, (int memberId, int specialzationId, int callerId)>();
         builder.AppendSenderWithCollectionResponse<ReadAllSpecializationsSender, int, Specialization>();
 
         return builder;

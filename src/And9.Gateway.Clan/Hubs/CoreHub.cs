@@ -522,7 +522,7 @@ public class CoreHub : Hub<ICoreClientMethods>, ICoreServerMethods
     [Authorize]
     public IAsyncEnumerable<Specialization> ReadAllSpecializations() => _readAllSpecializationsSender.CallAsync(0);
     [MinRankAuthorize(Rank.Advisor)]
-    public async Task ApproveSpecialization(int memberId, int specializationId) => await _approveSpecializationSender.CallAsync((memberId, specializationId)).ConfigureAwait(false);
+    public async Task ApproveSpecialization(int memberId, int specializationId) => await _approveSpecializationSender.CallAsync((memberId, specializationId, int.Parse(Context.UserIdentifier!))).ConfigureAwait(false);
     [MinRankAuthorize(Rank.Advisor)]
-    public async Task WithdrawSpecialization(int memberId, int specializationId) => await _withdrawSpecializationSender.CallAsync((memberId, specializationId)).ConfigureAwait(false);
+    public async Task WithdrawSpecialization(int memberId, int specializationId) => await _withdrawSpecializationSender.CallAsync((memberId, specializationId, int.Parse(Context.UserIdentifier!))).ConfigureAwait(false);
 }
