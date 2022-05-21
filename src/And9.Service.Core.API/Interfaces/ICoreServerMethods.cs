@@ -27,7 +27,7 @@ public interface ICoreServerMethods
 
     Task CreateSquadPart(int leaderId);
     Task MoveMemberToSquadPart(short targetSquadPart, int memberId);
-    Task SetSquadPartLeader(int memberId);
+    Task SetMySquadPartLeader(int memberId);
     Task SetSquadPartLeader(short targetSquadPart, int memberId);
 
     Task SendSquadJoinRequest(short squadNumber);
@@ -45,4 +45,8 @@ public interface ICoreServerMethods
 
     IAsyncEnumerable<ISquadMembershipHistoryEntry> ReadSquadMembershipHistory(short squadNumber);
     IAsyncEnumerable<ISquadMembershipHistoryEntry> ReadMemberSquadMembershipHistory(int memberId);
+
+    IAsyncEnumerable<Specialization> ReadAllSpecializations();
+    Task ApproveSpecialization(int memberId, int specializationId);
+    Task WithdrawSpecialization(int memberId, int specializationId);
 }

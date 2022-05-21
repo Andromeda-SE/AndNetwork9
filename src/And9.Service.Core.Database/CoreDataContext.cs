@@ -67,7 +67,7 @@ public class CoreDataContext : DbContext
             entity.Property(x => x.HoursCount);
             entity.Property(x => x.Age);
             entity.Property(x => x.Recommendation);
-            entity.Property(x => x.Description);
+            entity.Property(x => x.Description).IsRequired();
             entity.HasIndex(x => x.AuxiliarySquad).IsUnique(false);
             entity.Property(x => x.AuxiliarySquad);
             entity.HasIndex(x => x.Accepted).IsUnique(false);
@@ -83,6 +83,7 @@ public class CoreDataContext : DbContext
 
             entity.Property(x => x.Direction);
             entity.Property(x => x.Name);
+            entity.Property(x => x.Description);
             entity.HasIndex(x => x.Direction).IsUnique(false);
             entity.HasIndex(x => new {x.Direction, x.Name}).IsUnique();
 

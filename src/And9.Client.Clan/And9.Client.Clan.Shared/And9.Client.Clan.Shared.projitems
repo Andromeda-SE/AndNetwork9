@@ -27,6 +27,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Services\AwardNotificationService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\RankNotificationService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Startup.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModels\ElectionViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModels\GiveAwardViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModels\LoginViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModels\MembersViewModel.cs" />

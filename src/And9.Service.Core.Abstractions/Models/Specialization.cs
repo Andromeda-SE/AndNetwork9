@@ -16,7 +16,9 @@ public class Specialization : ISpecialization
     [Key(2)]
     public string Name { get; set; } = string.Empty;
     [Key(3)]
-    public DateTime LastChanged { get; set; }
+    public string Description { get; set; } = String.Empty;
     [Key(4)]
+    public DateTime LastChanged { get; set; }
+    [Key(5)]
     public Guid ConcurrencyToken { get; set; }
 }

@@ -42,8 +42,8 @@ public class CoreConnection : ConnectionBase, ICoreServerMethods
 
     public async Task MoveMemberToSquadPart(short targetSquadPart, int memberId) => await Connection.InvokeAsync(nameof(MoveMemberToSquadPart), targetSquadPart, memberId).ConfigureAwait(false);
 
-    public async Task SetSquadPartLeader(int memberId) => await Connection.InvokeAsync(nameof(SetSquadPartLeader), memberId).ConfigureAwait(false);
-    public async Task SetSquadPartLeader(short targetSquadPart, int memberId) => await Connection.InvokeAsync(nameof(SetSquadPartLeader), targetSquadPart, memberId).ConfigureAwait(false);
+    public async Task SetMySquadPartLeader(int memberId) => await Connection.InvokeAsync(nameof(SetMySquadPartLeader), memberId).ConfigureAwait(false);
+    public async Task SetSquadPartLeader(short targetSquadPart, int memberId) => await Connection.InvokeAsync(nameof(SetMySquadPartLeader), targetSquadPart, memberId).ConfigureAwait(false);
 
     public async Task SendSquadJoinRequest(short squadNumber) => await Connection.InvokeAsync(nameof(SendSquadJoinRequest), squadNumber).ConfigureAwait(false);
 
@@ -66,6 +66,11 @@ public class CoreConnection : ConnectionBase, ICoreServerMethods
     public IAsyncEnumerable<ISquadMembershipHistoryEntry> ReadSquadMembershipHistory(short squadNumber) => Connection.StreamAsync<ISquadMembershipHistoryEntry>(nameof(ReadSquadMembershipHistory), squadNumber);
 
     public IAsyncEnumerable<ISquadMembershipHistoryEntry> ReadMemberSquadMembershipHistory(int memberId) => Connection.StreamAsync<ISquadMembershipHistoryEntry>(nameof(ReadMemberSquadMembershipHistory), memberId);
+    public IAsyncEnumerable<Specialization> ReadAllSpecializations() => Connection.StreamAsync<Specialization>(nameof(ReadAllSpecializations));
+
+    public async Task ApproveSpecialization(int memberId, int specializationId) => await Connection.InvokeAsync(nameof(ApproveSpecialization), memberId, specializationId).ConfigureAwait(false);
+
+    public async Task WithdrawSpecialization(int memberId, int specializationId) => await Connection.InvokeAsync(nameof(WithdrawSpecialization), memberId, specializationId).ConfigureAwait(false);
 
     public async Task ChangeDirection(Direction direction) => await Connection.InvokeAsync(nameof(ChangeDirection), direction).ConfigureAwait(false);
 

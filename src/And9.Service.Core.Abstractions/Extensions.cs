@@ -116,4 +116,17 @@ public static class Extensions
         SquadMemberLevel.Captain => Resources.SquadMemberLevel_Captain_Icon,
         _ => throw new ArgumentOutOfRangeException(nameof(value), value, null),
     };
+
+    public static int GetSpecializationMaxCount(this Rank rank) => rank switch
+    {
+        Rank.None => 0,
+        < Rank.Auxiliary => 0,
+        <= Rank.None => 1,
+        <= Rank.Assistant => 2,
+        <= Rank.SeniorEmployee => 3,
+        <= Rank.SeniorSpecialist => 4,
+        <= Rank.SeniorIntercessor => 5,
+        <= Rank.SeniorSentinel => 6,
+        <= Rank.FirstAdvisor => 7,
+    };
 }

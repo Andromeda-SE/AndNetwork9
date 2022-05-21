@@ -27,6 +27,7 @@
     <_Globbed_Compile Remove="Services\ConfigurationService.cs" />
     <_Globbed_Compile Remove="Services\RankNotificationService.cs" />
     <_Globbed_Compile Remove="Startup.cs" />
+    <_Globbed_Compile Remove="ViewModels\ElectionViewModel.cs" />
     <_Globbed_Compile Remove="ViewModels\GiveAwardViewModel.cs" />
     <_Globbed_Compile Remove="ViewModels\LoginViewModel.cs" />
     <_Globbed_Compile Remove="ViewModels\MembersViewModel.cs" />

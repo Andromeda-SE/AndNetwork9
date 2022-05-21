@@ -9,6 +9,7 @@ using And9.Service.Core.Abstractions.Models;
 using And9.Service.Core.API.Interfaces;
 using And9.Service.Core.Senders.CandidateRequest;
 using And9.Service.Core.Senders.Member;
+using And9.Service.Core.Senders.Specializations;
 using And9.Service.Core.Senders.Squad;
 using And9.Service.Core.Senders.Squad.SquadMembershipHistory;
 using And9.Service.Core.Senders.Squad.SquadRequest;
@@ -55,6 +56,10 @@ public class CoreHub : Hub<ICoreClientMethods>, ICoreServerMethods
     private readonly UpdateMemberSender _updateMemberSender;
     private readonly UpdateSquadSender _updateSquadSender;
 
+    private readonly ReadAllSpecializationsSender _readAllSpecializationsSender;
+    private readonly ApproveSpecializationSender _approveSpecializationSender;
+    private readonly WithdrawSpecializationSender _withdrawSpecializationSender;
+
     public CoreHub(
         AcceptCandidateRequestSender acceptCandidateRequestSender,
         DeclineCandidateRequestSender declineCandidateRequestSender,
@@ -78,7 +83,7 @@ public class CoreHub : Hub<ICoreClientMethods>, ICoreServerMethods
         ReadAllMembersSender readAllMembersSender,
         ReadAllSquadSender readAllSquadSender,
         UpdateSquadSender updateSquadSender,
-        IHubContext<SquadHub> squadHub, CreateSquadSender createSquadSender, SyncChannelsSender syncChannelsSender, SyncUserSender syncUserSender, ReadMemberSquadRequestSender readMemberSquadRequestSender)
+        IHubContext<SquadHub> squadHub, CreateSquadSender createSquadSender, SyncChannelsSender syncChannelsSender, SyncUserSender syncUserSender, ReadMemberSquadRequestSender readMemberSquadRequestSender, WithdrawSpecializationSender withdrawSpecializationSender, ApproveSpecializationSender approveSpecializationSender, ReadAllSpecializationsSender readAllSpecializationsSender)
     {
         _acceptCandidateRequestSender = acceptCandidateRequestSender;
         _declineCandidateRequestSender = declineCandidateRequestSender;
@@ -107,6 +112,9 @@ public class CoreHub : Hub<ICoreClientMethods>, ICoreServerMethods
         _syncChannelsSender = syncChannelsSender;
         _syncUserSender = syncUserSender;
         _readMemberSquadRequestSender = readMemberSquadRequestSender;
+        _withdrawSpecializationSender = withdrawSpecializationSender;
+        _approveSpecializationSender = approveSpecializationSender;
+        _readAllSpecializationsSender = readAllSpecializationsSender;
     }
 
     public async Task<Member?> ReadMe() => await _readMemberByIdSender.CallAsync(int.Parse(Context.UserIdentifier!)).ConfigureAwait(false);
@@ -330,7 +338,7 @@ public class CoreHub : Hub<ICoreClientMethods>, ICoreServerMethods
     }
 
     [LieutenantAuthorize]
-    public async Task SetSquadPartLeader(int memberId)
+    public async Task SetMySquadPartLeader(int memberId)
     {
         Member caller = await _readMemberByIdSender.CallAsync(int.Parse(Context.UserIdentifier!)).ConfigureAwait(false) ?? throw new ArgumentException();
         Member newLeader = await _readMemberByIdSender.CallAsync(memberId).ConfigureAwait(false) ?? throw new ArgumentException();
@@ -511,4 +519,10 @@ public class CoreHub : Hub<ICoreClientMethods>, ICoreServerMethods
 
     [MinRankAuthorize]
     public IAsyncEnumerable<ISquadMembershipHistoryEntry> ReadMemberSquadMembershipHistory(int memberId) => _readMemberSquadMembershipHistorySender.CallAsync(memberId);
+    [Authorize]
+    public IAsyncEnumerable<Specialization> ReadAllSpecializations() => _readAllSpecializationsSender.CallAsync(0);
+    [MinRankAuthorize(Rank.Advisor)]
+    public async Task ApproveSpecialization(int memberId, int specializationId) => await _approveSpecializationSender.CallAsync((memberId, specializationId)).ConfigureAwait(false);
+    [MinRankAuthorize(Rank.Advisor)]
+    public async Task WithdrawSpecialization(int memberId, int specializationId) => await _withdrawSpecializationSender.CallAsync((memberId, specializationId)).ConfigureAwait(false);
 }

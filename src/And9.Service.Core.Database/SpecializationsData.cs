@@ -22,6 +22,7 @@ internal static class SpecializationsData
             Id = int.Parse(line[0]),
             Direction = Enum.Parse<Direction>(line[1]),
             Name = line[2],
+            Description = line[3],
             LastChanged = DateTime.UtcNow,
             ConcurrencyToken = Guid.NewGuid(),
         });

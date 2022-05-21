@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using And9.Service.Core.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -12,9 +13,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace And9.Service.Core.Database.Migrations
 {
     [DbContext(typeof(CoreDataContext))]
-    partial class CoreDataContextModelSnapshot : ModelSnapshot
+    [Migration("20220520195042_specializatonMustApproved")]
+    partial class specializatonMustApproved
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -48,7 +50,6 @@ namespace And9.Service.Core.Database.Migrations
                         .HasDefaultValueSql("gen_random_uuid()");
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<int?>("HoursCount")
@@ -218,10 +219,6 @@ namespace And9.Service.Core.Database.Migrations
                         .HasColumnType("uuid")
                         .HasDefaultValueSql("gen_random_uuid()");
 
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.Property<short>("Direction")
                         .HasColumnType("smallint");
 
@@ -230,6 +227,9 @@ namespace And9.Service.Core.Database.Migrations
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("timestamp with time zone")
                         .HasDefaultValueSql("now()");
+
+                    b.Property<bool>("MustApproved")
+                        .HasColumnType("boolean");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -248,379 +248,352 @@ namespace And9.Service.Core.Database.Migrations
                         new
                         {
                             Id = 1,
-                            ConcurrencyToken = new Guid("4b86d4a4-42a8-4372-8052-2a957c9f198a"),
-                            Description = "Шахтеры занимаются разведкой и разработкой рудных жил. Для исполнения задач они используют ручные буры и специальные корабли.",
+                            ConcurrencyToken = new Guid("409896dd-bcb5-41d7-8e54-afcf6e634004"),
                             Direction = (short)2,
-                            LastChanged = new DateTime(2022, 5, 20, 23, 4, 23, 317, DateTimeKind.Utc).AddTicks(4238),
+                            LastChanged = new DateTime(2022, 5, 20, 19, 50, 41, 794, DateTimeKind.Utc).AddTicks(8468),
+                            MustApproved = false,
                             Name = "Шахтер"
                         },
                         new
                         {
                             Id = 2,
-                            ConcurrencyToken = new Guid("0157a0ae-c94b-4729-807c-d5313753f5fb"),
-                            Description = "Задача монтажников — сборка блоков и базовая настройка. Также они используют свои навыки для извлечения компонентов со старых, поврежденных или трофейных блоков. Их типичные инструменты — сварочные аппараты и УШМ, установленные на корабле или выполненые в ручном варианте.",
+                            ConcurrencyToken = new Guid("1f7bcd42-822a-4ec9-ad55-4e5dc908195b"),
                             Direction = (short)2,
-                            LastChanged = new DateTime(2022, 5, 20, 23, 4, 23, 317, DateTimeKind.Utc).AddTicks(4478),
+                            LastChanged = new DateTime(2022, 5, 20, 19, 50, 41, 794, DateTimeKind.Utc).AddTicks(8576),
+                            MustApproved = false,
                             Name = "Монтажник"
                         },
                         new
                         {
                             Id = 3,
-                            ConcurrencyToken = new Guid("51448212-5201-4498-87bc-5a090f4f964e"),
-                            Description = "Данная специализация объединяет пилотов кораблей, не предназначенных для прямого боестолкновения.",
+                            ConcurrencyToken = new Guid("c43adce1-19f8-4eb0-95b8-2b699571f215"),
                             Direction = (short)2,
-                            LastChanged = new DateTime(2022, 5, 20, 23, 4, 23, 317, DateTimeKind.Utc).AddTicks(4595),
+                            LastChanged = new DateTime(2022, 5, 20, 19, 50, 41, 794, DateTimeKind.Utc).AddTicks(8615),
+                            MustApproved = false,
                             Name = "Пилот гражданских кораблей"
                         },
                         new
                         {
                             Id = 4,
-                            ConcurrencyToken = new Guid("a21ed3b4-e81f-40b4-ae34-0cae9170f565"),
-                            Description = "Водители — операторы назменой техники. В их задачи входит поиск оптимальных маршрутов и учет оссобенностей каждого типа техники",
+                            ConcurrencyToken = new Guid("719fd852-e9e3-49b5-8db8-a3e886088e51"),
                             Direction = (short)2,
-                            LastChanged = new DateTime(2022, 5, 20, 23, 4, 23, 317, DateTimeKind.Utc).AddTicks(4696),
-                            Name = "Водитель"
+                            LastChanged = new DateTime(2022, 5, 20, 19, 50, 41, 794, DateTimeKind.Utc).AddTicks(8654),
+                            MustApproved = false,
+                            Name = "Управляющий станцией"
                         },
                         new
                         {
                             Id = 5,
-                            ConcurrencyToken = new Guid("98d91882-e4fd-41e6-80cc-9f81efa8ab1e"),
-                            Description = "Управляющие следят за состоянием и коплектацией вереных станций, кораблей и иных машин.",
+                            ConcurrencyToken = new Guid("78c1f3c8-34c3-4e6c-8f34-e162f1e59ad5"),
                             Direction = (short)2,
-                            LastChanged = new DateTime(2022, 5, 20, 23, 4, 23, 317, DateTimeKind.Utc).AddTicks(4781),
-                            Name = "Управляющий пунктом базирования"
-                        },
-                        new
-                        {
-                            Id = 6,
-                            ConcurrencyToken = new Guid("b204d5f6-df68-4b7c-bc05-669d3ca7704e"),
-                            Description = "Коменданты ведут учет пунктов базирования и флота. Даная специализация предполагает глубокие познания в ведении тылового обеспечения воюющей группы.",
-                            Direction = (short)2,
-                            LastChanged = new DateTime(2022, 5, 20, 23, 4, 23, 317, DateTimeKind.Utc).AddTicks(4886),
+                            LastChanged = new DateTime(2022, 5, 20, 19, 50, 41, 794, DateTimeKind.Utc).AddTicks(8683),
+                            MustApproved = false,
                             Name = "Комендант"
                         },
                         new
                         {
-                            Id = 7,
-                            ConcurrencyToken = new Guid("64e6772b-7750-43fe-be89-e331cff6e46e"),
-                            Description = "Скриптеры осуществляют автоматизацию объектов, создавая новые или модифицируя существующие скрипты, а также ведут документацию по созданным решениям.",
+                            Id = 6,
+                            ConcurrencyToken = new Guid("654feebf-90d6-4beb-bd08-783e50e051d4"),
                             Direction = (short)3,
-                            LastChanged = new DateTime(2022, 5, 20, 23, 4, 23, 317, DateTimeKind.Utc).AddTicks(4989),
+                            LastChanged = new DateTime(2022, 5, 20, 19, 50, 41, 794, DateTimeKind.Utc).AddTicks(8711),
+                            MustApproved = false,
                             Name = "Скриптер"
                         },
                         new
                         {
-                            Id = 8,
-                            ConcurrencyToken = new Guid("a4013f32-8ea6-479d-8649-2d52399ae83c"),
-                            Description = "Данная специализация предполагает участие в создании и совершенствовании инфраструктуры клана. В отличие от скриптеров, программисты обладают широкими знаниями в технологиях разработки ПО вне игры.",
+                            Id = 7,
+                            ConcurrencyToken = new Guid("bc429f2e-1f4b-4dcd-9d8c-e3e28903324f"),
                             Direction = (short)3,
-                            LastChanged = new DateTime(2022, 5, 20, 23, 4, 23, 317, DateTimeKind.Utc).AddTicks(5113),
+                            LastChanged = new DateTime(2022, 5, 20, 19, 50, 41, 794, DateTimeKind.Utc).AddTicks(8737),
+                            MustApproved = false,
                             Name = "Программист"
                         },
                         new
                         {
-                            Id = 9,
-                            ConcurrencyToken = new Guid("e9da6847-838c-4a5c-b2b6-2f30e86d4e53"),
-                            Description = "",
+                            Id = 8,
+                            ConcurrencyToken = new Guid("0883c1fa-a7c0-426e-804c-9ff1305eea9a"),
                             Direction = (short)3,
-                            LastChanged = new DateTime(2022, 5, 20, 23, 4, 23, 317, DateTimeKind.Utc).AddTicks(5155),
+                            LastChanged = new DateTime(2022, 5, 20, 19, 50, 41, 794, DateTimeKind.Utc).AddTicks(8772),
+                            MustApproved = false,
                             Name = "Разработчик малых гр. кораблей"
                         },
                         new
                         {
-                            Id = 10,
-                            ConcurrencyToken = new Guid("d71cf81d-e17b-41a1-ad49-d1237c281381"),
-                            Description = "",
+                            Id = 9,
+                            ConcurrencyToken = new Guid("6e9e486b-5f6c-4abe-b695-270f8076db5f"),
                             Direction = (short)3,
-                            LastChanged = new DateTime(2022, 5, 20, 23, 4, 23, 317, DateTimeKind.Utc).AddTicks(5202),
+                            LastChanged = new DateTime(2022, 5, 20, 19, 50, 41, 794, DateTimeKind.Utc).AddTicks(8816),
+                            MustApproved = false,
                             Name = "Разработчик больших гр. кораблей"
                         },
                         new
                         {
-                            Id = 11,
-                            ConcurrencyToken = new Guid("0de59bae-ba83-4c44-a835-503ff8768938"),
-                            Description = "",
+                            Id = 10,
+                            ConcurrencyToken = new Guid("18d0adb9-e5d9-46e1-9c6d-c5b76b68e243"),
                             Direction = (short)3,
-                            LastChanged = new DateTime(2022, 5, 20, 23, 4, 23, 317, DateTimeKind.Utc).AddTicks(5248),
+                            LastChanged = new DateTime(2022, 5, 20, 19, 50, 41, 794, DateTimeKind.Utc).AddTicks(8859),
+                            MustApproved = false,
                             Name = "Разработчик внутренних интерьеров"
                         },
                         new
                         {
-                            Id = 12,
-                            ConcurrencyToken = new Guid("75938ef1-f635-450f-93ff-3eede824176a"),
-                            Description = "",
+                            Id = 11,
+                            ConcurrencyToken = new Guid("4f49adc6-3285-4aec-8455-20021b54e134"),
                             Direction = (short)3,
-                            LastChanged = new DateTime(2022, 5, 20, 23, 4, 23, 317, DateTimeKind.Utc).AddTicks(5283),
+                            LastChanged = new DateTime(2022, 5, 20, 19, 50, 41, 794, DateTimeKind.Utc).AddTicks(8889),
+                            MustApproved = false,
                             Name = "Дизайнер кораблей"
                         },
                         new
                         {
-                            Id = 13,
-                            ConcurrencyToken = new Guid("d090175f-5158-4462-9047-1dd7916d7045"),
-                            Description = "",
+                            Id = 12,
+                            ConcurrencyToken = new Guid("2b2a504a-b6bf-4540-ab8d-715eaf3d8f89"),
                             Direction = (short)3,
-                            LastChanged = new DateTime(2022, 5, 20, 23, 4, 23, 317, DateTimeKind.Utc).AddTicks(5325),
+                            LastChanged = new DateTime(2022, 5, 20, 19, 50, 41, 794, DateTimeKind.Utc).AddTicks(8927),
+                            MustApproved = false,
                             Name = "Разработчик малых военных кораблей"
                         },
                         new
                         {
-                            Id = 14,
-                            ConcurrencyToken = new Guid("a9c2c641-32cb-4847-928f-25fd95c5d4d6"),
-                            Description = "",
+                            Id = 13,
+                            ConcurrencyToken = new Guid("ab4327f6-00b2-4961-b7cd-720716bf5aea"),
                             Direction = (short)3,
-                            LastChanged = new DateTime(2022, 5, 20, 23, 4, 23, 317, DateTimeKind.Utc).AddTicks(5368),
+                            LastChanged = new DateTime(2022, 5, 20, 19, 50, 41, 794, DateTimeKind.Utc).AddTicks(8965),
+                            MustApproved = false,
                             Name = "Разработчик больших военных кораблей"
                         },
                         new
                         {
-                            Id = 15,
-                            ConcurrencyToken = new Guid("c7cec4de-8ff8-47ef-8673-5495417e0ad6"),
-                            Description = "",
+                            Id = 14,
+                            ConcurrencyToken = new Guid("c471551c-d720-484c-aa2f-6620ba15b138"),
                             Direction = (short)3,
-                            LastChanged = new DateTime(2022, 5, 20, 23, 4, 23, 317, DateTimeKind.Utc).AddTicks(5408),
+                            LastChanged = new DateTime(2022, 5, 20, 19, 50, 41, 794, DateTimeKind.Utc).AddTicks(9005),
+                            MustApproved = false,
                             Name = "Разработчик специальных систем"
                         },
                         new
                         {
-                            Id = 16,
-                            ConcurrencyToken = new Guid("0be102fc-eda2-4943-8d42-0bbb442b64a7"),
-                            Description = "",
+                            Id = 15,
+                            ConcurrencyToken = new Guid("b692bd6e-b822-489d-a67d-347d4c4734cd"),
                             Direction = (short)3,
-                            LastChanged = new DateTime(2022, 5, 20, 23, 4, 23, 317, DateTimeKind.Utc).AddTicks(5451),
+                            LastChanged = new DateTime(2022, 5, 20, 19, 50, 41, 794, DateTimeKind.Utc).AddTicks(9040),
+                            MustApproved = false,
                             Name = "Разработчик наземной техники"
                         },
                         new
                         {
-                            Id = 17,
-                            ConcurrencyToken = new Guid("93e8e735-f3bb-4037-b03e-300e01c92388"),
-                            Description = "",
+                            Id = 16,
+                            ConcurrencyToken = new Guid("096b2075-2a3b-43de-b40b-fa09aca51c9a"),
                             Direction = (short)3,
-                            LastChanged = new DateTime(2022, 5, 20, 23, 4, 23, 317, DateTimeKind.Utc).AddTicks(5486),
+                            LastChanged = new DateTime(2022, 5, 20, 19, 50, 41, 794, DateTimeKind.Utc).AddTicks(9071),
+                            MustApproved = false,
                             Name = "Управляющий проектами"
                         },
                         new
                         {
-                            Id = 18,
-                            ConcurrencyToken = new Guid("c4e59ac6-67e4-41fa-9c35-b531f05975f1"),
-                            Description = "",
+                            Id = 17,
+                            ConcurrencyToken = new Guid("b325f032-32ec-4488-8ca4-d1949fed053e"),
                             Direction = (short)3,
-                            LastChanged = new DateTime(2022, 5, 20, 23, 4, 23, 317, DateTimeKind.Utc).AddTicks(5524),
+                            LastChanged = new DateTime(2022, 5, 20, 19, 50, 41, 794, DateTimeKind.Utc).AddTicks(9102),
+                            MustApproved = false,
                             Name = "Интегратор скриптов"
                         },
                         new
                         {
-                            Id = 19,
-                            ConcurrencyToken = new Guid("f3469dc5-463d-435a-a74b-04615ad16495"),
-                            Description = "",
+                            Id = 18,
+                            ConcurrencyToken = new Guid("463bc69c-edc4-4d14-9b2b-ce4af08a9eeb"),
                             Direction = (short)3,
-                            LastChanged = new DateTime(2022, 5, 20, 23, 4, 23, 317, DateTimeKind.Utc).AddTicks(5559),
+                            LastChanged = new DateTime(2022, 5, 20, 19, 50, 41, 794, DateTimeKind.Utc).AddTicks(9136),
+                            MustApproved = false,
                             Name = "Интегратор чертежей"
                         },
                         new
                         {
-                            Id = 20,
-                            ConcurrencyToken = new Guid("e7cec84d-fa44-4dae-9948-4aed50f3d45a"),
-                            Description = "",
+                            Id = 19,
+                            ConcurrencyToken = new Guid("a7b58bb2-623d-4a88-9f98-7d16f4f725f3"),
                             Direction = (short)4,
-                            LastChanged = new DateTime(2022, 5, 20, 23, 4, 23, 317, DateTimeKind.Utc).AddTicks(5598),
+                            LastChanged = new DateTime(2022, 5, 20, 19, 50, 41, 794, DateTimeKind.Utc).AddTicks(9171),
+                            MustApproved = false,
                             Name = "Пехотинец-диверсант"
                         },
                         new
                         {
-                            Id = 21,
-                            ConcurrencyToken = new Guid("3215ec7a-5c07-4947-8e84-c34678f9a63e"),
-                            Description = "",
+                            Id = 20,
+                            ConcurrencyToken = new Guid("9e5fac28-a844-4590-ba54-8e62aa68229c"),
                             Direction = (short)4,
-                            LastChanged = new DateTime(2022, 5, 20, 23, 4, 23, 317, DateTimeKind.Utc).AddTicks(5631),
+                            LastChanged = new DateTime(2022, 5, 20, 19, 50, 41, 794, DateTimeKind.Utc).AddTicks(9201),
+                            MustApproved = false,
                             Name = "Наводчик турелей"
                         },
                         new
                         {
-                            Id = 22,
-                            ConcurrencyToken = new Guid("8220e9e3-d5f0-4cf9-82e7-c0fea27cd407"),
-                            Description = "",
+                            Id = 21,
+                            ConcurrencyToken = new Guid("cc019687-182c-4ebb-a5a0-00f5e6bdd79f"),
                             Direction = (short)4,
-                            LastChanged = new DateTime(2022, 5, 20, 23, 4, 23, 317, DateTimeKind.Utc).AddTicks(5670),
+                            LastChanged = new DateTime(2022, 5, 20, 19, 50, 41, 794, DateTimeKind.Utc).AddTicks(9235),
+                            MustApproved = false,
                             Name = "Оператор специальных систем"
                         },
                         new
                         {
-                            Id = 23,
-                            ConcurrencyToken = new Guid("340f2b9f-dae9-488b-82a7-29098dbbb3a9"),
-                            Description = "",
+                            Id = 22,
+                            ConcurrencyToken = new Guid("4886f539-9513-4115-9f19-38663ab14efa"),
                             Direction = (short)4,
-                            LastChanged = new DateTime(2022, 5, 20, 23, 4, 23, 317, DateTimeKind.Utc).AddTicks(5717),
+                            LastChanged = new DateTime(2022, 5, 20, 19, 50, 41, 794, DateTimeKind.Utc).AddTicks(9278),
+                            MustApproved = false,
                             Name = "Пилот истребителя / перехватчика / разрушителя"
                         },
                         new
                         {
-                            Id = 24,
-                            ConcurrencyToken = new Guid("5d16fa2c-8a2b-45d6-8c1c-db6b316615fc"),
-                            Description = "",
+                            Id = 23,
+                            ConcurrencyToken = new Guid("8629e6d8-210a-4302-a4ee-95582963ad3a"),
                             Direction = (short)4,
-                            LastChanged = new DateTime(2022, 5, 20, 23, 4, 23, 317, DateTimeKind.Utc).AddTicks(5756),
+                            LastChanged = new DateTime(2022, 5, 20, 19, 50, 41, 794, DateTimeKind.Utc).AddTicks(9309),
+                            MustApproved = false,
                             Name = "Пилот снайпера / САУ"
                         },
                         new
                         {
-                            Id = 25,
-                            ConcurrencyToken = new Guid("203e763e-59d8-4926-be95-9670f1e587f5"),
-                            Description = "",
+                            Id = 24,
+                            ConcurrencyToken = new Guid("97e62735-09e7-4439-81ec-35a37c6b58da"),
                             Direction = (short)4,
-                            LastChanged = new DateTime(2022, 5, 20, 23, 4, 23, 317, DateTimeKind.Utc).AddTicks(5792),
+                            LastChanged = new DateTime(2022, 5, 20, 19, 50, 41, 794, DateTimeKind.Utc).AddTicks(9341),
+                            MustApproved = false,
                             Name = "Пилот катера / самбуки"
                         },
                         new
                         {
-                            Id = 26,
-                            ConcurrencyToken = new Guid("b2f312c5-964d-4b0d-8892-a1953c75959a"),
-                            Description = "",
+                            Id = 25,
+                            ConcurrencyToken = new Guid("c5e206b0-39c9-43ee-9906-c0e45258a4d0"),
                             Direction = (short)4,
-                            LastChanged = new DateTime(2022, 5, 20, 23, 4, 23, 317, DateTimeKind.Utc).AddTicks(5831),
+                            LastChanged = new DateTime(2022, 5, 20, 19, 50, 41, 794, DateTimeKind.Utc).AddTicks(9380),
+                            MustApproved = false,
                             Name = "Пилот штурмовика / монитора"
                         },
                         new
                         {
-                            Id = 27,
-                            ConcurrencyToken = new Guid("954c3f21-9b2c-48df-ac4d-7d7b36cd2191"),
-                            Description = "",
+                            Id = 26,
+                            ConcurrencyToken = new Guid("3372f33d-b0a3-4f6f-9a94-cd7a0388d5d6"),
                             Direction = (short)4,
-                            LastChanged = new DateTime(2022, 5, 20, 23, 4, 23, 317, DateTimeKind.Utc).AddTicks(5864),
+                            LastChanged = new DateTime(2022, 5, 20, 19, 50, 41, 794, DateTimeKind.Utc).AddTicks(9412),
+                            MustApproved = false,
                             Name = "Пилот канонерки"
                         },
                         new
                         {
-                            Id = 28,
-                            ConcurrencyToken = new Guid("7f49089b-4d76-46cd-b499-3b83fe49c9f0"),
-                            Description = "",
+                            Id = 27,
+                            ConcurrencyToken = new Guid("a695d2e5-aff2-4e7d-baf9-dbefce297797"),
                             Direction = (short)4,
-                            LastChanged = new DateTime(2022, 5, 20, 23, 4, 23, 317, DateTimeKind.Utc).AddTicks(5903),
+                            LastChanged = new DateTime(2022, 5, 20, 19, 50, 41, 794, DateTimeKind.Utc).AddTicks(9446),
+                            MustApproved = false,
                             Name = "Пилот торпедоносца / эсминца"
                         },
                         new
                         {
-                            Id = 29,
-                            ConcurrencyToken = new Guid("45850aac-5f28-4304-a10b-3fc0097ebabc"),
-                            Description = "",
+                            Id = 28,
+                            ConcurrencyToken = new Guid("5c007876-4560-40d6-9569-51f1867d7ce9"),
                             Direction = (short)4,
-                            LastChanged = new DateTime(2022, 5, 20, 23, 4, 23, 317, DateTimeKind.Utc).AddTicks(5938),
+                            LastChanged = new DateTime(2022, 5, 20, 19, 50, 41, 794, DateTimeKind.Utc).AddTicks(9474),
+                            MustApproved = false,
                             Name = "Пилот фрегата"
                         },
                         new
                         {
-                            Id = 30,
-                            ConcurrencyToken = new Guid("ea9d4525-1254-48e5-b62c-8a1c1775172f"),
-                            Description = "",
+                            Id = 29,
+                            ConcurrencyToken = new Guid("b2a4db2c-4b02-4242-ad8d-2a565b1a4210"),
                             Direction = (short)4,
-                            LastChanged = new DateTime(2022, 5, 20, 23, 4, 23, 317, DateTimeKind.Utc).AddTicks(5970),
+                            LastChanged = new DateTime(2022, 5, 20, 19, 50, 41, 794, DateTimeKind.Utc).AddTicks(9502),
+                            MustApproved = false,
                             Name = "Пилот корвета"
                         },
                         new
                         {
-                            Id = 31,
-                            ConcurrencyToken = new Guid("7551abca-f18d-404e-8701-66f421e5c246"),
-                            Description = "",
+                            Id = 30,
+                            ConcurrencyToken = new Guid("05a56e08-86a2-442a-a696-51c7069b40a0"),
                             Direction = (short)4,
-                            LastChanged = new DateTime(2022, 5, 20, 23, 4, 23, 317, DateTimeKind.Utc).AddTicks(6061),
+                            LastChanged = new DateTime(2022, 5, 20, 19, 50, 41, 794, DateTimeKind.Utc).AddTicks(9540),
+                            MustApproved = false,
                             Name = "Пилот броненосца / линкора"
                         },
                         new
                         {
-                            Id = 32,
-                            ConcurrencyToken = new Guid("fd0d2af2-e1b0-443e-a395-75949d919736"),
-                            Description = "",
+                            Id = 31,
+                            ConcurrencyToken = new Guid("7bfee45a-dd22-4eee-b0e9-b0234665c34f"),
                             Direction = (short)4,
-                            LastChanged = new DateTime(2022, 5, 20, 23, 4, 23, 317, DateTimeKind.Utc).AddTicks(6097),
+                            LastChanged = new DateTime(2022, 5, 20, 19, 50, 41, 794, DateTimeKind.Utc).AddTicks(9569),
+                            MustApproved = false,
                             Name = "Командир звена"
                         },
                         new
                         {
-                            Id = 33,
-                            ConcurrencyToken = new Guid("f3cc8ee5-5a70-41e3-a1a3-2a15486bdf67"),
-                            Description = "",
+                            Id = 32,
+                            ConcurrencyToken = new Guid("7ca60d2a-45da-4392-b1ce-b922534c6caf"),
                             Direction = (short)4,
-                            LastChanged = new DateTime(2022, 5, 20, 23, 4, 23, 317, DateTimeKind.Utc).AddTicks(6135),
+                            LastChanged = new DateTime(2022, 5, 20, 19, 50, 41, 794, DateTimeKind.Utc).AddTicks(9598),
+                            MustApproved = false,
                             Name = "Командир флотилии"
                         },
                         new
                         {
-                            Id = 34,
-                            ConcurrencyToken = new Guid("9ef3f55b-a76e-4ff3-91fa-fd2a473646c8"),
-                            Description = "Дипломаты занимаются контактами с другими кланами, отдельными представителями сообщества и разработчиками игры",
+                            Id = 33,
+                            ConcurrencyToken = new Guid("c16c96af-a05e-4995-887e-59d707d40b28"),
                             Direction = (short)5,
-                            LastChanged = new DateTime(2022, 5, 20, 23, 4, 23, 317, DateTimeKind.Utc).AddTicks(6222),
+                            LastChanged = new DateTime(2022, 5, 20, 19, 50, 41, 794, DateTimeKind.Utc).AddTicks(9624),
+                            MustApproved = false,
                             Name = "Дипломат"
                         },
                         new
                         {
-                            Id = 35,
-                            ConcurrencyToken = new Guid("3bd60647-8833-40a1-a63b-30ff71b18a1f"),
-                            Description = "Основной задачей агитаторов является поиск игроков на общедоступных серверах и плоаках сообщества. Также они осущетвляют поддержку дипломатам в посике объеденений игроков.",
+                            Id = 34,
+                            ConcurrencyToken = new Guid("73657d94-e9ba-47a6-944c-ed0a05f375f6"),
                             Direction = (short)5,
-                            LastChanged = new DateTime(2022, 5, 20, 23, 4, 23, 317, DateTimeKind.Utc).AddTicks(6382),
+                            LastChanged = new DateTime(2022, 5, 20, 19, 50, 41, 794, DateTimeKind.Utc).AddTicks(9654),
+                            MustApproved = false,
                             Name = "Агитатор"
                         },
                         new
                         {
-                            Id = 36,
-                            ConcurrencyToken = new Guid("5c3132db-8558-46ff-ad44-da1336cb916c"),
-                            Description = "Монтаж видео — процесс создания из исходных записей цельного видео. Монтажеры кроме обработки видео создают спецэффекты.",
+                            Id = 35,
+                            ConcurrencyToken = new Guid("5be9f8a1-fa3c-4d2c-93e0-7bedfe71cf35"),
                             Direction = (short)5,
-                            LastChanged = new DateTime(2022, 5, 20, 23, 4, 23, 317, DateTimeKind.Utc).AddTicks(6475),
+                            LastChanged = new DateTime(2022, 5, 20, 19, 50, 41, 794, DateTimeKind.Utc).AddTicks(9684),
+                            MustApproved = false,
                             Name = "Монтажёр"
                         },
                         new
                         {
-                            Id = 37,
-                            ConcurrencyToken = new Guid("a3a5b873-820b-478e-860d-f30365dc1d12"),
-                            Description = "Репортеры собирают информацию о просиходящем внутри клана и в сообществе игры, распростаняют информацию среди участников клана и иных заинтересованых лиц.",
+                            Id = 36,
+                            ConcurrencyToken = new Guid("b3770fe4-9fee-4d62-b9cd-57375ddeb7e8"),
                             Direction = (short)5,
-                            LastChanged = new DateTime(2022, 5, 20, 23, 4, 23, 317, DateTimeKind.Utc).AddTicks(6579),
+                            LastChanged = new DateTime(2022, 5, 20, 19, 50, 41, 794, DateTimeKind.Utc).AddTicks(9709),
+                            MustApproved = false,
                             Name = "Репортёр"
                         },
                         new
                         {
-                            Id = 38,
-                            ConcurrencyToken = new Guid("c008973d-a51d-452a-b847-356edde3c48f"),
-                            Description = "Стримеры осуществляют прямые включения с мест событий, а также подготовку к ним",
+                            Id = 37,
+                            ConcurrencyToken = new Guid("cdd206f6-d831-4bd4-b078-f73b032a2621"),
                             Direction = (short)5,
-                            LastChanged = new DateTime(2022, 5, 20, 23, 4, 23, 317, DateTimeKind.Utc).AddTicks(6647),
+                            LastChanged = new DateTime(2022, 5, 20, 19, 50, 41, 794, DateTimeKind.Utc).AddTicks(9734),
+                            MustApproved = false,
                             Name = "Стример"
                         },
                         new
                         {
-                            Id = 39,
-                            ConcurrencyToken = new Guid("800a52b9-0b6a-48ea-be53-60b17e882ec7"),
-                            Description = "Операторы видеозаписи записывают исходные видео дл дальнейшей обработки монтажером",
-                            Direction = (short)5,
-                            LastChanged = new DateTime(2022, 5, 20, 23, 4, 23, 317, DateTimeKind.Utc).AddTicks(6744),
-                            Name = "Оператор видеозаписи"
-                        },
-                        new
-                        {
-                            Id = 40,
-                            ConcurrencyToken = new Guid("408d0ffb-a03e-416c-886e-2351571bc3ef"),
-                            Description = "Мастера графики создают плакаты, заставки, обрабатывают скриншоты и подготавливают их для публикации",
-                            Direction = (short)5,
-                            LastChanged = new DateTime(2022, 5, 20, 23, 4, 23, 317, DateTimeKind.Utc).AddTicks(6826),
-                            Name = "Мастер графики"
-                        },
-                        new
-                        {
-                            Id = 41,
-                            ConcurrencyToken = new Guid("c70c662a-0ac1-480c-a972-50337e40e79c"),
-                            Description = "",
+                            Id = 38,
+                            ConcurrencyToken = new Guid("7b417a51-b495-4d86-8754-843692c5bf19"),
                             Direction = (short)1,
-                            LastChanged = new DateTime(2022, 5, 20, 23, 4, 23, 317, DateTimeKind.Utc).AddTicks(6856),
+                            LastChanged = new DateTime(2022, 5, 20, 19, 50, 41, 794, DateTimeKind.Utc).AddTicks(9760),
+                            MustApproved = false,
                             Name = "Наставник"
                         },
                         new
                         {
-                            Id = 42,
-                            ConcurrencyToken = new Guid("08275083-b942-4513-abab-243d281758cb"),
-                            Description = "",
+                            Id = 39,
+                            ConcurrencyToken = new Guid("9f7ad8dd-f22f-483d-8dde-86b5c1b7bb7f"),
                             Direction = (short)1,
-                            LastChanged = new DateTime(2022, 5, 20, 23, 4, 23, 317, DateTimeKind.Utc).AddTicks(6887),
+                            LastChanged = new DateTime(2022, 5, 20, 19, 50, 41, 794, DateTimeKind.Utc).AddTicks(9784),
+                            MustApproved = false,
                             Name = "Ментор"
                         });
                 });
