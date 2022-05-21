@@ -45,4 +45,8 @@ public interface ICoreServerMethods
 
     IAsyncEnumerable<ISquadMembershipHistoryEntry> ReadSquadMembershipHistory(short squadNumber);
     IAsyncEnumerable<ISquadMembershipHistoryEntry> ReadMemberSquadMembershipHistory(int memberId);
+
+    IAsyncEnumerable<Specialization> ReadAllSpecializations();
+    Task ApproveSpecialization(int memberId, int specializationId);
+    Task WithdrawSpecialization(int memberId, int specializationId);
 }
